@@ -1,0 +1,7 @@
+<config>
+	<database>capstone</database>
+	<username>doctor</username>
+	<host>192.0.203.84</host>
+	<style>C:\default.style</style>
+	<password>wh0</password>
+</config>

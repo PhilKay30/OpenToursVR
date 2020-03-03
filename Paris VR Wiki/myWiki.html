@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!--  
+	File: myWiki.html
+	Project: Capstone Wiki
+	Programmers: The Weeping Angels
+	First Version: January 25th, 2020
+	Description: This HTML page acts as a Wiki for the Paris VR 2.0 solution
+-->
+<html lang="en">
+	<head>
+		<!-- Page Title -->
+		<title>Paris VR Wiki</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- CSS for styling and Javascript for navigation -->
+		<link rel="stylesheet" href="styles.css">
+		<script src="navigation.js"></script> 
+	</head>
+	
+	
+	<body>
+		<!-- Webpage Banner -->
+		<div class="header">
+		  <h1>Paris VR 2.0 WIKI</h1>
+		  <p>by: The Weeping Angels</p>
+		</div>
+
+		
+		<!-- Navigation Bar -->
+		<div class="navbar">
+		  <a href="javascript:ShowAboutWiki();">The Project</a>
+		  <a href="javascript:ShowTeamWiki();">The Team</a>
+		  <a href="javascript:ShowVRWiki();">Paris VR 2.0</a>
+		  <a href="javascript:ShowToolkitWiki();">VR Tourism Toolkit</a>
+		  <a href="http://winceymills.ca/history/" class="right">Wincey Mills History</a>
+		</div>
+		
+		
+		<!-- Content section... Contains 4 pages that are navigated between using the navigation bar above -->
+		<div class="row">
+		
+		  <!-- Main Page -->
+		  <div id="mainPage" class="main">
+				<h2>Paris VR Project</h2>
+				<h5 style="padding-left: 60px;padding-right: 60px">
+					The Paris VR 2.0 project was commissioned by Brant County and Professor Russell Foubert.<br><br>
+					This project aims to utilize Virtual Reality technology to allow people to interact with the rich history of Paris, Ontario.<br><br>
+					The Paris VR 2.0 solution consists of 2 applications; a toolkit to create VR tourism apps, and a VR tourism app (made with the toolkit) that offers a tour through the history of Paris' mill-races.<br><br>
+					This project, created by The Weeping Angels (no Dr. affiliations), acts as a Capstone project for the Software Engineering Technology program at Conestoga College<br><br>
+				</h5>
+				<!-- Kickstarter Video -->
+				<div>
+					<iframe width="60%" height="315" src="https://www.youtube.com/embed/WmjZ4c5Kpcg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+					</div>
+		  </div>
+		  
+			
+		  <!-- About Team Page -->
+		  <div id="teamPage" class="main" style="display: none;">
+				<h2>The Weeping Angels</h2>
+				<br>
+				
+				<!-- Fred Section -->
+				<p><b>Fred Chappuis</b></p>
+				<div class="imgBackground" style="width:160px">
+					<img src="https://lh3.googleusercontent.com/_hx2jzNuSdZkxnNymRXR0Vl-PcBDxHKYKDlk-BvUNeTCHdzmrpFht8mV4jOj63rMwy5gUobDtoDKSjtVv3lBBByYOkXZYDEhTcU1jxSyUlalxogXEZ6-_ci_mSckriYFyjQzD8oN6Q=w2400" style="height:120px"/>
+				</div>
+				<p>
+					Quality Assurance Manager
+					<br>
+					<a href="https://www.linkedin.com/in/fredericchappuis/">LinkedIn</a><br>
+					<a href="https://github.com/FChappuis452">GitHub</a>
+
+				</p>
+				<br><br>
+				
+				<!-- Brendan Section -->
+				<p><b>Brendan Brading</b></p>
+				<div class="imgBackground" style="width:160px">
+					<img style="width:120px" src="https://lh3.googleusercontent.com/9HQfLkvRDP7Rjz-DgJ8Ea8-wgImD-0eHRCOSncZbWTIhH2UFH3EPTYeF2M-EcECot12P9XNUvf2gA5FHZ8GvPlq3RYhONvtQ8CSKbVepF_RfPegEhzdrR83-mTiSfIviBUAL3_Jf7Q=w2400" style="height:120px"/>
+				</div>
+				<p>
+					Product Manager
+					<br>
+					<a href="https://www.linkedin.com/in/brendan-brading-623233175/">LinkedIn</a>
+				</p>
+				<br><br>
+				
+				<!-- T.J Section -->
+				<p><b>T.J. Cowen</b></p>
+				<div class="imgBackground" style="width:160px">
+					<img src="https://lh3.googleusercontent.com/HEmf9NPXNlck9sPrGnAeprx0BR9LSWjDGxjdmIi1DDkNoYINMhD9ouEtphObBsGnxEp2I2iaxRgRmcZY6JriFuchOtgcB6Ii9QdCy2E5766yXg1ONXFntkxtCZdxzEvA1nQ6o6gRnA=w2400" style="height:120px"/>
+				</div>
+				<p>
+					Communications Manager
+					<br>
+					<a href="https://www.linkedin.com/in/timothyjcowen/">LinkedIn</a>
+				</p>
+				<br><br>
+				
+				<!-- Phil Section -->
+				<p><b>Philip Kempton</b></p>
+				<div class="imgBackground" style="width:160px">
+					<img style="height:120px" src='https://lh3.googleusercontent.com/QP_mRZniQ-ZFlNpNAtsVsNAf_MtZvGvZ_-EtJqVc3DtRUF_IVG_aV-nBtdwoJDlDRFS13lPVODz6Z_J3GqS0MQf1He439I_enkbtb8_qDlnBn19f2M956FP3Z50VOJRluQgyUQg2VQ=w2400' /></img>
+				</div>
+				<p>
+					Project Manager
+					<br>
+					<a href="https://www.linkedin.com/in/philip-kempton/">LinkedIn</a>
+				</p>
+		  </div>
+		  
+			
+		  <!-- Toolkit App Page -->
+		  <div id="toolkitPage" class="main" style="display: none;">
+				<h2>VR Tourism Toolkit Application</h2>
+				<h5 style="padding-left: 60px;padding-right: 60px">
+					The VR Tourism Toolkit allows for the creation and customization of VR Tourism Applications<br>
+					<br>
+					Offering everything from map configuration to interactible-data configuration, the toolkit will allow for the
+						easy creation of a VR app for any city.<br>
+					<br>
+					<image class="imgBackground" src="https://lh3.googleusercontent.com/GUM21gzyGHcBP-1WMvDLmUX2Rp-YvjrbBK5glJ-iYxI-QoFj44i31wQWrR5hYZzzTYjb0PdGmcDsVoCA7K3crXTB2rbeXfm1oLjGKKaggP1deAl3o9la2-tOejuCWQ5d7GyQoI3Lfw=w2400" width="60%"/>
+				</h5>
+		  </div>
+		  
+			
+		  <!-- VR App Page -->
+		  <div id="vrAppPage" class="main" style="display: none;">
+				<h2>Paris VR 2.0 Application</h2>
+				<h5 style="padding-left: 60px;padding-right: 60px">
+					The Paris VR 2.0 application offers a Virtual-Reality tourism experience through the rich history of Paris, Ontario<br>
+					<br>
+					Viewing the history of Paris in an interactive environment will help people learn about the mill-races 
+						that used to be used to transport materials between the mills in Paris.<br>
+					<br>
+					By positioning a historical map overtop a current map, Paris VR 2.0 allows for people to switch between the different 
+						terrains as they go, seeing what once was and what is now.<br>
+					<br>
+					<image class="imgBackground" src="https://lh3.googleusercontent.com/GUM21gzyGHcBP-1WMvDLmUX2Rp-YvjrbBK5glJ-iYxI-QoFj44i31wQWrR5hYZzzTYjb0PdGmcDsVoCA7K3crXTB2rbeXfm1oLjGKKaggP1deAl3o9la2-tOejuCWQ5d7GyQoI3Lfw=w2400" width="60%"/>
+				</h5>
+		  </div>
+		</div>
+
+		
+		<!-- Footer -->
+		<div class="footer">
+			<span style="float: left;"><pre>	This project was created as a Capstone Project for the SET program in 2020</pre></span>
+			<span style="float: right;"><pre>by: The Weeping Angels	</pre></span>
+			<br><br>
+		</div>
+	</body>
+</html>
