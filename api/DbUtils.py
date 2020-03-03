@@ -12,7 +12,7 @@ class DbUtils:
         try:
             conn.execute(
                 """INSERT INTO images(img_name, img, img_size, bot_left_corner, rotation) VALUES (%s, %s, %s, %s, %s)""",
-                (img_name, img, size, corner, rotation),
+                (img_name, str(img), size, corner, rotation),
             )
         except Exception as e:
             print(e)
