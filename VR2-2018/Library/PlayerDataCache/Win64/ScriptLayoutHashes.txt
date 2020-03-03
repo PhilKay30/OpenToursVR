@@ -2,7 +2,7 @@ Win64
 PlayerPath?
 D:/Unity/VR2_2018_GameFiles/VR2-2018.exe
 SceneListBegin?
-Assets/Scenes/Main.unity
+Assets/Scenes/VR_Level.unity
 SceneListEnd?
 3800f5e3156a1e54f5c990c4e514eda1 SteamVR.dll:Valve.VR.SteamVR_Ears
 13c40e71b4af669ad3f56e281300e612 SteamVR.dll:Valve.VR.InteractionSystem.LinearAnimation
@@ -26,6 +26,7 @@ e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.P
 201e3fde670b00545944bb3db215c80a UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 c4a6d5610ab09ad85bf9b1a877b6b7c5 SteamVR.dll:Valve.VR.InteractionSystem.Throwable
 8528d6b2bf8de7e441f1c781a2231062 SteamVR.dll:Valve.VR.InteractionSystem.Sample.AmbientSound
+c18fc2274b34b5f651326f2a58260e4c Assembly-CSharp.dll:.T_Point_Generator
 c8ebe1a6445d89267090af7e7c5c957f SteamVR.dll:Valve.VR.InteractionSystem.LinearAudioPitch
 e7a73f5f78ba6445195ec23b74a1ce2d Unity.TextMeshPro.dll:TMPro.TMP_ScrollbarEventHandler
 71bb6a6b6c8f052f948db64c7dd3ca4f SteamVR.dll:Valve.VR.SteamVR_CameraFlip
@@ -158,6 +159,7 @@ e0f1a8d4b95e2893e46f658b3b796847 SteamVR.dll:Valve.VR.SteamVR_Skeleton_Pose
 ec65528c7c2c1b28fe26056267dcba4d SteamVR.dll:Valve.VR.SteamVR_Behaviour_Vector3
 b8a5e8091ab0b8861d2add371082c5e0 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 e3fd6ecc9d6caa468d7bd91e02a94aba SteamVR.dll:Valve.VR.InteractionSystem.ComplexThrowable
+8c52581c092037086b751e59e3f74eb2 Assembly-CSharp.dll:.GenerateWorld
 bd0f70259e5920d5cc171d0499babc9c SteamVR.dll:Valve.VR.InteractionSystem.TeleportPoint
 eade5a5efd53b0e50dfe8fb48b76f0f7 SteamVR.dll:Valve.VR.InteractionSystem.SoundPlayOneshot
 5f603031df4f412519943b04d1265c08 SteamVR.dll:Valve.VR.InteractionSystem.HapticRack
@@ -180,6 +182,7 @@ b3ab2106268377ffe25dd18ac23dca28 Unity.TextMeshPro.dll:TMPro.TMP_Asset
 71bb6a6b6c8f052f948db64c7dd3ca4f Unity.Analytics.Editor.dll:UnityEditor.Analytics.AnalyticsEventTrackerEditor
 71bb6a6b6c8f052f948db64c7dd3ca4f SteamVR.dll:Valve.VR.InteractionSystem.Sample.ButtonEffect
 d4270d2ec8b3620ba9e28a813eff67cd SteamVR.dll:Valve.VR.InteractionSystem.Interactable
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.PlayerSetup
 71bb6a6b6c8f052f948db64c7dd3ca4f Unity.TextMeshPro.dll:TMPro.TMP_SpriteAnimator
 fa5d069645c5f38a362924187ca1cb5d SteamVR.dll:Valve.VR.InteractionSystem.Sample.Planting
 2658488b550b51097fe1e8e9f9a19f87 SteamVR.dll:Valve.VR.Extras.SteamVR_GazeTracker
@@ -271,6 +274,7 @@ cafe8f659ec4810167e189e3e06c6f57 SteamVR.dll:Valve.VR.InteractionSystem.PlaySoun
 d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 dcc608e96ec2ac8ad8de1fc54d7d0b7a SteamVR.dll:Valve.VR.InteractionSystem.Sample.SquishyToy
 65aa1eed000a6822a5aba6155c16e80a SteamVR.dll:Valve.VR.InteractionSystem.CircularDrive
+a9b040d2c76a922b2bae102612481407 Assembly-CSharp.dll:.ButtonFunctions
 df434544c9f7b33d1cc7e635b180d279 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 3165968ba45c74472d279ba04455fccb Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
 84a3e4e0d25666c0e73413aed3a9552e SteamVR.dll:Valve.VR.InteractionSystem.Arrow
