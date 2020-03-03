@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class API_Handler
 {
@@ -13,6 +14,7 @@ public class API_Handler
     private string apiRequest = "http://192.0.203.84:5000/db_api/getimg/osmMap.png";
     public byte[] GetOsmMap()
     {
+        //SendWebRequest req;
         HttpWebResponse response;
         HttpWebRequest request;
         JSONObject jobject = new JSONObject();
@@ -47,7 +49,7 @@ public class API_Handler
             imgString = imgString.Replace(",", "");
             imgString = imgString.Replace("}", "");
             imgString = imgString.Replace("\"", "");
-            imgData = Encoding.UTF32.GetBytes(jobject.list[0].list[position].ToString());
+           
             List<byte> bitey = new List<byte>();
             for (int i = 0; i < imgString.Length; i++)
             {
@@ -61,10 +63,7 @@ public class API_Handler
                 bitey.Add(number);
             }
             imgData = bitey.ToArray();
-                
-
-
-            
+ 
         }
         else
         {

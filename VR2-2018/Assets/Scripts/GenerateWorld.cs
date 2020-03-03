@@ -27,7 +27,7 @@ public class GenerateWorld : MonoBehaviour
     // Eventually get these from Db
     //private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\1ksq_v2.png";
     private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked.png";
-    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
+    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap2.png";
     
     
     private float scaler = 350.0f; // To translate pixel to scale in unity
@@ -58,6 +58,11 @@ public class GenerateWorld : MonoBehaviour
 
     private void PlaceHistoryMap()
     {
+        if (historyMap == null)
+        {
+            historyPlane.SetActive(false);
+            return;
+        }
         float hMapWidth = osmMap.width;
         float hMapHeight = osmMap.height;
         float scaleX = historyMap.width / scaler;
@@ -71,6 +76,7 @@ public class GenerateWorld : MonoBehaviour
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
         material.mainTexture = historyMap;
         historyPlane.GetComponent<Renderer>().material = material;
+
     }
 
 
