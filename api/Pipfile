@@ -2,19 +2,20 @@
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
-[requires]
-python_version = "3.7"
-
-[packages]
-flask = "*"
-pipfile = "*"
-sqlalchemy = "*"
-psycopg2 = "*"
-black = "*"
-Pipfile = "*"
-
 [dev-packages]
 Pipfile = "*"
+black = "*"
+
+[packages]
+psycopg2 = "*"
+Flask-Migrate = "*"
+Flask-Script = "*"
+Flask-SQLAlchemy = "*"
+geoalchemy2 = "*"
+pipfile = "*"
+
+[requires]
+#python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true
