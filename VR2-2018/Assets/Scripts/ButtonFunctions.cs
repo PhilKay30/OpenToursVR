@@ -1,12 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using Valve.VR;
+
 
 public class ButtonFunctions : MonoBehaviour
 {
 
-    public GameObject plane;
-    public void Toggle()
+    public GameObject historicalPlane;
+    public GameObject menuCanvas;
+    public SteamVR_Input_Sources leftHand;
+    public SteamVR_Input_Sources rightHand;
+
+    public void Update()
+    {
+        // Left Joystick Push down
+        if (SteamVR_Input.GetStateDown("LeftJoystickButton", leftHand))
+        {
+            Toggle(menuCanvas);
+        }
+    }
+    public void Toggle(GameObject plane)
     {
         
 

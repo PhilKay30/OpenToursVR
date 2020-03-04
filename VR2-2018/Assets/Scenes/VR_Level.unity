@@ -1115,10 +1115,10 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2142845299}
         m_MethodName: Toggle
-        m_Mode: 1
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 856849916}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2715,7 +2715,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 073f4f3e9ebaafe44a9b4e2f2463f9f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plane: {fileID: 891060200}
+  historicalPlane: {fileID: 891060200}
+  menuCanvas: {fileID: 856849916}
+  leftHand: 1
+  rightHand: 2
 --- !u!1 &1000008115024186
 GameObject:
   m_ObjectHideFlags: 0

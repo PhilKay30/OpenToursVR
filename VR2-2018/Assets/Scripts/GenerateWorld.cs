@@ -41,14 +41,23 @@ public class GenerateWorld : MonoBehaviour
     void Start()
     {
         osmData = api.GetOsmMap();
-        teleportMap = LoadMaps(teleportMapFile);
         osmMap = LoadData(osmData);
-        //osmMap = LoadMaps(osmMapFile);
+
+        teleportMap = LoadMaps(teleportMapFile);
         historyMap = LoadMaps(historyMapFile);
+        
         CreateMapPlane();
         PlaceHistoryMap();
     }
 
+
+
+
+    /// <summary>
+    /// Create a Texture out of a byte array
+    /// </summary>
+    /// <param name="osmData">The Byte array</param>
+    /// <returns>Texture</returns>
     private Texture LoadData(byte[] osmData)
     {
         Texture2D tex = new Texture2D(2, 2);
@@ -56,41 +65,46 @@ public class GenerateWorld : MonoBehaviour
         return tex;
     }
 
-    private void PlaceHistoryMap()
-    {
-        if (historyMap == null)
-        {
-            historyPlane.SetActive(false);
-            return;
-        }
-        float hMapWidth = osmMap.width;
-        float hMapHeight = osmMap.height;
-        float scaleX = historyMap.width / scaler;
-        float scaleZ = historyMap.height / scaler;
-        float positionX = CalculatePosition(scaleX);
-        float positionZ = CalculatePosition(scaleZ);
-
-        historyPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        historyPlane.transform.position = new Vector3(positionX * 2, 0.05f, positionZ * 2);
-        // Creates and holds the material to go on the plane
-        Material material = new Material(Shader.Find("Transparent/Diffuse"));
-        material.mainTexture = historyMap;
-        historyPlane.GetComponent<Renderer>().material = material;
-
-    }
 
 
-    /* CUSTOM Functions */
-
-    /*
-    * Function     :    LoadMaps
-    * Description  :    This will load the map files into memory
-    * Parameters   :    string mapFile: THe path of the file
-    * Return Value :    Texture2D	
-    */
+    /// <summary>
+    /// LoadMaps
+    /// Description  :    This will load the map files into memory 
+    /// </summary>
+    /// <param name="mapFile">The path of the file</param>
+    /// <returns>Texture2D</returns>
     public Texture2D LoadMaps(string mapFile)
     {
         return LoadPNG(mapFile);
+    }
+
+
+
+
+
+    /// <summary>
+    /// LoadPNG
+    /// Description  :    This will take an image file and load it into a Texture object
+    ///                   Used this post to help out
+    ///                   https://answers.unity.com/questions/432655/loading-texture-file-from-pngjpg-file-on-disk.html
+    /// </summary>
+    /// <param name="filePath">the path of the file</param>
+    /// <returns>Texture2D</returns>
+    public static Texture2D LoadPNG(string filePath)
+    {
+        Debug.Log("Dir: " + Directory.GetCurrentDirectory().ToString());
+        Debug.Log("filePath: " + filePath);
+        Texture2D tex = null;
+        byte[] fileData;
+
+        if (File.Exists(filePath))
+        {
+            Debug.Log("File exists");
+            fileData = File.ReadAllBytes(filePath);
+            tex = new Texture2D(2, 2);
+            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+        }
+        return tex;
     }
 
 
@@ -126,6 +140,29 @@ public class GenerateWorld : MonoBehaviour
 
 
 
+    private void PlaceHistoryMap()
+    {
+        if (historyMap == null)
+        {
+            historyPlane.SetActive(false);
+            return;
+        }
+        float hMapWidth = osmMap.width;
+        float hMapHeight = osmMap.height;
+        float scaleX = historyMap.width / scaler;
+        float scaleZ = historyMap.height / scaler;
+        float positionX = CalculatePosition(scaleX);
+        float positionZ = CalculatePosition(scaleZ);
+
+        historyPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
+        historyPlane.transform.position = new Vector3(positionX * 2, 0.05f, positionZ * 2);
+        // Creates and holds the material to go on the plane
+        Material material = new Material(Shader.Find("Transparent/Diffuse"));
+        material.mainTexture = historyMap;
+        historyPlane.GetComponent<Renderer>().material = material;
+
+    }
+
 
 
     /*
@@ -159,29 +196,4 @@ public class GenerateWorld : MonoBehaviour
 
 
 
-    /*
-    * Function     :	LoadPNG
-    * Description  :    This will take an image file and load it into a Texture object
-    *                   Used this post to help out
-    *                   https://answers.unity.com/questions/432655/loading-texture-file-from-pngjpg-file-on-disk.html
-    * Parameters   :    string filePath: The file path of the image
-    * Return Value :    Texture2D: The image loaded into a Texture2D
-    */
-    // 
-    public static Texture2D LoadPNG(string filePath)
-    {
-        Debug.Log("Dir: " + Directory.GetCurrentDirectory().ToString());
-        Debug.Log("filePath: " + filePath);
-        Texture2D tex = null;
-        byte[] fileData;
-
-        if (File.Exists(filePath))
-        {
-            Debug.Log("File exists");
-            fileData = File.ReadAllBytes(filePath);
-            tex = new Texture2D(2, 2);
-            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-        }
-        return tex;
-    }
 }

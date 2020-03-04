@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
+using System.Text.RegularExpressions;
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -27,7 +27,7 @@ public class API_Handler
             StreamReader reader = new StreamReader(response.GetResponseStream());
             string jsonResponse = reader.ReadToEnd();
             jobject = new JSONObject(jsonResponse);
-
+            Debug.Log(jobject);
         }
         catch (Exception e)
         {
@@ -45,10 +45,11 @@ public class API_Handler
                     break;
                 }
             }
-            string imgString = jobject.list[0].list[position].ToString().Replace("{", "");
-            imgString = imgString.Replace(",", "");
-            imgString = imgString.Replace("}", "");
-            imgString = imgString.Replace("\"", "");
+            string imgString = jobject.list[0].list[position].ToString();//.Replace("{", "");
+            imgString = StripNonHexNumber(imgString);
+            //imgString = imgString.Replace(",", "");
+            //imgString = imgString.Replace("}", "");
+            //imgString = imgString.Replace("\"", "");
            
             List<byte> bitey = new List<byte>();
             for (int i = 0; i < imgString.Length; i++)
@@ -73,5 +74,19 @@ public class API_Handler
         return imgData;
     }
 
-    
+    private string StripNonHexNumber(string imgString)
+    {
+        List<char> hexList = new List<char>();
+        Regex reggie = new Regex(@"[a-fA-F0-9]");
+
+        foreach(char e in imgString)
+        {
+            if(reggie.IsMatch(e.ToString()))
+            {
+                hexList.Add(e);
+            }
+        }
+        // https://www.dotnetperls.com/convert-list-string
+        return string.Join("", hexList.ToArray());
+    }
 }
