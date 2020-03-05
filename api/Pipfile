@@ -4,7 +4,6 @@ verify_ssl = true
 
 [dev-packages]
 Pipfile = "*"
-black = "*"
 
 [packages]
 psycopg2 = "*"
@@ -13,9 +12,9 @@ Flask-Script = "*"
 Flask-SQLAlchemy = "*"
 geoalchemy2 = "*"
 pipfile = "*"
+Pipfile = "*"
 
 [requires]
-#python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true
