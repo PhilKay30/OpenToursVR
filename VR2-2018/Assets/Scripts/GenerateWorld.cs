@@ -23,11 +23,12 @@ public class GenerateWorld : MonoBehaviour
     public GameObject mapPlane; // The plane that will hold the map
     public GameObject teleportPlane; // The plane that will hold the teleport area
     public GameObject historyPlane;
+    public GameObject bottomLayerPlane;
 
     // Eventually get these from Db
     //private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\1ksq_v2.png";
-    private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked.png";
-    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap2.png";
+    private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked2.png";
+    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
     
     
     private float scaler = 350.0f; // To translate pixel to scale in unity
@@ -35,13 +36,14 @@ public class GenerateWorld : MonoBehaviour
                                  // For example a 32 pixel will need a scale of 3.2
 
     private API_Handler api = new API_Handler();
-    byte[] osmData;
+    byte[] osmMapData;
+    byte[] historyMapData; // to hold future byte array from Db
 
     // Start is called before the first frame update
     void Start()
     {
-        osmData = api.GetOsmMap();
-        osmMap = LoadData(osmData);
+       // osmData = api.GetOsmMap();
+        osmMap = LoadData(osmMapData);
 
         teleportMap = LoadMaps(teleportMapFile);
         historyMap = LoadMaps(historyMapFile);
@@ -125,6 +127,8 @@ public class GenerateWorld : MonoBehaviour
         float positionX = CalculatePosition(scaleX);
         float positionZ = CalculatePosition(scaleZ);
         mapPlane.transform.position = new Vector3(positionX, 0, positionZ);
+        bottomLayerPlane.transform.position = new Vector3(positionX, -0.1f, positionZ);
+        bottomLayerPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
 
         // Creates and holds the material to go on the plane
         Material material = new Material(Shader.Find("Transparent/Diffuse"));

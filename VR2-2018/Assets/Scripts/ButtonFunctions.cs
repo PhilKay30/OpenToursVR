@@ -16,6 +16,7 @@ public class ButtonFunctions : MonoBehaviour
         // Left Joystick Push down
         if (SteamVR_Input.GetStateDown("LeftJoystickButton", leftHand))
         {
+            Debug.Log("LeftJoystick Button pressed");
             Toggle(menuCanvas);
         }
     }

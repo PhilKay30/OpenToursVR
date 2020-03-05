@@ -45,11 +45,8 @@ public class API_Handler
                     break;
                 }
             }
-            string imgString = jobject.list[0].list[position].ToString();//.Replace("{", "");
-            imgString = StripNonHexNumber(imgString);
-            //imgString = imgString.Replace(",", "");
-            //imgString = imgString.Replace("}", "");
-            //imgString = imgString.Replace("\"", "");
+            string imgString = jobject.list[0].list[position].ToString();
+            imgString = imgString.StripToHex();
            
             List<byte> bitey = new List<byte>();
             for (int i = 0; i < imgString.Length; i++)
@@ -88,5 +85,15 @@ public class API_Handler
         }
         // https://www.dotnetperls.com/convert-list-string
         return string.Join("", hexList.ToArray());
+    }
+}
+
+
+public static class StringExtensions
+{
+    public static string StripToHex(this string inputString)
+    {
+        Regex rgx = new Regex("[^a-fA-F0-9]");
+        return rgx.Replace(inputString, "");
     }
 }
