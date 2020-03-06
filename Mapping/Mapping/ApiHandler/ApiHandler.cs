@@ -42,7 +42,8 @@ namespace Mapping.ApiHandler
 
             // create the stream to the API and make the call
             //string apiCall = @"http://192.0.203.84:5000/db_api/addimg";
-            string apiCall = @"http://10.192.216.94:5000/addimg/";
+            //string apiCall = @"http://10.192.216.94:5000/addimg/";
+            string apiCall = @"http://10.192.114.53:5000/addimg/";
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(apiCall);
             req.ContentType = "application/json; charset=utf-8";
             req.Method = "POST";
