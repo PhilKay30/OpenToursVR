@@ -241,9 +241,8 @@ namespace Mapping.SvgConverter
                 }
 
                 // Push image to API
-
                 handler.InsertPNG(0.0f, @"\output.png", "osmMap.png",
-                    new PostGisPoint() {X = topLeft.Longitude, Y = botRight.Latitude});
+                    new PostGisPoint() {X = topLeft.Longitude, Y = botRight.Latitude}, km_width, km_height);
             }
         }
     }

@@ -21,7 +21,7 @@ namespace Mapping.ApiHandler
         /// <param name="imgpath">Path of where the image is stored.</param>
         /// <param name="name">Name of the image</param>
         /// <param name="botLeftCorner">The GIS data of the bottom left corner</param>
-        public void InsertPNG(double rotation, string imgpath, string name, PostGisPoint botLeftCorner)
+        public void InsertPNG(double rotation, string imgpath, string name, PostGisPoint botLeftCorner, double kmWidth, double kmHeight)
         {
             // Get the bytes from PNG file and convert to hex string so Python doesn't shit itself
             byte[] ba = File.ReadAllBytes(FileIO.GetOutputDirectory()+imgpath);
@@ -29,18 +29,20 @@ namespace Mapping.ApiHandler
 
             // create object to serialize into JSON and then serialize it
             MyObj obj = new MyObj();
-            obj.img_name = name;
-            obj.img = myString;
-            obj.img_size = myString.Length;
-            obj.corner = String.Format("POINT({0} {1})", botLeftCorner.Longitude, botLeftCorner.Latitude);
-            obj.img_rotation = rotation;
+            obj.image_name = name;
+            obj.image_data = myString;
+            obj.image_size = myString.Length;
+            obj.bottom_left_corner = String.Format("POINT({0} {1})", botLeftCorner.Longitude, botLeftCorner.Latitude);
+            obj.km_height = kmHeight;
+            obj.km_width = kmWidth;
+            obj.image_rotation = rotation;
 
             // Serialize for the message, duh
             string jsonString = JsonSerializer.Serialize(obj);
 
             // create the stream to the API and make the call
-            string apiCall = @"http://192.0.203.84:5000/db_api/addimg";
-            //string apiCall = @"http://10.192.216.94:5000/db_api/addimg";
+            //string apiCall = @"http://192.0.203.84:5000/db_api/addimg";
+            string apiCall = @"http://10.192.216.94:5000/addimg/";
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(apiCall);
             req.ContentType = "application/json; charset=utf-8";
             req.Method = "POST";
@@ -128,11 +130,13 @@ namespace Mapping.ApiHandler
         /// </summary>
         private class MyObj
         {
-            public string img_name { get; set; }
-            public string img { get; set; }
-            public int img_size { get; set; }
-            public string corner { get; set; }
-            public double img_rotation { get; set; }
+            public string image_name { get; set; }
+            public string image_data { get; set; }
+            public int image_size { get; set; }
+            public string bottom_left_corner { get; set; }
+            public double km_height { get; set; }
+            public double km_width { get; set; }
+            public double image_rotation { get; set; }
         }
     }
 }
