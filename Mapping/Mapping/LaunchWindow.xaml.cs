@@ -13,7 +13,7 @@ namespace Mapping
         {
             InitializeComponent();
             mNavigationService = ContentFrame.NavigationService;
-            UpdateButtons();
+            UpdateNavigation();
         }
 
         private void OnClick_Back(object sender, RoutedEventArgs e)
@@ -23,7 +23,7 @@ namespace Mapping
                 mNavigationService.GoBack();
             }
 
-            UpdateButtons();
+            UpdateNavigation();
         }
 
         private void OnClick_Forward(object sender, RoutedEventArgs e)
@@ -33,10 +33,10 @@ namespace Mapping
                 mNavigationService.GoForward();
             }
 
-            UpdateButtons();
+            UpdateNavigation();
         }
 
-        private void UpdateButtons()
+        public void UpdateNavigation()
         {
             BackButton.IsEnabled = mNavigationService.CanGoBack;
             ForwardButton.IsEnabled = mNavigationService.CanGoForward;
