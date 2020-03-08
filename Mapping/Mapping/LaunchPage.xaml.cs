@@ -1,14 +1,25 @@
-﻿using System;
+﻿using Mapping.Common;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace Mapping
 {
+    // ReSharper disable once UnusedMember.Global
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class LaunchPage : Page
     {
         public LaunchPage()
         {
             InitializeComponent();
+
+            if (!ConfigInterface.LoadConfig())
+            {
+                return;
+            }
+
+            ButtonSelectLocation.IsEnabled = true;
+            ButtonGenerateImage.IsEnabled = true;
         }
 
         private void OnClick_SelectLocation(object sender, RoutedEventArgs e)

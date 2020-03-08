@@ -10,23 +10,28 @@ namespace Mapping.Common
     {
         internal string Host { get; set; }
         internal string Port { get; set; }
+        internal string DatabaseName { get; set; }
         internal string Username { get; set; }
         internal string Password { get; set; }
-        internal string DatabaseName { get; set; }
-        internal string Timeout { get; set; }
+        internal string ConnectionTimeout { get; set; }
+        internal string CommandTimeout { get; set; }
 
-        /// <summary>
-        /// Debug initializer to load testing values.
-        /// TODO : Read these in from a config file.
-        /// </summary>
-        public void DebugInit()
+        public ConnectionData(
+            string host,
+            string port,
+            string databaseName,
+            string username,
+            string password,
+            string connectionTimeout,
+            string commandTimeout)
         {
-            Host = "192.0.203.84";
-            Port = "5432";
-            Username = "doctor";
-            Password = "wh0";
-            DatabaseName = "capstone";
-            Timeout = "8";
+            Host = host;
+            Port = port;
+            Username = username;
+            Password = password;
+            DatabaseName = databaseName;
+            ConnectionTimeout = connectionTimeout;
+            CommandTimeout = commandTimeout;
         }
 
         /// <summary>
@@ -35,7 +40,8 @@ namespace Mapping.Common
         /// <returns>The connection string</returns>
         public override string ToString()
         {
-            return new StringBuilder().Append("Host=")
+            return new StringBuilder()
+                .Append("Host=")
                 .Append(Host)
                 .Append(";Port=")
                 .Append(Port)
@@ -46,9 +52,9 @@ namespace Mapping.Common
                 .Append(";Password=")
                 .Append(Password)
                 .Append(";Timeout=")
-                .Append(Timeout)
+                .Append(ConnectionTimeout)
                 .Append(";Command Timeout=")
-                .Append(Timeout)
+                .Append(CommandTimeout)
                 .ToString();
         }
     }
