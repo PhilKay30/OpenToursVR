@@ -1,7 +1,6 @@
 from flask import Blueprint
 from flask import Flask, abort, request, jsonify
 import json
-from flask import jsonify
 from DbUtils import DbUtils
 
 db_api = Blueprint("db_api", __name__)
@@ -56,6 +55,7 @@ def addhistorical():
 # Return: a json object containing the img_name, img, img_size, bot_left_corner and its rotation
 @db_api.route("/getimg/<string:img_name>", methods=["GET"])
 def getimg(img_name):
+    from DbUtils import DbUtils
 
     img = []
     dbUtils = DbUtils()
