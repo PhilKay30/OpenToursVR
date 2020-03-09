@@ -1,7 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<database>capstone</database>
-	<username>doctor</username>
-	<host>192.0.203.84</host>
-	<style>C:\default.style</style>
-	<password>wh0</password>
+	<database>
+		<!-- Host to connect to -->
+		<host>192.0.203.84</host>
+
+		<!-- Port to connect to -->
+		<port>5432</port>
+
+		<!-- Name of database to connect to -->
+		<name>capstone</name>
+
+		<!-- Username of account to connect with -->
+		<user>doctor</user>
+
+		<!-- Password of account to connect with -->
+		<pass>wh0</pass>
+
+		<!-- Number of seconds to wait for a connection -->
+		<connectionTimeout>10</connectionTimeout>
+
+		<!-- Number of seconds to wait for a command to complete -->
+		<commandTimeout>10</commandTimeout>
+	</database>
 </config>

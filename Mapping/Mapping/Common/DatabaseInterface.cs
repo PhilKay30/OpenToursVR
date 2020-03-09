@@ -7,7 +7,6 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows;
-using Windows.Devices.Bluetooth.Background;
 
 // ReSharper disable StringIndexOfIsCultureSpecific.1
 namespace Mapping.Common
@@ -25,15 +24,8 @@ namespace Mapping.Common
         /// </summary>
         public DatabaseInterface()
         {
-            // Get connection data
-            ConnectionData connectionData = new ConnectionData();
-
-            // Initialize connection data with default values
-            // TODO : Read these from a config file!
-            connectionData.DebugInit();
-
             // Initialize the database connection
-            mConnection = new NpgsqlConnection(connectionData.ToString());
+            mConnection = new NpgsqlConnection(ConfigInterface.Connection.ToString());
         }
 
         /// <summary>

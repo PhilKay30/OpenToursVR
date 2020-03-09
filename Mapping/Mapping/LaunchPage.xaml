@@ -26,21 +26,25 @@
                 Text="Choose an Option:"
             />
             <Button
+                Name="ButtonSelectLocation"
                 Grid.Row="1"
                 Margin="10"
                 Padding="5"
                 Content="Select Location Boundaries"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
+                IsEnabled="False"
                 Click="OnClick_SelectLocation"
             />
             <Button
+                Name="ButtonGenerateImage"
                 Grid.Row="2"
                 Margin="10"
                 Padding="5"
                 Content="Generate Image"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
+                IsEnabled="False"
                 Click="OnClick_GenerateImage"
             />
         </Grid>
