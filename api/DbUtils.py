@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from psycopg2 import IntegrityError
 
+
 class DbUtils:
     db_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/capstone"
 
@@ -40,6 +41,7 @@ class DbUtils:
         )
         conn.close()
         db = None
+        
         return img
 
     @staticmethod
