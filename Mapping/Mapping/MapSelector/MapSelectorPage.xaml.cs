@@ -30,7 +30,19 @@ namespace Mapping.MapSelector
         public MapSelectorPage()
         {
             InitializeComponent();
+            this.Loaded += OnPageLoad;
+
             ResetSelection();
+        }
+
+        /// <summary>
+        /// Handles updating the forward/back navigation buttons
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void OnPageLoad(object sender, RoutedEventArgs e)
+        {
+            (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
         }
 
         /// <summary>

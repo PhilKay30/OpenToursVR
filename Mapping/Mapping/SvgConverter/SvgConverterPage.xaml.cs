@@ -1,13 +1,12 @@
 ﻿using Mapping.Common;
+using Svg;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Svg;
 
 namespace Mapping.SvgConverter
 {
@@ -32,6 +31,7 @@ namespace Mapping.SvgConverter
         {
             // Initialize page
             InitializeComponent();
+            this.Loaded += OnPageLoad;
 
             // Initialize data members
             mContext = SynchronizationContext.Current;
@@ -43,6 +43,16 @@ namespace Mapping.SvgConverter
                 // Load data from database
                 Load();
             }
+        }
+
+        /// <summary>
+        /// Handles updating the forward/back navigation buttons
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void OnPageLoad(object sender, RoutedEventArgs e)
+        {
+            (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
         }
 
         /// <summary>
@@ -129,11 +139,11 @@ namespace Mapping.SvgConverter
             foreach (TabItem tabItem in TabRoads.Items)
             {
                 // Iterate through the checkboxes in the tab
-                ListView listView = (ListView) tabItem.Content;
+                ListView listView = (ListView)tabItem.Content;
                 foreach (ListViewItem listViewItem in listView.Items)
                 {
                     // Deselect the checkbox
-                    CheckBox checkBox = (CheckBox) listViewItem.Content;
+                    CheckBox checkBox = (CheckBox)listViewItem.Content;
                     checkBox.IsChecked = true;
                 }
             }
@@ -150,11 +160,11 @@ namespace Mapping.SvgConverter
             foreach (TabItem tabItem in TabRoads.Items)
             {
                 // Iterate through the checkboxes in the tab
-                ListView listView = (ListView) tabItem.Content;
+                ListView listView = (ListView)tabItem.Content;
                 foreach (ListViewItem listViewItem in listView.Items)
                 {
                     // Deselect the checkbox
-                    CheckBox checkBox = (CheckBox) listViewItem.Content;
+                    CheckBox checkBox = (CheckBox)listViewItem.Content;
                     checkBox.IsChecked = false;
                 }
             }
@@ -193,57 +203,57 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_SaveImage(object sender, RoutedEventArgs e)
         {
-            
-            ApiHandler.ApiHandler handler = new ApiHandler.ApiHandler();
-                // call DB to get the points. 
-                List<KeyValuePair<string, PostGisPoint>> points = handler.GetBounds();
-                PostGisPoint topLeft = new PostGisPoint();
-                PostGisPoint botRight = new PostGisPoint();
 
-                foreach (KeyValuePair<string, PostGisPoint> pair in points)
+            ApiHandler.ApiHandler handler = new ApiHandler.ApiHandler();
+            // call DB to get the points. 
+            List<KeyValuePair<string, PostGisPoint>> points = handler.GetBounds();
+            PostGisPoint topLeft = new PostGisPoint();
+            PostGisPoint botRight = new PostGisPoint();
+
+            foreach (KeyValuePair<string, PostGisPoint> pair in points)
+            {
+
+                if (pair.Key == "top_left")
                 {
-                     
-                    if (pair.Key == "top_left")
-                    {
-                        topLeft = pair.Value;
-                    }
-                    else if (pair.Key == "bottom_right")
-                    {
-                        botRight = pair.Value;
-                    }
-                    else
-                    {
-                        throw new Exception("Too Many Bounds");
-                    }
+                    topLeft = pair.Value;
                 }
+                else if (pair.Key == "bottom_right")
+                {
+                    botRight = pair.Value;
+                }
+                else
+                {
+                    throw new Exception("Too Many Bounds");
+                }
+            }
 
             // Get the width and height of the map in kilometers using the haversine conversion
-                double km_height = HaversineConversion.HaversineDistance(topLeft,
-                    new PostGisPoint() {X = topLeft.Longitude, Y = botRight.Latitude},
-                    HaversineConversion.DistanceUnit.Kilometers);
-                double km_width = HaversineConversion.HaversineDistance(topLeft,
-                    new PostGisPoint() {X = botRight.Longitude, Y = topLeft.Latitude},
-                    HaversineConversion.DistanceUnit.Kilometers);
-                int px_width = (int) Math.Ceiling(5000 * km_width);
-                int px_height = (int) Math.Ceiling(5000 * km_height);
+            double km_height = HaversineConversion.HaversineDistance(topLeft,
+                new PostGisPoint() { X = topLeft.Longitude, Y = botRight.Latitude },
+                HaversineConversion.DistanceUnit.Kilometers);
+            double km_width = HaversineConversion.HaversineDistance(topLeft,
+                new PostGisPoint() { X = botRight.Longitude, Y = topLeft.Latitude },
+                HaversineConversion.DistanceUnit.Kilometers);
+            int px_width = (int)Math.Ceiling(5000 * km_width);
+            int px_height = (int)Math.Ceiling(5000 * km_height);
 
-                // Generate the SVG into a PNG 
-                var svgDocument = SvgDocument.Open(FileIO.GetOutputDirectory() + @"\output.svg");
-                using (var smallBitmap = svgDocument.Draw())
+            // Generate the SVG into a PNG 
+            var svgDocument = SvgDocument.Open(FileIO.GetOutputDirectory() + @"\output.svg");
+            using (var smallBitmap = svgDocument.Draw())
+            {
+                var width = px_width;
+                var height = px_height;
+
+                using (var bitmap = svgDocument.Draw(width, height)) //I render again
                 {
-                    var width = px_width;
-                    var height = px_height;
-
-                    using (var bitmap = svgDocument.Draw(width, height)) //I render again
-                    {
-                        bitmap.Save(FileIO.GetOutputDirectory() + @"\output.png", ImageFormat.Png);
-                    }
+                    bitmap.Save(FileIO.GetOutputDirectory() + @"\output.png", ImageFormat.Png);
                 }
-
-                // Push image to API
-                handler.InsertPNG(0.0f, @"\output.png", "osmMap.png",
-                    new PostGisPoint() {X = topLeft.Longitude, Y = botRight.Latitude}, km_width, km_height);
             }
+
+            // Push image to API
+            handler.InsertPNG(0.0f, @"\output.png", "osmMap.png",
+                new PostGisPoint() { X = topLeft.Longitude, Y = botRight.Latitude }, km_width, km_height);
         }
     }
+}
 

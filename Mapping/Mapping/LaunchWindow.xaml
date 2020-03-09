@@ -22,7 +22,9 @@
             Name="BackButton"
             Grid.Row="0"
             Grid.Column="0"
-            Margin="2"
+            MinWidth="60"
+            Margin="5"
+            Padding="5"
             Content="Back"
             Click="OnClick_Back"
             />
@@ -30,7 +32,9 @@
             Name="ForwardButton"
             Grid.Row="0"
             Grid.Column="1"
-            Margin="2"
+            MinWidth="60"
+            Margin="5"
+            Padding="5"
             Content="Forward"
             Click="OnClick_Forward"
             />
