@@ -147,7 +147,7 @@ dmypy.json
 *.webp
 
 # Portable Network Graphics
-#*.png
+/Mapping/Mapping/Output/*
 
 # Animated Portable Network Graphics
 *.apng
