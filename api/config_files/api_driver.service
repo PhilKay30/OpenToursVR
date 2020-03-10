@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve OpenToursVR API
+After=network.target
+
+[Service]
+User=doctor
+Group=doctor
+WorkingDirectory=/home/doctor/OpenToursVR/api
+Environment="PATH=/home/doctor/.local/share/virtualenvs/api-PYcWVwdg
+ExecStart=/home/doctor/.local/share/virtualenvs/api-PYcWVwdg/bin/uwsgi --ini api_driver.ini
+
+[Install]
+WantedBy=multi-user.target

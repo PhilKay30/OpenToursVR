@@ -8,7 +8,7 @@ db_api = Blueprint("db_api", __name__)
 # Function: addimg
 # Description: API routed with a POST method.
 #              This route inserts the image into the database.
-# Parameters: JSON POST: The information required to insert the object. 
+# Parameters: JSON POST: The information required to insert the object.
 # Return: A generic result message if it does not have a 500 series error.
 @db_api.route("/addimg", methods=["POST"])
 def addimg():
@@ -29,6 +29,7 @@ def addimg():
 
     return jsonify({"Result": "Inserted"}), 201
 
+
 # Function: getimg
 # Description: API routed with a GET method.
 #              This route gets the image the user requested
@@ -43,10 +44,8 @@ def addhistorical():
     distanceObject = json.loads(distanceData, object_hook=JSONObject)
     dbUtils = DbUtils()
 
-    dbUtils.addDistance(
-        distanceObject.length,
-        distanceObject.width
-    )
+    dbUtils.addDistance(distanceObject.length, distanceObject.width)
+
 
 # Function: getimg
 # Description: API routed with a GET method.
@@ -125,6 +124,7 @@ def getbounds():
 
     # return the json to the user
     return jsonify(bounds)
+
 
 # Name: JSONObject
 # Description: This object is a hook into a json object to make a dynamic class size object with fields that are the JSON key's
