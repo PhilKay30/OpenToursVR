@@ -1,6 +1,7 @@
 from flask import Flask
 from DbService import db_api
 from flask_sqlalchemy import SQLAlchemy
+
 # from flask_migrate import Migrate
 
 
@@ -8,11 +9,12 @@ app = Flask(__name__)
 
 
 # remove api url prefix, not needed
-app.register_blueprint(db_api) #url_prefix="/db_api"
+app.register_blueprint(db_api)  # url_prefix="/db_api"
 
 
 # db = SQLAlchemy(app)
 # migrate = Migrate(app, db)
+
 
 @app.route("/")
 def service():

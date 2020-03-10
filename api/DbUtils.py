@@ -20,13 +20,13 @@ class DbUtils:
             try:
                 conn.execute(
                     """UPDATE images SET img = %s, img_size = %s, bot_left_corner = %s, rotation = %s WHERE img_name = %s;""",
-                    (str(img), size, corner, rotation ,img_name),
+                    (str(img), size, corner, rotation, img_name),
                 )
             except Exception as ee:
                 print(ee)
         finally:
             conn.close()
-            db.dispose()             
+            db.dispose()
 
         return
 
@@ -41,7 +41,7 @@ class DbUtils:
         )
         conn.close()
         db = None
-        
+
         return img
 
     @staticmethod
