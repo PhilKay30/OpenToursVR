@@ -1,20 +1,21 @@
 [[source]]
-url = "https://pypi.python.org/simple"
+name = "pypi"
+url = "https://pypi.org/simple"
 verify_ssl = true
 
-[requires]
-python_version = "3.7"
+[dev-packages]
+black = "*"
 
 [packages]
 flask = "*"
-pipfile = "*"
+Flask-SQLAlchemy = "*"
+Flask-Migrate = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
-black = "*"
-Pipfile = "*"
+uwsgi = "*"
 
-[dev-packages]
-Pipfile = "*"
+[requires]
+python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true
