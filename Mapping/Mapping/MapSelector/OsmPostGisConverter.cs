@@ -28,9 +28,9 @@ namespace Mapping.MapSelector
                     FileName = FileIO.GetOsm2PgsqlDirectory() + "\\osm2pgsql.exe",
                     Arguments = new StringBuilder()
                         .Append("--create --password")
-                        .Append(" --database ").Append(ConfigInterface.Connection.DatabaseName)
-                        .Append(" --username ").Append(ConfigInterface.Connection.Username)
-                        .Append(" --host ").Append(ConfigInterface.Connection.Host)
+                        .Append(" --database ").Append(ConfigInterface.ConnectionDb.DatabaseName)
+                        .Append(" --username ").Append(ConfigInterface.ConnectionDb.Username)
+                        .Append(" --host ").Append(ConfigInterface.ConnectionDb.Host)
                         .Append(" --style ").Append(FileIO.GetOsm2PgsqlDirectory() + "\\default.style")
                         .Append(" ").Append(FileIO.GetOutputDirectory() + "\\" + OpenStreetMapInterface.FILE_NAME)
                         .ToString()
