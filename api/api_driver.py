@@ -1,5 +1,5 @@
 # Import Flask, jsonify, request from flask
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 # import sqlalchemy from flask_sqlalchemy 
 from flask_sqlalchemy import SQLAlchemy
 # Import migrate from flask_migrate
@@ -205,7 +205,7 @@ def add_img():
 def add_bounds():
     # Sanity check
     if not request.json:
-        about(400)
+        abort(400)
     
     boundData = json.dumps(request.json)
     boundObject = json.loads(boundData, object_hook=JSONObject)
