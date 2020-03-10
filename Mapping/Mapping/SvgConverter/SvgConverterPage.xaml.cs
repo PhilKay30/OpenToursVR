@@ -2,6 +2,7 @@
 using Svg;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.Threading.Tasks;
@@ -203,56 +204,72 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_SaveImage(object sender, RoutedEventArgs e)
         {
-
             ApiHandler.ApiHandler handler = new ApiHandler.ApiHandler();
-            // call DB to get the points. 
+
+            // Call DB to get the points. 
             List<KeyValuePair<string, PostGisPoint>> points = handler.GetBounds();
             PostGisPoint topLeft = new PostGisPoint();
             PostGisPoint botRight = new PostGisPoint();
 
-            foreach (KeyValuePair<string, PostGisPoint> pair in points)
+            foreach ((string key, PostGisPoint value) in points)
             {
-
-                if (pair.Key == "top_left")
+                switch (key)
                 {
-                    topLeft = pair.Value;
-                }
-                else if (pair.Key == "bottom_right")
-                {
-                    botRight = pair.Value;
-                }
-                else
-                {
-                    throw new Exception("Too Many Bounds");
+                    case "top_left":
+                        topLeft = value;
+                        break;
+                    case "bottom_right":
+                        botRight = value;
+                        break;
+                    default:
+                        throw new Exception("Too Many Bounds");
                 }
             }
 
             // Get the width and height of the map in kilometers using the haversine conversion
-            double km_height = HaversineConversion.HaversineDistance(topLeft,
-                new PostGisPoint() { X = topLeft.Longitude, Y = botRight.Latitude },
+            double widthInKm = HaversineConversion.HaversineDistance(
+                topLeft,
+                new PostGisPoint { X = botRight.Longitude, Y = topLeft.Latitude },
                 HaversineConversion.DistanceUnit.Kilometers);
-            double km_width = HaversineConversion.HaversineDistance(topLeft,
-                new PostGisPoint() { X = botRight.Longitude, Y = topLeft.Latitude },
+            double heightInKm = HaversineConversion.HaversineDistance(
+                topLeft,
+                new PostGisPoint { X = topLeft.Longitude, Y = botRight.Latitude },
                 HaversineConversion.DistanceUnit.Kilometers);
-            int px_width = (int)Math.Ceiling(5000 * km_width);
-            int px_height = (int)Math.Ceiling(5000 * km_height);
 
-            // Generate the SVG into a PNG 
-            var svgDocument = SvgDocument.Open(FileIO.GetOutputDirectory() + @"\output.svg");
-            using (var smallBitmap = svgDocument.Draw())
+            int width = (int)Math.Ceiling(5000 * widthInKm);
+            int height = (int)Math.Ceiling(5000 * heightInKm);
+
+            // Create a new bitmap with the required size
+            Bitmap bitmap = new Bitmap(
+                width,
+                height,
+                PixelFormat.Format32bppArgb);
+
+            // Fill the bitmap background with the specified colour
+            using (Graphics bitmapGraphics = Graphics.FromImage(bitmap))
             {
-                var width = px_width;
-                var height = px_height;
-
-                using (var bitmap = svgDocument.Draw(width, height)) //I render again
-                {
-                    bitmap.Save(FileIO.GetOutputDirectory() + @"\output.png", ImageFormat.Png);
-                }
+                bitmapGraphics.FillRegion(
+                    Brushes.White,
+                    new Region(new Rectangle(0, 0, bitmap.Width, bitmap.Height)));
             }
 
+            // Load the generated SVG
+            SvgDocument svgDocument = SvgDocument.Open(FileIO.GetOutputDirectory() + @"\output.svg");
+
+            // Draw the contents of the SVG onto the bitmap
+            svgDocument.Draw(bitmap);
+
+            // Save the bitmap as a PNG
+            bitmap.Save(FileIO.GetOutputDirectory() + @"\output.png", ImageFormat.Png);
+
             // Push image to API
-            handler.InsertPNG(0.0f, @"\output.png", "osmMap.png",
-                new PostGisPoint() { X = topLeft.Longitude, Y = botRight.Latitude }, km_width, km_height);
+            handler.InsertPNG(
+                0.0f,
+                @"\output.png",
+                "osmMap.png",
+                new PostGisPoint { X = topLeft.Longitude, Y = botRight.Latitude },
+                widthInKm,
+                heightInKm);
         }
     }
 }
