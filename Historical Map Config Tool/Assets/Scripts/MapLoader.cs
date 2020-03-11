@@ -126,7 +126,7 @@ public class MapLoader : MonoBehaviour
         Texture2D tex = new Texture2D(2, 2);
         tex.LoadImage(imgData);
         BaseMapRatio = (float) tex.height / (float) tex.width;
-        Material mat = new Material(Shader.Find("Transparent/Diffuse"));
+        Material mat = new Material(Shader.Find("Diffuse"));
         mat.mainTexture = tex;
         BaseMap.GetComponent<Renderer>().material = mat;
 

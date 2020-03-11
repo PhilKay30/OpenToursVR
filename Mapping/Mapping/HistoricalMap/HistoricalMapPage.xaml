@@ -9,6 +9,10 @@
       Title="HistoricalMapPage">
 
     <Grid>
-        
+        <TabControl>
+            <TabItem Header="Notepad">
+                <WindowsFormsHost x:Name="host" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Page>

@@ -44,27 +44,27 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 9670}
+      Script: {instanceID: 9674}
     - Class: 114
-      Script: {instanceID: 9818}
+      Script: {instanceID: 9822}
     - Class: 114
-      Script: {instanceID: 9858}
+      Script: {instanceID: 9862}
     - Class: 114
-      Script: {instanceID: 10226}
+      Script: {instanceID: 10232}
     - Class: 114
-      Script: {instanceID: 10562}
+      Script: {instanceID: 10572}
     - Class: 114
-      Script: {instanceID: 10676}
+      Script: {instanceID: 10686}
     - Class: 114
-      Script: {instanceID: 11002}
+      Script: {instanceID: 11014}
     - Class: 114
-      Script: {instanceID: 11004}
+      Script: {instanceID: 11016}
     - Class: 114
-      Script: {instanceID: 11346}
+      Script: {instanceID: 11358}
     - Class: 114
-      Script: {instanceID: 11378}
+      Script: {instanceID: 11390}
     - Class: 114
-      Script: {instanceID: 11396}
+      Script: {instanceID: 11408}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -515,4 +515,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainScene.unity
-  playerPath: C:/Users/p_kem/Desktop/UnityBuild/New Unity Project.exe
+  playerPath: C:/Users/Matrix/Desktop/H_build/Historical Map Config Tool.exe
