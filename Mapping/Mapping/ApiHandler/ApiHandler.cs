@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Mapping.Common;
+using Mapping.SvgConverter;
+using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,121 +9,131 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
-using Mapping.Common;
-using Mapping.SvgConverter;
-using Npgsql;
 
 namespace Mapping.ApiHandler
 {
-    class ApiHandler
+    // ReSharper disable StringIndexOfIsCultureSpecific.1
+    internal class ApiHandler
     {
         /// <summary>
-        /// Inserts the PNG into the Database
+        /// Inserts the PNG into the Database.
         /// </summary>
         /// <param name="rotation">The rotation of the image</param>
-        /// <param name="imgpath">Path of where the image is stored.</param>
+        /// <param name="imagePath">Path of where the image is stored.</param>
         /// <param name="name">Name of the image</param>
         /// <param name="botLeftCorner">The GIS data of the bottom left corner</param>
-        public void InsertPNG(double rotation, string imgpath, string name, PostGisPoint botLeftCorner, double kmWidth, double kmHeight)
+        /// <param name="widthInKm">The width of the image in kilometers</param>
+        /// <param name="heightInKm">The height of the image in kilometers</param>
+        public void InsertPng(
+            double rotation,
+            string imagePath,
+            string name,
+            PostGisPoint botLeftCorner,
+            double widthInKm,
+            double heightInKm)
         {
-            // Get the bytes from PNG file and convert to hex string so Python doesn't shit itself
-            byte[] ba = File.ReadAllBytes(FileIO.GetOutputDirectory()+imgpath);
-            string myString = String.Concat(ba.Select(b => b.ToString("X2")).ToArray());
+            // Get the bytes from the PNG file and convert to hex string
+            byte[] imageBytes = File.ReadAllBytes(FileIO.GetOutputDirectory() + imagePath);
+            string imageHex = string.Concat(imageBytes.Select(b => b.ToString("X2")).ToArray());
 
-            // create object to serialize into JSON and then serialize it
-            MyObj obj = new MyObj();
-            obj.image_name = name;
-            obj.image_data = myString;
-            obj.image_size = myString.Length;
-            obj.bottom_left_corner = String.Format("POINT({0} {1})", botLeftCorner.Longitude, botLeftCorner.Latitude);
-            obj.km_height = kmHeight;
-            obj.km_width = kmWidth;
-            obj.image_rotation = rotation;
+            // Create the JSON object
+            JsonObject obj = new JsonObject
+            {
+                image_name = name,
+                image_data = imageHex,
+                image_size = imageHex.Length,
+                bottom_left_corner = $"POINT({botLeftCorner.Longitude} {botLeftCorner.Latitude})",
+                km_height = heightInKm,
+                km_width = widthInKm,
+                image_rotation = rotation
+            };
 
-            // Serialize for the message, duh
+            // Serialize for the message
             string jsonString = JsonSerializer.Serialize(obj);
 
-            // create the stream to the API and make the call
-            string apiCall = @"http://192.0.203.84:5000/addimg";
-            //string apiCall = @"http://10.192.216.94:5000/addimg/";
-            // string apiCall = @"http://10.192.114.53:5000/addimg/";
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(apiCall);
-            req.ContentType = "application/json; charset=utf-8";
-            req.Method = "POST";
-            byte[] msg = new ASCIIEncoding().GetBytes(jsonString);
-            req.ContentLength = msg.Length;
-            Stream newStream = req.GetRequestStream();
-            newStream.Write(msg, 0, msg.Length); // Send the data.
+            // Create the API request
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddImageUrl);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
 
-            string text;
-            var response = (HttpWebResponse)req.GetResponse();
-            MessageBox.Show("inserted png in database.");
+            // Prepare the message
+            byte[] message = new ASCIIEncoding().GetBytes(jsonString);
+            request.ContentLength = message.Length;
+            Stream stream = request.GetRequestStream();
 
-            using (var sr = new StreamReader(response.GetResponseStream()))
+            // Send the message
+            stream.Write(message, 0, message.Length);
+
+            try
             {
-                text = sr.ReadToEnd();
+                // Retrieve the API response
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
+                }
             }
+            catch (WebException e)
+            {
+                MessageBox.Show("Something went wrong.\n" + e.Message);
+            }
+
+            MessageBox.Show("Image was successfully inserted into the database.");
         }
 
         /// <summary>
-        /// TODO: Set this to an API call
+        /// TODO: Set this to an API call.
         /// </summary>
         /// <returns>List of KvP of the pairs</returns>
         public List<KeyValuePair<string, PostGisPoint>> GetBounds()
         {
-            string qry = "SELECT name, ST_AsText(geom) AS point FROM bounds;";
+            const string query = "SELECT name, ST_AsText(geom) AS point FROM bounds;";
             List<KeyValuePair<string, PostGisPoint>> points = new List<KeyValuePair<string, PostGisPoint>>();
 
-            using (NpgsqlConnection conn = new NpgsqlConnection("Host=192.0.203.84;" +
-                                                                "Port=5432;" +
-                                                                "Database=capstone;" +
-                                                                "Username=doctor;" +
-                                                                "Password=wh0;" +
-                                                                "Timeout=8;" +
-                                                                "Command Timeout=8"))
+            using (NpgsqlConnection conn = new NpgsqlConnection(ConfigInterface.ConnectionDb.ToString()))
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand(qry, conn))
+                using NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+                conn.Open();
+                try
                 {
-                    conn.Open();
-                    try
+                    NpgsqlDataReader rsp = cmd.ExecuteReader();
+                    while (rsp.Read())
                     {
-                        NpgsqlDataReader rsp = cmd.ExecuteReader();
-                        while (rsp.Read())
-                        {
-                            string name = rsp.GetString(rsp.GetOrdinal("name"));
-                            string point = rsp.GetString(rsp.GetOrdinal("point"));
+                        string name = rsp.GetString(rsp.GetOrdinal("name"));
+                        string point = rsp.GetString(rsp.GetOrdinal("point"));
 
-                            // Check which point was read
-                            if (name.Equals("top_left"))
+                        // Check which point was read
+                        if (name.Equals("top_left"))
+                        {
+                            // Parse top left point
+                            PostGisPoint topLeftPoint = new PostGisPoint
                             {
-                                PostGisPoint topLeftPoint = new PostGisPoint();
-                                // Parse top left point
-                                topLeftPoint.X = double.Parse(point[(point.IndexOf("(") + 1)..point.IndexOf(" ")]);
-                                topLeftPoint.Y = double.Parse(point[(point.IndexOf(" ") + 1)..point.IndexOf(")")]);
-                                points.Add(new KeyValuePair<string, PostGisPoint>("top_left", topLeftPoint));
-                            }
-                            // bottom_right corner
-                            else if (name.Equals("bottom_right"))
+                                X = double.Parse(point[(point.IndexOf("(") + 1)..point.IndexOf(" ")]),
+                                Y = double.Parse(point[(point.IndexOf(" ") + 1)..point.IndexOf(")")])
+                            };
+                            points.Add(new KeyValuePair<string, PostGisPoint>("top_left", topLeftPoint));
+                        }
+                        // bottom_right corner
+                        else if (name.Equals("bottom_right"))
+                        {
+                            // Parse bottom right point
+                            PostGisPoint bottomRightPoint = new PostGisPoint
                             {
-                                PostGisPoint bottomRightPoint = new PostGisPoint(); 
-                                // Parse bottom right point
-                                bottomRightPoint.X = double.Parse(point[(point.IndexOf("(") + 1)..point.IndexOf(" ")]);
-                                bottomRightPoint.Y = double.Parse(point[(point.IndexOf(" ") + 1)..point.IndexOf(")")]);
-                                points.Add(new KeyValuePair<string, PostGisPoint>("bottom_right", bottomRightPoint));
-                            }
-                            else
-                            {
-                                // YEP
-                                throw new Exception("Database is fucked");
-                            }
+                                X = double.Parse(point[(point.IndexOf("(") + 1)..point.IndexOf(" ")]),
+                                Y = double.Parse(point[(point.IndexOf(" ") + 1)..point.IndexOf(")")])
+                            };
+                            points.Add(new KeyValuePair<string, PostGisPoint>("bottom_right", bottomRightPoint));
+                        }
+                        else
+                        {
+                            throw new Exception("Database is broken.");
                         }
                     }
-                    // Shit went drastically wrong
-                    catch (Exception)
-                    {
-                        MessageBox.Show("There are more than 4 sides to the map.\n" +
-                                        "Clearing Data, please start over.");
-                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("There are more than 4 sides to the map.\n" +
+                                    "Clearing Data, please start over.");
                 }
             }
             return points;
@@ -128,8 +141,11 @@ namespace Mapping.ApiHandler
 
         /// <summary>
         /// Generic class for the JSON object.
+        /// These must remain named as they are for consistency with the API.
         /// </summary>
-        private class MyObj
+        // ReSharper disable InconsistentNaming
+        // ReSharper disable UnusedAutoPropertyAccessor.Local
+        private class JsonObject
         {
             public string image_name { get; set; }
             public string image_data { get; set; }

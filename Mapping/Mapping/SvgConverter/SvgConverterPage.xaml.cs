@@ -263,7 +263,7 @@ namespace Mapping.SvgConverter
             bitmap.Save(FileIO.GetOutputDirectory() + @"\output.png", ImageFormat.Png);
 
             // Push image to API
-            handler.InsertPNG(
+            handler.InsertPng(
                 0.0f,
                 @"\output.png",
                 "osmMap.png",

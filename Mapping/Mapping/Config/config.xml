@@ -22,4 +22,8 @@
 		<!-- Number of seconds to wait for a command to complete -->
 		<commandTimeout>10</commandTimeout>
 	</database>
+	<api>
+		<!-- API request connection URL -->
+		<url>http://192.0.203.84:5000</url>
+	</api>
 </config>

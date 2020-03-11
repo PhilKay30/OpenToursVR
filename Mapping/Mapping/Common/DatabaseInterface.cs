@@ -25,7 +25,7 @@ namespace Mapping.Common
         public DatabaseInterface()
         {
             // Initialize the database connection
-            mConnection = new NpgsqlConnection(ConfigInterface.Connection.ToString());
+            mConnection = new NpgsqlConnection(ConfigInterface.ConnectionDb.ToString());
         }
 
         /// <summary>

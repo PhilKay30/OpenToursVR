@@ -6,7 +6,7 @@ namespace Mapping.Common
     /// Storage class for connection data to handle connections to the database.
     /// Created by Timothy J Cowen.
     /// </summary>
-    internal class ConnectionData
+    internal class DatabaseConnection
     {
         internal string Host { get; set; }
         internal string Port { get; set; }
@@ -16,7 +16,7 @@ namespace Mapping.Common
         internal string ConnectionTimeout { get; set; }
         internal string CommandTimeout { get; set; }
 
-        public ConnectionData(
+        public DatabaseConnection(
             string host,
             string port,
             string databaseName,

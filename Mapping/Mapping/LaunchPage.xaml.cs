@@ -1,5 +1,4 @@
-﻿using Mapping.Common;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,14 +11,18 @@ namespace Mapping
         public LaunchPage()
         {
             InitializeComponent();
+            this.Loaded += OnPageLoad;
+        }
 
-            if (!ConfigInterface.LoadConfig())
-            {
-                return;
-            }
-
-            ButtonSelectLocation.IsEnabled = true;
-            ButtonGenerateImage.IsEnabled = true;
+        /// <summary>
+        /// Handles updating the forward/back navigation buttons.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void OnPageLoad(object sender, RoutedEventArgs e)
+        {
+            // Update navigation buttons
+            (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
         }
 
         private void OnClick_SelectLocation(object sender, RoutedEventArgs e)
