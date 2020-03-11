@@ -16,6 +16,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock
@@ -44,6 +45,16 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Click="OnClick_GenerateImage"
+            />
+            <Button
+                Name="ButtonAddHistoricalMap"
+                Grid.Row="3"
+                Margin="5"
+                Padding="10"
+                Content="Add Historical Map"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Click="OnClick_AddHistoricalMap"
             />
         </Grid>
     </Grid>
