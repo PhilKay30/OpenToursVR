@@ -50,6 +50,11 @@ class Bounds(db.Model):
         self.top_left = top_left,
         self.bottom_right = bottom_right,
 
+    
+    # repr overload
+    def __repr__():
+        return f"Top Left : {self.top_left}  Bottom Right : {self.bottom_right}"
+
 # Name: Images
 # Description: This class represents the images table that is in the database 
 class Images(db.Model):
@@ -84,7 +89,7 @@ class Images(db.Model):
         self.km_height = km_height
         self.km_width = km_width
     
-    # Debug print
+    # overload the object representation
     def __repr__(self):
         return f"image_name :{self.image_name} {self.image_size}"
 
@@ -271,8 +276,8 @@ def get_bounds(map_name):
         .all() 
     )
 
-    # Build the results
-    results = [
+    # parse the top left and bottom right into 4 specific sides
+     results = [
         {
             "map_name": q.map_name,
             "top_left": q.top_left,
@@ -280,7 +285,7 @@ def get_bounds(map_name):
         }
         for q in query
     ]
-
+       
     #return
     return {"Result": results}
 
