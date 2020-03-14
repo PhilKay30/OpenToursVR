@@ -197,7 +197,10 @@ namespace Mapping.DataPoints
             string desc = TxtDesc.Text;
             
             ApiHandler.ApiHandler handler = new ApiHandler.ApiHandler();
-            if (!handler.AddPoint(point, name, desc, pngPath)) return;
+            if (!handler.AddPoint(point, name, desc, pngPath)) 
+                return;
+            
+            
             // If successful, clear screen
             DataSelector.MapElements.Clear();
             AddBoxToMap();
