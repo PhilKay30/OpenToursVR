@@ -9,6 +9,8 @@
         internal string BaseUrl { get; set; }
         public string AddImageUrl => BaseUrl + "addimg/";
         public string GetImageUrl => BaseUrl + "getimg/";
+        public string AddPointUrl => BaseUrl + "addpoint/";
+        public string GetPointsIDs => BaseUrl + "getpointids/";
 
         public ApiConnection(string baseUrl)
         {
