@@ -130,12 +130,11 @@ def get_image(image_name):
             Images.km_height,
             Images.km_width,
             Images.bottom_left_corner,
-        ) # Add the filter
+        ) 
         .filter(Images.image_name == image_name)
         .all() 
     )
 
-    # Build the results
     results = [
         {
             "image_name": q.image_name,
@@ -225,7 +224,6 @@ def add_img():
 # Route for the insert bounds
 @app.route("/addbounds/", methods=["POST"])
 def add_bounds():
-    # Sanity check
     if not request.json:
         abort(400)
     
@@ -238,7 +236,6 @@ def add_bounds():
         boundObject.bottom_right,
     )
 
-    # Log object built
     insert = False
     update = False
     ret = ""
@@ -267,7 +264,6 @@ def add_bounds():
         except Exception as e:
             print(e)
     finally:
-        #Build the return
         if insert:
             ret = "Inserted"
         elif update:
@@ -275,7 +271,6 @@ def add_bounds():
         else:
             ret = "Error, could not be inserted or updated"
 
-    # Return
     return {"Status": ret}
 
 
@@ -307,6 +302,9 @@ def get_bounds(map_name):
     return {"Result": results}
 
 
+# Add Point Route
+# Method: POST
+# Description: Recieves JSON request, parses it, and adds the point to the database.
 @app.route("/addpoint/", methods=["POST"])
 def add_point():
     if not request.json:
@@ -342,6 +340,55 @@ def add_point():
             ret = "Error, could not be inserted or updated"
 
     return {"Status": ret}    
+
+
+# Get All Points Route
+# Method: GET
+# Description: This returns the ID and Point of all the points.
+@app.route("/getpoint/", methods=["GET"])
+def get_points():
+    query = (
+        Points.query.with_entities(
+            Points.point_id,
+            Points.point_location,
+        ).all()
+    )
+
+    results = [
+        {
+            "point_id": q.point_id,
+            "point_location": q.point_location,
+        }
+        for q in query
+    ]
+
+    return {"Result": results}
+
+
+# Get Data From Points
+# Methods: GET
+# Description: This returns the Name, Description and Image of the point
+@app.route("/getpoint/<string:point_id>", methods=["GET"])
+def get_point(point_id):
+    query = (
+        Points.query.with_entities(
+            Points.point_name,
+            Points.point_desc,
+            Points.point_image,
+        ).filter(Points.point_id == point_id).all()
+    )
+
+    results = [
+        {
+            "point_name": q.point_name,
+            "point_desc": q.point_desc,
+            "point_image": q.point_image,
+        }
+        for q in query
+    ]
+
+    return {"Result": results}
+
 
 # If this is the main file being called, run the app.
 if __name__ == "__main__":
