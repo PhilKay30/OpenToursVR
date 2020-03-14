@@ -45,6 +45,14 @@
                 VerticalAlignment="Stretch"
                 Click="OnClick_GenerateImage"
             />
+            <Button
+                x:Name="AddData"
+                Grid.Row="2"
+                Margin="5,48,5,-38"
+                Padding="10"
+                Content="Add Tour Point"
+                Click="OnClick_AddTourPoint"
+            />
         </Grid>
     </Grid>
 </Page>

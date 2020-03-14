@@ -36,5 +36,11 @@ namespace Mapping
             NavigationService?.Navigate(new Uri(
                 "SvgConverter/SvgConverterPage.xaml", UriKind.Relative));
         }
+
+        private void OnClick_AddTourPoint(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Uri(
+                "DataPoints/DataPoints.xaml", UriKind.Relative));
+        }
     }
 }
