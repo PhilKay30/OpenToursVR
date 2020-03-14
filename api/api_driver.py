@@ -1,10 +1,6 @@
-# Import Flask, jsonify, request from flask
 from flask import Flask, jsonify, request, abort
-# import sqlalchemy from flask_sqlalchemy 
 from flask_sqlalchemy import SQLAlchemy
-# Import migrate from flask_migrate
 from flask_migrate import Migrate
-# Import json to use that
 import json 
 
 # Connection String to the PostgreSQL Database
@@ -31,15 +27,12 @@ class JSONObject:
 # Name: Bounds
 # Description: This class represents the bounds table.
 class Bounds(db.Model):
-    # Table Name
     __tablename__ = "map_bounds"
 
-    # Columns
     map_name = db.Column(db.String(), primary_key=True)
     top_left = db.Column(db.String()) # Will represent a 'POINT()'
     bottom_right = db.Column(db.String()) # Will represent a 'POINT()'
 
-    # Constructor
     def __init__(
         self,
         map_name,
@@ -51,18 +44,44 @@ class Bounds(db.Model):
         self.bottom_right = bottom_right,
 
     
-    # repr overload
     def __repr__():
         return f"Top Left : {self.top_left}  Bottom Right : {self.bottom_right}"
+
+
+#
+#
+class Points(db.Model):
+    __tablename__ = "data_points"
+    
+    point_id = db.Column(db.Integer(), primary_key=True)
+    point_location = db.Column(db.String(), nullable=False) # Will represent a 'POINT()'
+    point_name = db.Column(db.String(), nullable=False)
+    point_desc = db.Column(db.String(), nullable=False)
+    point_image = db.Column(db.String(), nullable=False)
+
+    def __init__(
+        self, 
+        point_location,
+        point_name,
+        point_desc,
+        point_image
+    ):
+        self.point_location = point_location
+        self.point_name = point_name,
+        self.point_desc = point_desc,
+        self.point_image = point_image
+    
+    
+    def __repr__():
+        return f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
+
 
 # Name: Images
 # Description: This class represents the images table that is in the database 
 class Images(db.Model):
-    # Table Name
     __tablename__ = "map_images"
 
-    # Columns
-    image_name = db.Column(db.String(), primary_key=True) #Primary Key
+    image_name = db.Column(db.String(), primary_key=True)
     image_data = db.Column(db.String())
     image_size = db.Column(db.Integer())
     bottom_left_corner = db.Column(db.String()) # String as geoalchemy2 doesnt like sqlalchemy and migrate
@@ -70,7 +89,6 @@ class Images(db.Model):
     km_width = db.Column(db.Float())
     km_height = db.Column(db.Float())
 
-    # Constructor with default image_rotation set to 0.0f
     def __init__(
         self,
         image_name,
@@ -89,7 +107,6 @@ class Images(db.Model):
         self.km_height = km_height
         self.km_width = km_width
     
-    # overload the object representation
     def __repr__(self):
         return f"image_name :{self.image_name} {self.image_size}"
 
@@ -277,7 +294,7 @@ def get_bounds(map_name):
     )
 
     # parse the top left and bottom right into 4 specific sides
-     results = [
+    results = [
         {
             "map_name": q.map_name,
             "top_left": q.top_left,
@@ -289,6 +306,42 @@ def get_bounds(map_name):
     #return
     return {"Result": results}
 
+
+@app.route("/addpoint/", methods=["POST"])
+def add_point():
+    if not request.json:
+        abort(400)
+    
+    point_data = json.dumps(request.json)
+    point_object = json.loads(point_data, object_hook=JSONObject)
+
+    point = Points(
+        point_object.point_location,
+        point_object.point_name,
+        point_object.point_desc,
+        point_object.point_image,        
+    )
+
+    insert = False
+    update = False
+    ret = ""
+    
+    try:
+        db.session.add(point)
+        db.session.commit()
+        insert = True
+        print("Inserted")
+    except:
+        db.session.rollback()
+        print("Inserting failed, rolling back transaction")
+    finally:
+        #Build the return
+        if insert:
+            ret = "Inserted"
+        else:
+            ret = "Error, could not be inserted or updated"
+
+    return {"Status": ret}    
 
 # If this is the main file being called, run the app.
 if __name__ == "__main__":
