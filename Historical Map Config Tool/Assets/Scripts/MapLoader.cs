@@ -7,6 +7,7 @@ using System;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 public class MapLoader : MonoBehaviour
 {
@@ -110,7 +111,17 @@ public class MapLoader : MonoBehaviour
         double histMapWidthKM = histMapPixelWidth * horizontalPPK;
         double histMapHeightKM = histMapPixelHeight * verticalPPK;
 
-        // TODO do the api insert call... we have the info!!!
+        // get the image data into hex array
+        string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
+        byte[] imgData = File.ReadAllBytes(filePath);
+        string imageHex = string.Concat(imgData.Select(b => b.ToString("X2")).ToArray());
+
+        /// TODO do the api insert call... we have the info!!!
+        /// km_width = histMapWidthKM (double variable)
+        /// km_height = histMapHeightKM (double variable)
+        /// rotation = rotation (float variable)
+        /// Center point = 'POINT(overlayMapXInGIS overlayMapYInGIS)' (both are double variables)
+        /// img_data = imageHex (string variable)
     }
 
 
