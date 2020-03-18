@@ -6,6 +6,8 @@ from flask_migrate import Migrate
 from logger import Logger
 import json
 
+# Initialize the Logger
+log = Logger("API", "api.log")
 
 # Connection String to the PostgreSQL Database
 connect_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/osm_map"
@@ -384,6 +386,5 @@ def get_point(point_id):
 
 # If this is the main file being called, run the app.
 if __name__ == "__main__":
-    # Initialize the Logger
-    log = Logger("API", "api.log")
+
     app.run("0.0.0.0")
