@@ -84,7 +84,7 @@ class Images(db.Model):
     image_name = db.Column(db.String(), primary_key=True)
     image_data = db.Column(db.String())
     image_size = db.Column(db.Integer())
-    bottom_left_corner = db.Column(db.String()) # String as geoalchemy2 doesnt like sqlalchemy and migrate
+    center_point = db.Column(db.String()) # String as geoalchemy2 doesnt like sqlalchemy and migrate
     image_rotation = db.Column(db.Float())
     km_width = db.Column(db.Float())
     km_height = db.Column(db.Float())
@@ -94,7 +94,7 @@ class Images(db.Model):
         image_name,
         image_data,
         image_size,
-        bottom_left_corner,
+        center_point,
         km_height,
         km_width,
         image_rotation=0.0,
@@ -102,7 +102,7 @@ class Images(db.Model):
         self.image_name = image_name
         self.image_data = image_data
         self.image_size = image_size
-        self.bottom_left_corner = bottom_left_corner
+        self.center_point = center_point
         self.image_rotation = image_rotation
         self.km_height = km_height
         self.km_width = km_width
@@ -129,7 +129,7 @@ def get_image(image_name):
             Images.image_rotation,
             Images.km_height,
             Images.km_width,
-            Images.bottom_left_corner,
+            Images.center_point,
         ) 
         .filter(Images.image_name == image_name)
         .all() 
@@ -141,7 +141,7 @@ def get_image(image_name):
             "image_size": q.image_size,
             "image_data": q.image_data,
             "image_rotation": q.image_rotation,
-            "bottom_left_corner": q.bottom_left_corner,
+            "center_point": q.center_point,
             "km_width": q.km_width,
             "km_height": q.km_height,
         }
@@ -167,7 +167,7 @@ def add_img():
         imgObject.image_name,
         imgObject.image_data,
         imgObject.image_size,
-        imgObject.bottom_left_corner,
+        imgObject.center_point,
         imgObject.km_height,
         imgObject.km_width,
         imgObject.image_rotation,
@@ -195,7 +195,7 @@ def add_img():
                 {
                     "image_data": imgObject.image_data,
                     "image_size": imgObject.image_size,
-                    "bottom_left_corner": imgObject.bottom_left_corner,
+                    "center_point": imgObject.center_point,
                     "km_height": imgObject.km_height,
                     "km_width": imgObject.km_width,
                     "image_rotation": imgObject.image_rotation,

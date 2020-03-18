@@ -88,7 +88,8 @@ public class MapLoader : MonoBehaviour
         // get GIS coords of overlay map
         double overlayMapXInGIS = (overlayMapOffsetX * ratioX) + GISTopLeftCorner.x;
         double overlayMapYInGIS = (overlayMapOffsetY * ratioY) + GISBotLeftCorner.y;
-
+        string center_point = "POINT(" + overlayMapXInGIS + " " + overlayMapYInGIS + ")";
+        
         // get rotation of overlay map
         float rotation = slider.value * 360;
 
@@ -129,11 +130,11 @@ public class MapLoader : MonoBehaviour
     }
 
 
-    public void ApiPostImage(PostGisPoint botLeft, string imageHex, double rotation, double histMapHeightKM, double histMapWidthKM)
+    public void ApiPostImage(string center_point, string imageHex, double rotation, double histMapHeightKM, double histMapWidthKM)
     {
         JsonAddImage json = new JsonAddImage()
         {
-            image_bottom_left_corner = "POINT(" + botLeft.Longitude.ToString() + " " + botLeft.Latitude.ToString() + ")",
+            center_point = "POINT(" + botLeft.Longitude.ToString() + " " + botLeft.Latitude.ToString() + ")",
             image_data = imageHex,
             image_name = "historicalMap",
             image_rotation = rotation.ToString(),
@@ -348,7 +349,7 @@ public class JsonAddImage
     public string image_data { get; set; }
     public string image_size { get; set; }
     public string image_rotation { get; set; }
-    public string image_bottom_left_corner { get; set; }
+    public string center_point { get; set; }
     public string km_height { get; set; }
     public string km_width { get; set; }
 }
