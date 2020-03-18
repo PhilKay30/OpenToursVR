@@ -642,3 +642,6 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/unity,flask,python,images,visualstudio,visualstudiocode
+
+# Custom
+api.log*
