@@ -42,7 +42,7 @@ namespace Mapping.ApiHandler
                 image_name = name,
                 image_data = imageHex,
                 image_size = imageHex.Length,
-                bottom_left_corner = $"POINT({botLeftCorner.Longitude} {botLeftCorner.Latitude})",
+                center_point = $"POINT({botLeftCorner.Longitude} {botLeftCorner.Latitude})",
                 km_height = heightInKm,
                 km_width = widthInKm,
                 image_rotation = rotation
@@ -150,7 +150,7 @@ namespace Mapping.ApiHandler
             public string image_name { get; set; }
             public string image_data { get; set; }
             public int image_size { get; set; }
-            public string bottom_left_corner { get; set; }
+            public string center_point { get; set; }
             public double km_height { get; set; }
             public double km_width { get; set; }
             public double image_rotation { get; set; }

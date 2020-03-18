@@ -1178,6 +1178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseMap: {fileID: 966142817}
   OverlayMap: {fileID: 439155380}
+  slider: {fileID: 554387809}
 --- !u!4 &1178863340
 Transform:
   m_ObjectHideFlags: 0

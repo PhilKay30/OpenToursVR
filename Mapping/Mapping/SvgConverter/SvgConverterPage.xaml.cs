@@ -267,7 +267,7 @@ namespace Mapping.SvgConverter
                 0.0f,
                 @"\output.png",
                 "osmMap.png",
-                new PostGisPoint { X = topLeft.Longitude, Y = botRight.Latitude },
+                new PostGisPoint { X = (((botRight.Longitude - topLeft.Longitude)/2)+ topLeft.Longitude), Y = (((topLeft.Latitude-botRight.Latitude)/2)+botRight.Latitude) },
                 widthInKm,
                 heightInKm);
         }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -22,7 +24,7 @@ namespace Mapping
         private void OnPageLoad(object sender, RoutedEventArgs e)
         {
             // Update navigation buttons
-            (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
+            (System.Windows.Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
         }
 
         private void OnClick_SelectLocation(object sender, RoutedEventArgs e)
@@ -41,6 +43,19 @@ namespace Mapping
         {
             NavigationService?.Navigate(new Uri(
                 "DataPoints/DataPoints.xaml", UriKind.Relative));
+        }
+
+        private void OnClick_AddHistMap(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string inputFilePath = openFileDialog.FileName;
+                string outputFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
+                File.Copy(inputFilePath, outputFilePath, true);
+                NavigationService?.Navigate(new Uri(
+                "HistMapConfig/HistMapConfigPage.xaml", UriKind.Relative));
+            } 
         }
     }
 }
