@@ -67,7 +67,7 @@ class Points(db.Model):
         self.point_desc = (point_desc,)
         self.point_image = point_image
 
-    def __repr__(self):
+    def __repr__():
         return (
             f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
         )
