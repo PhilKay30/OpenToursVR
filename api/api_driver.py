@@ -1,7 +1,11 @@
+# TODO Add header comment
+
 from flask import Flask, jsonify, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import json 
+from logger import Logger
+import json
+
 
 # Connection String to the PostgreSQL Database
 connect_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/osm_map"
@@ -30,20 +34,16 @@ class Bounds(db.Model):
     __tablename__ = "map_bounds"
 
     map_name = db.Column(db.String(), primary_key=True)
-    top_left = db.Column(db.String()) # Will represent a 'POINT()'
-    bottom_right = db.Column(db.String()) # Will represent a 'POINT()'
+    top_left = db.Column(db.String())  # Will represent a 'POINT()'
+    bottom_right = db.Column(db.String())  # Will represent a 'POINT()'
 
     def __init__(
-        self,
-        map_name,
-        top_left,
-        bottom_right,
+        self, map_name, top_left, bottom_right,
     ):
-        self.map_name = map_name,
-        self.top_left = top_left,
-        self.bottom_right = bottom_right,
+        self.map_name = (map_name,)
+        self.top_left = (top_left,)
+        self.bottom_right = (bottom_right,)
 
-    
     def __repr__():
         return f"Top Left : {self.top_left}  Bottom Right : {self.bottom_right}"
 
@@ -52,39 +52,38 @@ class Bounds(db.Model):
 #
 class Points(db.Model):
     __tablename__ = "data_points"
-    
+
     point_id = db.Column(db.Integer(), primary_key=True)
-    point_location = db.Column(db.String(), nullable=False) # Will represent a 'POINT()'
+    point_location = db.Column(
+        db.String(), nullable=False
+    )  # Will represent a 'POINT()'
     point_name = db.Column(db.String(), nullable=False)
     point_desc = db.Column(db.String(), nullable=False)
     point_image = db.Column(db.String(), nullable=False)
 
-    def __init__(
-        self, 
-        point_location,
-        point_name,
-        point_desc,
-        point_image
-    ):
+    def __init__(self, point_location, point_name, point_desc, point_image):
         self.point_location = point_location
-        self.point_name = point_name,
-        self.point_desc = point_desc,
+        self.point_name = (point_name,)
+        self.point_desc = (point_desc,)
         self.point_image = point_image
-    
-    
+
     def __repr__():
-        return f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
+        return (
+            f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
+        )
 
 
 # Name: Images
-# Description: This class represents the images table that is in the database 
+# Description: This class represents the images table that is in the database
 class Images(db.Model):
     __tablename__ = "map_images"
 
     image_name = db.Column(db.String(), primary_key=True)
     image_data = db.Column(db.String())
     image_size = db.Column(db.Integer())
-    bottom_left_corner = db.Column(db.String()) # String as geoalchemy2 doesnt like sqlalchemy and migrate
+    bottom_left_corner = db.Column(
+        db.String()
+    )  # String as geoalchemy2 doesnt like sqlalchemy and migrate
     image_rotation = db.Column(db.Float())
     km_width = db.Column(db.Float())
     km_height = db.Column(db.Float())
@@ -106,7 +105,7 @@ class Images(db.Model):
         self.image_rotation = image_rotation
         self.km_height = km_height
         self.km_width = km_width
-    
+
     def __repr__(self):
         return f"image_name :{self.image_name} {self.image_size}"
 
@@ -114,6 +113,7 @@ class Images(db.Model):
 # The base route of the app
 @app.route("/")
 def service_route():
+    log.log_info("Home root accessed")
     return "<h1>Service Running</h1>"
 
 
@@ -130,10 +130,12 @@ def get_image(image_name):
             Images.km_height,
             Images.km_width,
             Images.bottom_left_corner,
-        ) 
+        )
         .filter(Images.image_name == image_name)
-        .all() 
+        .all()
     )
+
+    log.log_info(f"Query for {image_name} returned {query}")
 
     results = [
         {
@@ -148,14 +150,14 @@ def get_image(image_name):
         for q in query
     ]
 
-    #return
     return {"Result": results}
 
 
 @app.route("/addimg/", methods=["POST"])
 def add_img():
-    #Sanity Check
+    # Sanity Check
     if not request.json:
+        log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
 
     # Dump the json into a string
@@ -172,23 +174,24 @@ def add_img():
         imgObject.km_width,
         imgObject.image_rotation,
     )
-    print("Images made")
+    log.log_info(f"Image object created")
+
     insert = False
     update = False
     ret = ""
 
     # Insert, if that throws an exception, update instead.
     try:
-        print("AddingImage")
+        log.log_info(f"Trying to INSERT image object to database")
         db.session.add(map_image)
         db.session.commit()
         insert = True
-        print("Inserted")
+        log.log_info(f"Image successfully added to database")
     except:
+        log.log_warning(f"INSERT image object failed. Rolling back transaction")
         db.session.rollback()
-        print("Roll")
         try:
-            print("Trying To Update")
+            log.log_info(f"Updating image object in database")
             db.session.query(Images).filter(
                 Images.image_name == map_image.image_name
             ).update(
@@ -201,21 +204,20 @@ def add_img():
                     "image_rotation": imgObject.image_rotation,
                 }
             )
-            print("")
             db.session.commit()
             update = True
-            print(f"updated: {update}")
+            log.log_info(f"Updating image object to database Successful")
         except Exception as e:
-            print(e)
+            log.log_error(f"Rolling back transaction. Updating failed: {e}")
             db.session.rollback()
     finally:
-        #Build the return
+        # Build the return
         if insert:
             ret = "Inserted"
         elif update:
             ret = "Updated"
         else:
-            ret = "Error, could not be inserted or updated"
+            ret = "Error, could not be inserted or updated, check server logs for more info"
 
     # return
     return {"Status": ret}
@@ -225,15 +227,14 @@ def add_img():
 @app.route("/addbounds/", methods=["POST"])
 def add_bounds():
     if not request.json:
+        log.log_error(f"Add bounds failed returned a 400 error bad request\n{request}")
         abort(400)
-    
+
     boundData = json.dumps(request.json)
     boundObject = json.loads(boundData, object_hook=JSONObject)
 
     map_bounds = Bounds(
-        boundObject.map_name,
-        boundObject.top_left,
-        boundObject.bottom_right,
+        boundObject.map_name, boundObject.top_left, boundObject.bottom_right,
     )
 
     insert = False
@@ -241,15 +242,16 @@ def add_bounds():
     ret = ""
 
     try:
+        log.log_info(f"Trying to INSERT map_bounds object to database")
         db.session.add(map_bounds)
         db.session.commit()
         insert = True
-        print("Inserted")
+        log.log_info(f"map_bounds successfully added to database")
     except:
         db.session.rollback()
-        print("Roll")
+        log.log_warning(f"INSERT map_bounds object failed. Rolling back transaction")
         try:
-            print("Trying To Update")
+            log.log_info(f"Updating image object in database")
             db.session.query(Bounds).filter(
                 Bounds.map_name == map_bounds.map_name
             ).update(
@@ -260,16 +262,16 @@ def add_bounds():
             )
             db.session.commit()
             update = True
-            print(f"updated: {update}")
+            log.log_info(f"Updating map_bounds object to database Successful")
         except Exception as e:
-            print(e)
+            log.log_error(f"Rolling back transaction. Updating failed: {e}")
     finally:
         if insert:
             ret = "Inserted"
         elif update:
             ret = "Updated"
         else:
-            ret = "Error, could not be inserted or updated"
+            ret = "Error, could not be inserted or updated check server error log for more information"
 
     return {"Status": ret}
 
@@ -280,13 +282,12 @@ def get_bounds(map_name):
     # Create the query
     query = (
         Bounds.query.with_entities(
-            Bounds.map_name,
-            Bounds.top_left,
-            Bounds.bottom_right,
-        ) # Add the filter
+            Bounds.map_name, Bounds.top_left, Bounds.bottom_right,
+        )  # Add the filter
         .filter(Bounds.map_name == map_name)
-        .all() 
+        .all()
     )
+    log.log_info(f"Get Bounds: {map_name} query retrieved {query}")
 
     # parse the top left and bottom right into 4 specific sides
     results = [
@@ -297,8 +298,8 @@ def get_bounds(map_name):
         }
         for q in query
     ]
-       
-    #return
+    log.log_info(f"Returning: {results}")
+    # return
     return {"Result": results}
 
 
@@ -308,8 +309,9 @@ def get_bounds(map_name):
 @app.route("/addpoint/", methods=["POST"])
 def add_point():
     if not request.json:
+        log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
-    
+
     point_data = json.dumps(request.json)
     point_object = json.loads(point_data, object_hook=JSONObject)
 
@@ -317,29 +319,30 @@ def add_point():
         point_object.point_location,
         point_object.point_name,
         point_object.point_desc,
-        point_object.point_image,        
+        point_object.point_image,
     )
 
     insert = False
     update = False
     ret = ""
-    
+
     try:
+        log.log_info(f"Trying to INSERT point object to database")
         db.session.add(point)
         db.session.commit()
         insert = True
-        print("Inserted")
+        log.log_info(f"point successfully added to database")
     except:
         db.session.rollback()
-        print("Inserting failed, rolling back transaction")
+        log.log_warning("Inserting failed, rolling back transaction")
     finally:
-        #Build the return
+        # Build the return
         if insert:
             ret = "Inserted"
         else:
-            ret = "Error, could not be inserted or updated"
+            ret = "Error, could not be inserted or updated check server error log for more info"
 
-    return {"Status": ret}    
+    return {"Status": ret}
 
 
 # Get All Points Route
@@ -347,21 +350,12 @@ def add_point():
 # Description: This returns the ID and Point of all the points.
 @app.route("/getpoint/", methods=["GET"])
 def get_points():
-    query = (
-        Points.query.with_entities(
-            Points.point_id,
-            Points.point_location,
-        ).all()
-    )
-
+    query = Points.query.with_entities(Points.point_id, Points.point_location,).all()
+    log.log_info(f"getpoint query: {query}")
     results = [
-        {
-            "point_id": q.point_id,
-            "point_location": q.point_location,
-        }
-        for q in query
+        {"point_id": q.point_id, "point_location": q.point_location,} for q in query
     ]
-
+    log.log_info(f"Returned {results}")
     return {"Result": results}
 
 
@@ -372,12 +366,12 @@ def get_points():
 def get_point(point_id):
     query = (
         Points.query.with_entities(
-            Points.point_name,
-            Points.point_desc,
-            Points.point_image,
-        ).filter(Points.point_id == point_id).all()
+            Points.point_name, Points.point_desc, Points.point_image,
+        )
+        .filter(Points.point_id == point_id)
+        .all()
     )
-
+    log.log_info(f"Query for {point_id} returned {query}")
     results = [
         {
             "point_name": q.point_name,
@@ -392,4 +386,6 @@ def get_point(point_id):
 
 # If this is the main file being called, run the app.
 if __name__ == "__main__":
+    # Initialize the Logger
+    log = Logger("API", "api.log")
     app.run("0.0.0.0")
