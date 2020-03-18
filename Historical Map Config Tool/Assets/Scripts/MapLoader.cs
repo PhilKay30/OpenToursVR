@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.JSONSerializeModule;
 using System.IO;
 using System;
 using System.Net;
@@ -22,6 +23,7 @@ public class MapLoader : MonoBehaviour
     /// </summary>
     private string getMapRequest = "http://192.0.203.84:5000/getimg/osmMap.png";
     private string getBoundsRequest = "http://192.0.203.84:5000/getbounds/osmMap";
+    private string addMapRequest = "http://192.0.203.84:5000/addimg/";
 
     /// <summary>
     /// GIS points for four corner of the base map
@@ -122,8 +124,50 @@ public class MapLoader : MonoBehaviour
         /// rotation = rotation (float variable)
         /// Center point = 'POINT(overlayMapXInGIS overlayMapYInGIS)' (both are double variables)
         /// img_data = imageHex (string variable)
+
+        ApiPostImage(botLeft, imageHex, rotation, histMapHeightKM, histMapWidthKM);
     }
 
+
+    public void ApiPostImage(PostGisPoint botLeft, string imageHex, double rotation, double histMapHeightKM, double histMapWidthKM)
+    {
+        JsonAddImage json = new JsonAddImage()
+        {
+            image_bottom_left_corner = "POINT(" + botLeft.Longitude.ToString() + " " + botLeft.Latitude.ToString() + ")",
+            image_data = imageHex,
+            image_name = "historicalMap",
+            image_rotation = rotation.ToString(),
+            image_size = imageHex.Length.ToString(),
+            km_height = histMapHeightKM,
+            km_width = histMapWidthKM
+        };
+
+        string strJson = JsonUtility.ToJson(json);
+
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(addMapRequest);
+        request.ContentType = "application/json; charset=utf-8";
+        request.Method = "POST";
+
+        byte[] message = new ASCIIEncoding().GetBytes(strJson);
+        Stream stream = request.GetRequestStream();
+
+        stream.Write(message, 0, message.Length);
+
+        try
+        {
+            // Retrieve the API response
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                // TODO: Error log that status wasnt OK.
+            }
+        }
+        catch (WebException e)
+        {
+            // TODO: Error log message.
+        }
+    }
+    
 
     /// <summary>
     /// This method loads the coord properties from Database
@@ -292,6 +336,23 @@ public class MapLoader : MonoBehaviour
     /// </summary>
     public enum DistanceUnit { Miles, Kilometers };
 }
+
+
+/// <summary>
+/// This is an object that represents our JSON structure for the POST request to add an image.
+/// </summary>
+[Serializable]
+public class JsonAddImage
+{
+    public string image_name { get; set; }
+    public string image_data { get; set; }
+    public string image_size { get; set; }
+    public string image_rotation { get; set; }
+    public string image_bottom_left_corner { get; set; }
+    public string km_height { get; set; }
+    public string km_width { get; set; }
+}
+
 
 /// <summary>
 /// Storage class for simple point data.
