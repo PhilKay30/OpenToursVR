@@ -5,8 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from logger import Logger
 import json
- 
-
 
 
 # Connection String to the PostgreSQL Database
@@ -20,7 +18,6 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 # create the Migrate with the app and the DB
 migrate = Migrate(app, db)
-
 
 
 # Name: JSONObject
@@ -37,20 +34,16 @@ class Bounds(db.Model):
     __tablename__ = "map_bounds"
 
     map_name = db.Column(db.String(), primary_key=True)
-    top_left = db.Column(db.String()) # Will represent a 'POINT()'
-    bottom_right = db.Column(db.String()) # Will represent a 'POINT()'
+    top_left = db.Column(db.String())  # Will represent a 'POINT()'
+    bottom_right = db.Column(db.String())  # Will represent a 'POINT()'
 
     def __init__(
-        self,
-        map_name,
-        top_left,
-        bottom_right,
+        self, map_name, top_left, bottom_right,
     ):
-        self.map_name = map_name,
-        self.top_left = top_left,
-        self.bottom_right = bottom_right,
+        self.map_name = (map_name,)
+        self.top_left = (top_left,)
+        self.bottom_right = (bottom_right,)
 
-    
     def __repr__():
         return f"Top Left : {self.top_left}  Bottom Right : {self.bottom_right}"
 
@@ -59,39 +52,38 @@ class Bounds(db.Model):
 #
 class Points(db.Model):
     __tablename__ = "data_points"
-    
+
     point_id = db.Column(db.Integer(), primary_key=True)
-    point_location = db.Column(db.String(), nullable=False) # Will represent a 'POINT()'
+    point_location = db.Column(
+        db.String(), nullable=False
+    )  # Will represent a 'POINT()'
     point_name = db.Column(db.String(), nullable=False)
     point_desc = db.Column(db.String(), nullable=False)
     point_image = db.Column(db.String(), nullable=False)
 
-    def __init__(
-        self, 
-        point_location,
-        point_name,
-        point_desc,
-        point_image
-    ):
+    def __init__(self, point_location, point_name, point_desc, point_image):
         self.point_location = point_location
-        self.point_name = point_name,
-        self.point_desc = point_desc,
+        self.point_name = (point_name,)
+        self.point_desc = (point_desc,)
         self.point_image = point_image
-    
-    
+
     def __repr__():
-        return f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
+        return (
+            f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
+        )
 
 
 # Name: Images
-# Description: This class represents the images table that is in the database 
+# Description: This class represents the images table that is in the database
 class Images(db.Model):
     __tablename__ = "map_images"
 
     image_name = db.Column(db.String(), primary_key=True)
     image_data = db.Column(db.String())
     image_size = db.Column(db.Integer())
-    bottom_left_corner = db.Column(db.String()) # String as geoalchemy2 doesnt like sqlalchemy and migrate
+    bottom_left_corner = db.Column(
+        db.String()
+    )  # String as geoalchemy2 doesnt like sqlalchemy and migrate
     image_rotation = db.Column(db.Float())
     km_width = db.Column(db.Float())
     km_height = db.Column(db.Float())
@@ -113,7 +105,7 @@ class Images(db.Model):
         self.image_rotation = image_rotation
         self.km_height = km_height
         self.km_width = km_width
-    
+
     def __repr__(self):
         return f"image_name :{self.image_name} {self.image_size}"
 
@@ -138,9 +130,9 @@ def get_image(image_name):
             Images.km_height,
             Images.km_width,
             Images.bottom_left_corner,
-        ) 
+        )
         .filter(Images.image_name == image_name)
-        .all() 
+        .all()
     )
 
     log.log_info(f"Query for {image_name} returned {query}")
@@ -163,7 +155,7 @@ def get_image(image_name):
 
 @app.route("/addimg/", methods=["POST"])
 def add_img():
-    #Sanity Check
+    # Sanity Check
     if not request.json:
         log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
@@ -183,7 +175,7 @@ def add_img():
         imgObject.image_rotation,
     )
     log.log_info(f"Image object created")
-    
+
     insert = False
     update = False
     ret = ""
@@ -219,7 +211,7 @@ def add_img():
             log.log_error(f"Rolling back transaction. Updating failed: {e}")
             db.session.rollback()
     finally:
-        #Build the return
+        # Build the return
         if insert:
             ret = "Inserted"
         elif update:
@@ -237,14 +229,12 @@ def add_bounds():
     if not request.json:
         log.log_error(f"Add bounds failed returned a 400 error bad request\n{request}")
         abort(400)
-    
+
     boundData = json.dumps(request.json)
     boundObject = json.loads(boundData, object_hook=JSONObject)
 
     map_bounds = Bounds(
-        boundObject.map_name,
-        boundObject.top_left,
-        boundObject.bottom_right,
+        boundObject.map_name, boundObject.top_left, boundObject.bottom_right,
     )
 
     insert = False
@@ -292,12 +282,10 @@ def get_bounds(map_name):
     # Create the query
     query = (
         Bounds.query.with_entities(
-            Bounds.map_name,
-            Bounds.top_left,
-            Bounds.bottom_right,
-        ) # Add the filter
+            Bounds.map_name, Bounds.top_left, Bounds.bottom_right,
+        )  # Add the filter
         .filter(Bounds.map_name == map_name)
-        .all() 
+        .all()
     )
     log.log_info(f"Get Bounds: {map_name} query retrieved {query}")
 
@@ -311,7 +299,7 @@ def get_bounds(map_name):
         for q in query
     ]
     log.log_info(f"Returning: {results}")
-    #return
+    # return
     return {"Result": results}
 
 
@@ -323,7 +311,7 @@ def add_point():
     if not request.json:
         log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
-    
+
     point_data = json.dumps(request.json)
     point_object = json.loads(point_data, object_hook=JSONObject)
 
@@ -331,13 +319,13 @@ def add_point():
         point_object.point_location,
         point_object.point_name,
         point_object.point_desc,
-        point_object.point_image,        
+        point_object.point_image,
     )
 
     insert = False
     update = False
     ret = ""
-    
+
     try:
         log.log_info(f"Trying to INSERT point object to database")
         db.session.add(point)
@@ -348,13 +336,13 @@ def add_point():
         db.session.rollback()
         log.log_warning("Inserting failed, rolling back transaction")
     finally:
-        #Build the return
+        # Build the return
         if insert:
             ret = "Inserted"
         else:
             ret = "Error, could not be inserted or updated check server error log for more info"
 
-    return {"Status": ret}    
+    return {"Status": ret}
 
 
 # Get All Points Route
@@ -362,19 +350,10 @@ def add_point():
 # Description: This returns the ID and Point of all the points.
 @app.route("/getpoint/", methods=["GET"])
 def get_points():
-    query = (
-        Points.query.with_entities(
-            Points.point_id,
-            Points.point_location,
-        ).all()
-    )
+    query = Points.query.with_entities(Points.point_id, Points.point_location,).all()
     log.log_info(f"getpoint query: {query}")
     results = [
-        {
-            "point_id": q.point_id,
-            "point_location": q.point_location,
-        }
-        for q in query
+        {"point_id": q.point_id, "point_location": q.point_location,} for q in query
     ]
     log.log_info(f"Returned {results}")
     return {"Result": results}
@@ -387,10 +366,10 @@ def get_points():
 def get_point(point_id):
     query = (
         Points.query.with_entities(
-            Points.point_name,
-            Points.point_desc,
-            Points.point_image,
-        ).filter(Points.point_id == point_id).all()
+            Points.point_name, Points.point_desc, Points.point_image,
+        )
+        .filter(Points.point_id == point_id)
+        .all()
     )
     log.log_info(f"Query for {point_id} returned {query}")
     results = [
