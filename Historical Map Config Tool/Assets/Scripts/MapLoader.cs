@@ -126,7 +126,7 @@ public class MapLoader : MonoBehaviour
         /// Center point = 'POINT(overlayMapXInGIS overlayMapYInGIS)' (both are double variables)
         /// img_data = imageHex (string variable)
 
-        ApiPostImage(botLeft, imageHex, rotation, histMapHeightKM, histMapWidthKM);
+        ApiPostImage(center_point, imageHex, rotation, histMapHeightKM, histMapWidthKM);
     }
 
 
@@ -134,7 +134,7 @@ public class MapLoader : MonoBehaviour
     {
         JsonAddImage json = new JsonAddImage()
         {
-            center_point = "POINT(" + botLeft.Longitude.ToString() + " " + botLeft.Latitude.ToString() + ")",
+            center_point = center_point,
             image_data = imageHex,
             image_name = "historicalMap",
             image_rotation = rotation.ToString(),

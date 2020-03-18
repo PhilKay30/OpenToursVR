@@ -28,7 +28,7 @@ namespace Mapping.ApiHandler
             double rotation,
             string imagePath,
             string name,
-            PostGisPoint botLeftCorner,
+            PostGisPoint center_point,
             double widthInKm,
             double heightInKm)
         {
@@ -42,7 +42,7 @@ namespace Mapping.ApiHandler
                 image_name = name,
                 image_data = imageHex,
                 image_size = imageHex.Length,
-                center_point = $"POINT({botLeftCorner.Longitude} {botLeftCorner.Latitude})",
+                center_point = $"POINT({center_point.Longitude} {center_point.Latitude})",
                 km_height = heightInKm,
                 km_width = widthInKm,
                 image_rotation = rotation
