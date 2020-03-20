@@ -68,6 +68,9 @@ public class GenerateWorld : MonoBehaviour
         CreateMapPlane();
         PlaceHistoryMap();
 
+        mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
+        historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
+
         PlacePointsOfInterest();
     }
 
@@ -124,10 +127,10 @@ public class GenerateWorld : MonoBehaviour
             dataPointInformation.Add(api.GetPointInformation(entry["id"]));
 
             /*   FANCY MATH HERE   */
-            double dataPointLatitude = 0; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
-            double dataPointLongitude = 0; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
-            double distanceToMovePointLogitude = dataPointLongitude - top_left["logitude"];
-            double distanceToMovePointLatitude = dataPointLatitude - bottom_right["Latitude"];
+            double dataPointLatitude = entry["latitude"]; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
+            double dataPointLongitude = entry["longitude"]; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
+            double distanceToMovePointLogitude = dataPointLongitude - top_left["longitude"];
+            double distanceToMovePointLatitude = dataPointLatitude - bottom_right["latitude"];
 
             // Distance to move the data point (starting at bottom left of map in unity coords)
             double distanceToMoveInUnityX = distanceToMovePointLogitude * pixelsToGISRatioWidth;
@@ -145,7 +148,8 @@ public class GenerateWorld : MonoBehaviour
 
             // The next line will instantiate a teleport point at point x and y.  0 is for how high
             // off the plane it should be 
-            //Instantiate(teleportPoint, new Vector3(posX, 0, PosY), Quaternion.identity);
+            Debug.Log("DataPointCoord" + dataPointUnityCoord);
+            Instantiate(teleportPoint, dataPointUnityCoord, Quaternion.identity);
         }
 
     }
