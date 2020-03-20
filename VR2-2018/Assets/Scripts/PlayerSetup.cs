@@ -9,7 +9,7 @@ public class PlayerSetup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        menuPanel.SetActive(false);
+       // menuPanel.SetActive(false);
     }
 
     // Update is called once per frame

@@ -9,6 +9,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
@@ -20,36 +21,90 @@ public class GenerateWorld : MonoBehaviour
     private Texture2D teleportMap;
     private Texture osmMap;
     private Texture historyMap;
-    public GameObject mapPlane; // The plane that will hold the map
-    public GameObject teleportPlane; // The plane that will hold the teleport area
-    public GameObject historyPlane;
-    public GameObject bottomLayerPlane;
-
-    // Eventually get these from Db
-    //private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\1ksq_v2.png";
-    private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked2.png";
-    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
-    
-    
-    private float scaler = 350.0f; // To translate pixel to scale in unity
-                                 // To hold the scale. 10 pixels per scale point
-                                 // For example a 32 pixel will need a scale of 3.2
 
     private API_Handler api = new API_Handler();
-    byte[] osmMapData;
-    byte[] historyMapData; // to hold future byte array from Db
+    private byte[] osmMapData;
+    private byte[] historyMapData; // to hold future byte array from Db
+
+    // Eventually get these from Db
+    private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\output.png";
+    private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked2.png";
+    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
+    private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
+    private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
+    private List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
+
+    private float scaler = 350.0f;  /// To translate pixel to scale in unity
+                                    /// To hold the scale. 10 pixels per scale point
+                                    /// For example a 32 pixel will need a scale of 3.2
+
+    public GameObject teleportPoint;    /// The object that will hold the teleport point (a point of interest)
+    public GameObject mapPlane;         /// The plane that will hold the map
+    public GameObject teleportPlane;    /// The plane that will hold the teleport area
+    public GameObject historyPlane;     /// The plane that will hold the historical map
+    public GameObject bottomLayerPlane; /// The under plane to hide any transparency
+
+    
 
     // Start is called before the first frame update
     void Start()
     {
-       // osmData = api.GetOsmMap();
-        osmMap = LoadData(osmMapData);
+        // API Calls 
+        osmMapData = api.GetOsmMap(); //working
+        mapBounds = api.GetMapBounds(); //working
+        dataPointId = api.GetPointLocations(); // working
+        
+        
+        
+        osmMap = LoadDataIntoTexture(osmMapData);
+        //osmMap = LoadMaps(osmMapFile);
+        
 
         teleportMap = LoadMaps(teleportMapFile);
         historyMap = LoadMaps(historyMapFile);
         
         CreateMapPlane();
         PlaceHistoryMap();
+
+        PlacePointsOfInterest();
+    }
+
+
+
+
+    private void PlacePointsOfInterest()
+    {
+        Dictionary<string, double> bottom_right = new Dictionary<string, double>();
+        Dictionary<string, double> top_left = new Dictionary<string, double>();
+
+        // This will be ugly and should be done better
+        // Here there be magic
+        bottom_right["longitude"] = mapBounds[0]["longitude"];
+        bottom_right["latitude"] = mapBounds[0]["latitude"];
+        top_left["longitude"] = mapBounds[1]["longitude"];
+        top_left["latitude"] = mapBounds[1]["latitude"];
+
+        //How the dataPointId is grabbing the data_points table
+        /*
+                index
+                    |_id : the id in the Db
+                    |_longitude : longitude associate with id
+                    |_latitude  : latitude associate with id 
+         */
+
+        foreach(var entry in dataPointId)
+        {
+            // Make API call to get POI data
+            dataPointInformation.Add(api.GetPointInformation(entry["id"]));
+
+            /*   FANCY MATH HERE   */
+            /*   END FANCY MATH    */
+
+            // The next line will instantiate a teleport point at point x and y.  0 is for how high
+            // off the plane it should be 
+            //Instantiate(teleportPoint, new Vector3(posX, 0, PosY), Quaternion.identity);
+        }
+
     }
 
 
@@ -60,7 +115,7 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     /// <param name="osmData">The Byte array</param>
     /// <returns>Texture</returns>
-    private Texture LoadData(byte[] osmData)
+    public Texture2D LoadDataIntoTexture(byte[] osmData)
     {
         Texture2D tex = new Texture2D(2, 2);
         tex.LoadImage(osmData); //..this will auto-resize the texture dimensions.
@@ -92,7 +147,7 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     /// <param name="filePath">the path of the file</param>
     /// <returns>Texture2D</returns>
-    public static Texture2D LoadPNG(string filePath)
+    public Texture2D LoadPNG(string filePath)
     {
         Debug.Log("Dir: " + Directory.GetCurrentDirectory().ToString());
         Debug.Log("filePath: " + filePath);
@@ -124,10 +179,10 @@ public class GenerateWorld : MonoBehaviour
 
         // Creates the plane
         mapPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        float positionX = CalculatePosition(scaleX);
-        float positionZ = CalculatePosition(scaleZ);
-        mapPlane.transform.position = new Vector3(positionX, 0, positionZ);
-        bottomLayerPlane.transform.position = new Vector3(positionX, -0.1f, positionZ);
+        //float positionX = CalculatePosition(scaleX);
+        //float positionZ = CalculatePosition(scaleZ);
+        mapPlane.transform.position = new Vector3(scaleX, 0, scaleZ);
+        bottomLayerPlane.transform.position = new Vector3(scaleX, -0.1f, scaleZ);
         bottomLayerPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
 
         // Creates and holds the material to go on the plane
@@ -138,7 +193,7 @@ public class GenerateWorld : MonoBehaviour
 
         // Create the Teleport Area
         teleportPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        teleportPlane.transform.position = new Vector3(positionX, 0.1f, positionZ);
+        teleportPlane.transform.position = new Vector3(scaleX, 0.1f, scaleZ);
 
     }
 
