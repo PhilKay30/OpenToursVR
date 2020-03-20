@@ -44,6 +44,8 @@ public class GenerateWorld : MonoBehaviour
     public GameObject historyPlane;     /// The plane that will hold the historical map
     public GameObject bottomLayerPlane; /// The under plane to hide any transparency
 
+    // This is the height the datapoints will be created at (accessible from IDE)
+    public float HeightOfDataPoints = 0.05f;
     
 
     // Start is called before the first frame update
@@ -92,12 +94,53 @@ public class GenerateWorld : MonoBehaviour
                     |_latitude  : latitude associate with id 
          */
 
-        foreach(var entry in dataPointId)
+        /// I'm not entirely sure what's happening here.
+        /// I'll try to put the math in but you'll need to finish off and place stuff or whatever
+
+        // This will give current width of osmMap (10 is base size of plane)
+        double mapPixelWidth = 10f * (double)mapPlane.transform.localScale.x;
+        // This will give current length of osmMap (10 is base size of plane)
+        double mapPixelLength = 10f * (double)mapPlane.transform.localScale.z;
+        // This will give the width of the osmMap in GIS value
+        double mapGISWidth = bottom_right["longitude"] - top_left["longitude"];
+        // This will give the length of the osmMap in GIS value
+        double mapGISLength = top_left["latitude"] - bottom_right["latitude"];
+
+        // This will give ratios between the unity coord system and the GIS coord system (pixels per GIS)
+        double pixelsToGISRatioWidth = mapPixelWidth / mapGISWidth;
+        double pixelsToGISRatioLength = mapPixelLength / mapGISLength;
+
+        // Now get the bottom left corner of the map (in unity coords)
+        Vector3 mapLocation = mapPlane.transform.position;
+        Vector3 botLeftMapLocation = new Vector3();
+        botLeftMapLocation.x = (float)(mapLocation.x - (mapPixelWidth / 2));
+        botLeftMapLocation.y = mapLocation.y;
+        botLeftMapLocation.z = (float)(mapLocation.z - (mapPixelLength / 2));
+
+        // THIS IS THE PART I DON'T KNOW HOW TO DO
+        foreach (var entry in dataPointId)
         {
             // Make API call to get POI data
             dataPointInformation.Add(api.GetPointInformation(entry["id"]));
 
             /*   FANCY MATH HERE   */
+            double dataPointLatitude = 0; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
+            double dataPointLongitude = 0; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
+            double distanceToMovePointLogitude = dataPointLongitude - top_left["logitude"];
+            double distanceToMovePointLatitude = dataPointLatitude - bottom_right["Latitude"];
+
+            // Distance to move the data point (starting at bottom left of map in unity coords)
+            double distanceToMoveInUnityX = distanceToMovePointLogitude * pixelsToGISRatioWidth;
+            double distanceToMoveInUnityZ = distanceToMovePointLatitude * pixelsToGISRatioLength;
+
+            // x and z coords (in unity) for the data point
+            float dataPointX = (float)(distanceToMoveInUnityX + botLeftMapLocation.x);
+            float dataPointZ = (float)(distanceToMoveInUnityZ + botLeftMapLocation.z);
+
+            // This is the position the datapoint needs to be placed at (in unity coord system)
+            // NOTE: The y value is a public property you can fiddel with in the IDE at runtime
+            Vector3 dataPointUnityCoord = new Vector3(dataPointX, HeightOfDataPoints, dataPointZ);
+
             /*   END FANCY MATH    */
 
             // The next line will instantiate a teleport point at point x and y.  0 is for how high
