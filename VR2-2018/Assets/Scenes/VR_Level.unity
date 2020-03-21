@@ -483,11 +483,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 438d3b853c913e14e821183a7233f3d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TeleportPoint: {fileID: 125956, guid: 73ac470d3d909d645a6c89a4664b6849, type: 3}
+  teleportPoint: {fileID: 125956, guid: 73ac470d3d909d645a6c89a4664b6849, type: 3}
   mapPlane: {fileID: 1903377155}
   teleportPlane: {fileID: 852521045}
   historyPlane: {fileID: 891060200}
   bottomLayerPlane: {fileID: 1563395029}
+  HeightOfDataPoints: 0.05
 --- !u!114 &614301250
 MonoBehaviour:
   m_ObjectHideFlags: 0
