@@ -500,9 +500,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22bc1c7d494b9a04eae7cfbb120e881f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
   tourInfoText: {fileID: 2115066129}
   tourImage: {fileID: 708012977}
+  player: {fileID: 1212675017}
 --- !u!1 &708012975
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using Valve.VR.InteractionSystem;
 
@@ -33,7 +34,7 @@ public class GenerateWorld : MonoBehaviour
     
     private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
     private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
-    private List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
+   
 
     private float scaler = 400.0f;  /// To translate pixel to scale in unity
                                     /// To hold the scale. 10 pixels per scale point
@@ -52,6 +53,8 @@ public class GenerateWorld : MonoBehaviour
     /// This object will conatin all of the historical map data
     /// </summary>
     HistMapObj histMapContainer = new HistMapObj();
+
+    public static List<DataPointContainer> dpc = new List<DataPointContainer>(); /// This will hold a list of datapoint and their vector3s
     
 
     // Start is called before the first frame update
@@ -99,6 +102,16 @@ public class GenerateWorld : MonoBehaviour
         
     }
 
+
+    void Update()
+    {
+       
+    }
+
+   
+
+
+
     /// <summary>
     /// These hold the width and height of osm map in unity pixels
     /// </summary>
@@ -120,6 +133,9 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     Vector3 botLeftMapLocation = new Vector3();
 
+
+
+
     private void PlacePointsOfInterest()
     {
         // This will be ugly and should be done better
@@ -128,6 +144,8 @@ public class GenerateWorld : MonoBehaviour
         bottom_right["latitude"] = mapBounds[0]["latitude"];
         top_left["longitude"] = mapBounds[1]["longitude"];
         top_left["latitude"] = mapBounds[1]["latitude"];
+
+
 
         // This will give current width of osmMap (10 is base size of plane)
         mapPixelWidth = 10f * (double)mapPlane.transform.localScale.x;
@@ -148,22 +166,19 @@ public class GenerateWorld : MonoBehaviour
         botLeftMapLocation.y = mapLocation.y;
         botLeftMapLocation.z = (float)(mapLocation.z - (mapPixelLength / 2));
 
-        // THIS IS THE PART I DON'T KNOW HOW TO DO
+       
         foreach (var entry in dataPointId)
         {
-            // Make API call to get POI data
-            dataPointInformation.Add(api.GetPointInformation(entry["id"]));
-
-            /*   FANCY MATH HERE   */
             double dataPointLatitude = entry["latitude"];
             double dataPointLongitude = entry["longitude"];
             Vector2 unityPos = GisToUnity(new Vector2((float)dataPointLongitude, (float)dataPointLatitude));
             Vector3 dataPointUnityCoord = new Vector3(unityPos.x, HeightOfDataPoints, unityPos.y);
-            /*   END FANCY MATH    */
 
-            // The next line will instantiate a teleport point at point x and y.  0 is for how high
-            // off the plane it should be 
-            Debug.Log("DataPointCoord" + dataPointUnityCoord);
+
+            DataPointContainer dp = new DataPointContainer();
+            dp.Id = entry["id"];
+            dp.PoiLocation = dataPointUnityCoord;
+            dpc.Add(dp);
             Instantiate(teleportPoint, dataPointUnityCoord, Quaternion.identity);
         }
 
@@ -241,8 +256,6 @@ public class GenerateWorld : MonoBehaviour
 
         // Creates the plane
         mapPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        //float positionX = CalculatePosition(scaleX);
-        //float positionZ = CalculatePosition(scaleZ);
         mapPlane.transform.position = new Vector3(scaleX, mapPlane.transform.position.y, scaleZ);
         bottomLayerPlane.transform.position = new Vector3(scaleX, bottomLayerPlane.transform.position.y, scaleZ);
         bottomLayerPlane.transform.localScale = new Vector3(scaleX, bottomLayerPlane.transform.localScale.y, scaleZ);
@@ -256,7 +269,6 @@ public class GenerateWorld : MonoBehaviour
         // Create the Teleport Area
         teleportPlane.transform.localScale = new Vector3(scaleX, teleportPlane.transform.localScale.y, scaleZ);
         teleportPlane.transform.position = new Vector3(scaleX, teleportPlane.transform.position.y, scaleZ);
-
     }
 
 
@@ -292,32 +304,9 @@ public class GenerateWorld : MonoBehaviour
         Vector2 unityPos = GisToUnity(histMapContainer.CenterPoint);
         historyPlane.transform.position = new Vector3(unityPos.x, historyPlane.transform.position.y, unityPos.y);
       
-        // now put put the image on the plane
-        // FRED THIS IS FOR YOU?
-        // the imgdata is in histMapContainer.MapData (you can acces the object from here, it's already loaded)
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
         material.mainTexture = historyMap;
         historyPlane.GetComponent<Renderer>().material = material;
-
-        // OLD CODE - NOT SURE IF IT'S NEEDED
-        //if (historyMap == null)
-        //{
-        //    historyPlane.SetActive(false);
-        //    return;
-        //}
-        //float hMapWidth = osmMap.width;
-        //float hMapHeight = osmMap.height;
-        //float scaleX = historyMap.width / scaler;
-        //float scaleZ = historyMap.height / scaler;
-        //float positionX = CalculatePosition(scaleX);
-        //float positionZ = CalculatePosition(scaleZ);
-
-        //historyPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        //historyPlane.transform.position = new Vector3(positionX * 2, 0.05f, positionZ * 2);
-        //// Creates and holds the material to go on the plane
-        //Material material = new Material(Shader.Find("Transparent/Diffuse"));
-        //material.mainTexture = historyMap;
-        //historyPlane.GetComponent<Renderer>().material = material;
     }
 
 
@@ -368,9 +357,22 @@ public class GenerateWorld : MonoBehaviour
     }
 
 
+}
 
 
 
 
+/// <summary>
+/// This will hold the contants of a point of interest
+/// </summary>
+public class DataPointContainer
+{
+    public double Id { set; get; }
+    public Vector3 PoiLocation { set; get; }
 
+    public DataPointContainer()
+    {
+        Id = 0;
+        PoiLocation = new Vector3();
+    }
 }

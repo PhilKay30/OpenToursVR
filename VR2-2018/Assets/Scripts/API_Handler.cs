@@ -146,7 +146,7 @@ public class API_Handler
     /// </summary>
     /// <param name="hexStr">string to convert</param>
     /// <returns>the binary array</returns>
-    private byte[] HexStringToBinary(string hexStr)
+    public byte[] HexStringToBinary(string hexStr)
     {
         string strBuff = hexStr.StripToHex();
         List<byte> bitey = new List<byte>();
