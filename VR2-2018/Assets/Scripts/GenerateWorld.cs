@@ -27,14 +27,15 @@ public class GenerateWorld : MonoBehaviour
     private byte[] historyMapData; // to hold future byte array from Db
 
     // Eventually get these from Db
-    private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\output.png";
-    private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked2.png";
-    private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
+    //private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\output.png";
+    //private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked2.png";
+    //private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
+    
     private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
     private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
     private List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
 
-    private float scaler = 350.0f;  /// To translate pixel to scale in unity
+    private float scaler = 400.0f;  /// To translate pixel to scale in unity
                                     /// To hold the scale. 10 pixels per scale point
                                     /// For example a 32 pixel will need a scale of 3.2
 
@@ -60,40 +61,42 @@ public class GenerateWorld : MonoBehaviour
         osmMapData = api.GetOsmMap(); //working
         mapBounds = api.GetMapBounds(); //working
         dataPointId = api.GetPointLocations(); // working
-				try
-				{
-						histMapContainer = api.GetHistMap();
-				}
-				catch (Exception e)
-				{
-						// This means there was no historical map in the db
-				}
+		try
+		{
+			histMapContainer = api.GetHistMap();
+            historyMapData = histMapContainer.MapData;
+            historyMap = LoadDataIntoTexture(historyMapData);
+		}
+		catch (Exception e)
+		{
+            Debug.Log("Historical map not found: " + e);
+			// This means there was no historical map in the db
+		}
         
 
         osmMap = LoadDataIntoTexture(osmMapData);
-        //osmMap = LoadMaps(osmMapFile);
         
-
-        teleportMap = LoadMaps(teleportMapFile);
-        historyMap = LoadMaps(historyMapFile);
         
         CreateMapPlane();
-				try
-				{
-						PlaceHistoryMap();
-				}
-				catch (Exception e)
-				{
-						// this means there was no historical map in the object returned from db
-						// this catch is just here so everything else continues
-						// if we want to disable the histPlane, it can be done here
-				}
+        PlacePointsOfInterest();
+
+        try
+		{
+			PlaceHistoryMap();
+		}
+		catch (Exception e)
+		{
+            Debug.Log("PlaceHistoryMap:" + e);
+			// this means there was no historical map in the object returned from db
+			// this catch is just here so everything else continues
+			// if we want to disable the histPlane, it can be done here
+		}
         
 
         mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
 
-        PlacePointsOfInterest();
+        
     }
 
     /// <summary>
@@ -152,8 +155,8 @@ public class GenerateWorld : MonoBehaviour
             dataPointInformation.Add(api.GetPointInformation(entry["id"]));
 
             /*   FANCY MATH HERE   */
-            double dataPointLatitude = entry["latitude"]; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
-            double dataPointLongitude = entry["longitude"]; // can't figure out where to get this (should be in that List<Dictionary> somewhere)
+            double dataPointLatitude = entry["latitude"];
+            double dataPointLongitude = entry["longitude"];
             Vector2 unityPos = GisToUnity(new Vector2((float)dataPointLongitude, (float)dataPointLatitude));
             Vector3 dataPointUnityCoord = new Vector3(unityPos.x, HeightOfDataPoints, unityPos.y);
             /*   END FANCY MATH    */
@@ -240,9 +243,9 @@ public class GenerateWorld : MonoBehaviour
         mapPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
         //float positionX = CalculatePosition(scaleX);
         //float positionZ = CalculatePosition(scaleZ);
-        mapPlane.transform.position = new Vector3(scaleX, 0, scaleZ);
-        bottomLayerPlane.transform.position = new Vector3(scaleX, -0.1f, scaleZ);
-        bottomLayerPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
+        mapPlane.transform.position = new Vector3(scaleX, mapPlane.transform.position.y, scaleZ);
+        bottomLayerPlane.transform.position = new Vector3(scaleX, bottomLayerPlane.transform.position.y, scaleZ);
+        bottomLayerPlane.transform.localScale = new Vector3(scaleX, bottomLayerPlane.transform.localScale.y, scaleZ);
 
         // Creates and holds the material to go on the plane
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
@@ -251,8 +254,8 @@ public class GenerateWorld : MonoBehaviour
         mapPlane.GetComponent<Renderer>().material = material;
 
         // Create the Teleport Area
-        teleportPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        teleportPlane.transform.position = new Vector3(scaleX, 0.1f, scaleZ);
+        teleportPlane.transform.localScale = new Vector3(scaleX, teleportPlane.transform.localScale.y, scaleZ);
+        teleportPlane.transform.position = new Vector3(scaleX, teleportPlane.transform.position.y, scaleZ);
 
     }
 
@@ -271,22 +274,30 @@ public class GenerateWorld : MonoBehaviour
         // apply the ratio to the OsmPlane size to get the size of historical map in unity size
         float histMapWidthPxl = horizontalRatio * (float)mapPixelWidth;
         float histMapLengthPxl = verticalRatio * (float)mapPixelLength;
+
         // get values to scale the hist plane (plane objects are normally 10x10 pixels).
-				// 		these calculations are derived from the fact that base size of plane is 10 pixels
-				// 		thus i took equation: (10 * scaler = numOfPixels) and rearraged into (scaler = numOfPixels / 10).
-        float horizontalScaler = histMapWidthPxl / 10;
+        // these calculations are derived from the fact that base size of plane is 10 pixels
+        // thus i took equation: (10 * scaler = numOfPixels) and rearraged into (scaler = numOfPixels / 10).
+
+        float horizontalScaler = histMapWidthPxl / 10 ;
         float verticalScaler = histMapLengthPxl / 10;
+        
         // scale the plane correctly
-        historyPlane.transform.localScale = new Vector3(horizontalScaler, 1, verticalScaler);
+        historyPlane.transform.localScale = new Vector3(horizontalScaler, historyPlane.transform.localScale.y, verticalScaler);
+        
         // rotate the hist plane by correct amount (pretty sure this will do what I want)
         historyPlane.transform.Rotate(0, histMapContainer.Rotation, 0, Space.Self);
+        
         // get the location that the historical map is supposed to be in and then move it there
         Vector2 unityPos = GisToUnity(histMapContainer.CenterPoint);
         historyPlane.transform.position = new Vector3(unityPos.x, historyPlane.transform.position.y, unityPos.y);
-				// now put put the image on the plane
-				// FRED THIS IS FOR YOU?
-				// the imgdata is in histMapContainer.MapData (you can acces the object from here, it's already loaded)
-				
+      
+        // now put put the image on the plane
+        // FRED THIS IS FOR YOU?
+        // the imgdata is in histMapContainer.MapData (you can acces the object from here, it's already loaded)
+        Material material = new Material(Shader.Find("Transparent/Diffuse"));
+        material.mainTexture = historyMap;
+        historyPlane.GetComponent<Renderer>().material = material;
 
         // OLD CODE - NOT SURE IF IT'S NEEDED
         //if (historyMap == null)

@@ -120,13 +120,13 @@ public class API_Handler
                 if (jobject.list[0].list[0].keys[i] == "image_data")
                 {
                     imgData = HexStringToBinary(jobject.list[0].list[0].list[i].ToString());
-                    break;
+                    
                 }
                 else if (jobject.list[0].list[0].keys[i] == "km_height")
                 {
                     OsmMapDimensions.y = StringToFloat(jobject.list[0].list[0].list[i].ToString());
                 }
-                else if (jobject.list[0].list[0].keys[i] == "km_height")
+                else if (jobject.list[0].list[0].keys[i] == "km_width")
                 {
                     OsmMapDimensions.x = StringToFloat(jobject.list[0].list[0].list[i].ToString());
                 }
