@@ -12,7 +12,10 @@
         public string AddPointUrl => BaseUrl + "addpoint/";
         public string GetPointsIDs => BaseUrl + "getpointid/";
         // The following one is to be followed with an ID to get the data.
-        public string GetPointData => BaseUrl + "getpointid/"; 
+        public string GetPointData => BaseUrl + "getpointid/";
+
+        public string AddBoundsURL => BaseUrl + "addbounds/";
+        public string GetBoundsURL => BaseUrl + "getbounds/";
 
         public ApiConnection(string baseUrl)
         {
