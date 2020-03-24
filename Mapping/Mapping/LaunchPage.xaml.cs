@@ -42,7 +42,7 @@ namespace Mapping
         private void OnClick_AddTourPoint(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Uri(
-                "DataPoints/DataPoints.xaml", UriKind.Relative));
+                "TourPoints/TourPointsPage.xaml", UriKind.Relative));
         }
 
         private void OnClick_AddHistMap(object sender, RoutedEventArgs e)
@@ -53,9 +53,26 @@ namespace Mapping
                 string inputFilePath = openFileDialog.FileName;
                 string outputFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
                 File.Copy(inputFilePath, outputFilePath, true);
-                NavigationService?.Navigate(new Uri(
-                "HistMapConfig/HistMapConfigPage.xaml", UriKind.Relative));
-            } 
+                LaunchHistMapEditor();
+            }
+        }
+
+        private static void LaunchHistMapEditor()
+        {
+            using System.Diagnostics.Process process = new System.Diagnostics.Process
+            {
+                StartInfo =
+                {
+                    FileName = @"../../../../HistMapConfig/UnityTool/MapConfig.exe",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
         }
     }
 }
