@@ -84,26 +84,27 @@ namespace Mapping.ApiHandler
             MessageBox.Show("Image was successfully inserted into the database.");
         }
 
-
-
         /// <summary>
-        /// 
+        /// Adds a boundary point into the database.
         /// </summary>
-        /// <param name="_map_name"></param>
-        /// <param name="_top_left"></param>
-        /// <param name="_bottom_right"></param>
+        /// <param name="mapName">The name of the map</param>
+        /// <param name="topLeft">The top left point in PostGIS form</param>
+        /// <param name="bottomRight">The bottom right point in PostGIS form</param>
         /// <returns></returns>
-        public void AddBounds(string _map_name, string _top_left, string _bottom_right)
+        public void AddBounds(string mapName, string topLeft, string bottomRight)
         {
-            JsonBounds obj = new JsonBounds
+            JsonBounds jsonBounds = new JsonBounds
             {
-                map_name = _map_name,
-                top_left = _top_left,
-                bottom_right = _bottom_right
+                map_name = mapName,
+                top_left = topLeft,
+                bottom_right = bottomRight
             };
 
-            string jsonString = JsonSerializer.Serialize(obj);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddBoundsURL); 
+            // Serialize for the message
+            string jsonString = JsonSerializer.Serialize(jsonBounds);
+
+            // Create the API request
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddBoundsURL);
             request.ContentType = "application/json; charset=utf-8";
             request.Method = "POST";
 
@@ -131,8 +132,6 @@ namespace Mapping.ApiHandler
 
             MessageBox.Show("The Bounds where successfully entered in database");
         }
-
-
 
         /// <summary>
         /// TODO: Set this to an API call.
@@ -288,7 +287,8 @@ namespace Mapping.ApiHandler
         }
 
         /// <summary>
-        /// This class represents the JSON structure that is expected in either of the bounds api routes.
+        /// Generic class for the JSON bound object.
+        /// These must remain named as they are for consistency with the API.
         /// </summary>
         // ReSharper disable InconsistentNaming
         // ReSharper disable UnusedAutoPropertyAccessor.Local
