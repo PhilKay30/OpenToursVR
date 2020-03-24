@@ -12,15 +12,14 @@ using Microsoft.Win32;
 using Geopoint = Windows.Devices.Geolocation.Geopoint;
 using MapInputEventArgs = Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.MapInputEventArgs;
 
-namespace Mapping.TourPoints
+namespace Mapping.Models
 {
     /// <summary>
-    /// Interaction logic for the TourPoints page.
-    /// Created by Brendan Brading.
+    /// Interaction logic for the Models page.
     /// </summary>
     // ReSharper disable once UnusedMember.Global
     // ReSharper disable once RedundantExtendsListEntry
-    public partial class TourPointsPage : Page
+    public partial class ModelsPage : Page
     {
         private Geopoint TourPointLocation { get; set; }
         private PostGisPoint BoundTopLeft { get; set; }
@@ -30,7 +29,7 @@ namespace Mapping.TourPoints
         /// <summary>
         /// Constructor.
         /// </summary>
-        public TourPointsPage()
+        public ModelsPage()
         {
             InitializeComponent();
             this.Loaded += OnPageLoad;
