@@ -45,6 +45,12 @@ namespace Mapping
                 "TourPoints/TourPointsPage.xaml", UriKind.Relative));
         }
 
+        private void OnClick_AddModel(object sender, RoutedEventArgs e)
+        {
+            NavigationService?.Navigate(new Uri(
+                "Models/ModelsPage.xaml", UriKind.Relative));
+        }
+
         private void OnClick_AddHistMap(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();

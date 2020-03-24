@@ -1,4 +1,4 @@
-﻿<Page x:Class="Mapping.TourPoints.TourPointsPage"
+﻿<Page x:Class="Mapping.Models.ModelsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,7 +6,7 @@
       xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Tour Points">
+      Title="DataPoints">
 
     <Grid>
         <Grid>
