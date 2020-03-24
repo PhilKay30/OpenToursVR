@@ -84,6 +84,56 @@ namespace Mapping.ApiHandler
             MessageBox.Show("Image was successfully inserted into the database.");
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_map_name"></param>
+        /// <param name="_top_left"></param>
+        /// <param name="_bottom_right"></param>
+        /// <returns></returns>
+        public void AddBounds(string _map_name, string _top_left, string _bottom_right)
+        {
+            JsonBounds obj = new JsonBounds
+            {
+                map_name = _map_name,
+                top_left = _top_left,
+                bottom_right = _bottom_right
+            };
+
+            string jsonString = JsonSerializer.Serialize(obj);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddBoundsURL); 
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            // Prepare the message
+            byte[] message = new ASCIIEncoding().GetBytes(jsonString);
+            request.ContentLength = message.Length;
+            Stream stream = request.GetRequestStream();
+
+            // Send the message
+            stream.Write(message, 0, message.Length);
+
+            try
+            {
+                // Retrieve the API response
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
+                }
+            }
+            catch (WebException e)
+            {
+                MessageBox.Show("Something went wrong.\n" + e.Message);
+            }
+
+            MessageBox.Show("The Bounds where successfully entered in database");
+        }
+
+
+
         /// <summary>
         /// TODO: Set this to an API call.
         /// </summary>
@@ -235,6 +285,18 @@ namespace Mapping.ApiHandler
             public string point_name { get; set; }
             public string point_desc { get; set; }
             public string point_image { get; set; }
+        }
+
+        /// <summary>
+        /// This class represents the JSON structure that is expected in either of the bounds api routes.
+        /// </summary>
+        // ReSharper disable InconsistentNaming
+        // ReSharper disable UnusedAutoPropertyAccessor.Local
+        private class JsonBounds
+        {
+            public string map_name { get; set; }
+            public string top_left { get; set; }
+            public string bottom_right { get; set; }
         }
     }
 }
