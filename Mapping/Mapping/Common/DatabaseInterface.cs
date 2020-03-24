@@ -112,9 +112,8 @@ namespace Mapping.Common
             const string map_name = "osmMap";
             string top_left = "POINT(" + minLon + " " + maxLat + ")";
             string bottom_right = "POINT(" + maxLon + " " + minLat + ")";
-            bool result = false;
             ApiHandler.ApiHandler api = new ApiHandler.ApiHandler();
-            result = api.AddBounds(map_name, top_left, bottom_right);
+            api.AddBounds(map_name, top_left, bottom_right);
         }
 
 
