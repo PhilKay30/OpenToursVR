@@ -53,9 +53,23 @@ namespace Mapping
                 string inputFilePath = openFileDialog.FileName;
                 string outputFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
                 File.Copy(inputFilePath, outputFilePath, true);
-                NavigationService?.Navigate(new Uri(
-                "HistMapConfig/HistMapConfigPage.xaml", UriKind.Relative));
+                LaunchHistMapEditor();
             } 
+        }
+
+        private void LaunchHistMapEditor()
+        {
+            using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
+            {
+                pProcess.StartInfo.FileName = @"../../../../HistMapConfig/UnityTool/MapConfig.exe";
+                pProcess.StartInfo.UseShellExecute = false;
+                pProcess.StartInfo.RedirectStandardOutput = true;
+                pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                pProcess.StartInfo.CreateNoWindow = true; //not diplay a windows
+                pProcess.Start();
+                string output = pProcess.StandardOutput.ReadToEnd(); //The output result
+                pProcess.WaitForExit();
+            }
         }
     }
 }
