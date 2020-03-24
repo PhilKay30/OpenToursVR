@@ -12,6 +12,9 @@ using System.Windows;
 
 namespace Mapping.ApiHandler
 {
+    /// <summary>
+    /// A helper class to handle interfacing with the API.
+    /// </summary>
     // ReSharper disable StringIndexOfIsCultureSpecific.1
     internal class ApiHandler
     {
@@ -21,14 +24,14 @@ namespace Mapping.ApiHandler
         /// <param name="rotation">The rotation of the image</param>
         /// <param name="imagePath">Path of where the image is stored.</param>
         /// <param name="name">Name of the image</param>
-        /// <param name="botLeftCorner">The GIS data of the bottom left corner</param>
+        /// <param name="centerPoint">The PostGIS data point of the center of the image</param>
         /// <param name="widthInKm">The width of the image in kilometers</param>
         /// <param name="heightInKm">The height of the image in kilometers</param>
         public void InsertPng(
             double rotation,
             string imagePath,
             string name,
-            PostGisPoint center_point,
+            PostGisPoint centerPoint,
             double widthInKm,
             double heightInKm)
         {
@@ -42,7 +45,7 @@ namespace Mapping.ApiHandler
                 image_name = name,
                 image_data = imageHex,
                 image_size = imageHex.Length,
-                center_point = $"POINT({center_point.Longitude} {center_point.Latitude})",
+                center_point = $"POINT({centerPoint.Longitude} {centerPoint.Latitude})",
                 km_height = heightInKm,
                 km_width = widthInKm,
                 image_rotation = rotation
@@ -140,6 +143,70 @@ namespace Mapping.ApiHandler
         }
 
         /// <summary>
+        /// Adds a Tour Point into the database.
+        /// </summary>
+        /// <param name="point">The PostGIS-style point string</param>
+        /// <param name="name">The name of the Tour Point</param>
+        /// <param name="description">The description of the Tour Point</param>
+        /// <param name="imagePath">The path of an associated image</param>
+        public bool AddPoint(string point, string name, string description, string imagePath)
+        {
+            // If image path was specified, read in image
+            string imageHex = string.Empty;
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                // Get byte array from image path
+                byte[] bytes = File.ReadAllBytes(imagePath);
+
+                // Turn bytes into hex and store in a string
+                imageHex = string.Concat(bytes.Select(b => b.ToString("X2")).ToArray());
+            }
+
+            JsonPoint jsonPoint = new JsonPoint
+            {
+                point_location = point,
+                point_name = name,
+                point_desc = description,
+                point_image = imageHex
+            };
+
+            string jsonString = JsonSerializer.Serialize(jsonPoint);
+
+            // Create the API request
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddPointUrl);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            // Prepare the message
+            byte[] message = new ASCIIEncoding().GetBytes(jsonString);
+            request.ContentLength = message.Length;
+            Stream stream = request.GetRequestStream();
+
+            // Send the message
+            stream.Write(message, 0, message.Length);
+
+            try
+            {
+                // Retrieve the API response
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
+                    return false;
+                }
+
+                MessageBox.Show("Point was successfully inserted into the database.");
+            }
+            catch (WebException e)
+            {
+                MessageBox.Show("Something went wrong.\n" + e.Message);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Generic class for the JSON object.
         /// These must remain named as they are for consistency with the API.
         /// </summary>
@@ -168,69 +235,6 @@ namespace Mapping.ApiHandler
             public string point_name { get; set; }
             public string point_desc { get; set; }
             public string point_image { get; set; }
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="name"></param>
-        /// <param name="desc"></param>
-        /// <param name="pngPath"></param>
-        public bool AddPoint(string point, string name, string desc, string pngPath)
-        {
-            string imageHex = string.Empty;
-            if (!string.IsNullOrEmpty(pngPath))
-            {
-                byte[] bytes = File.ReadAllBytes(pngPath);
-                imageHex = string.Concat(bytes.Select(b => b.ToString("X2")).ToArray());
-            }
-
-            JsonPoint obj = new JsonPoint
-            {
-                point_location = point,
-                point_name = name,
-                point_desc = desc,
-                point_image = imageHex
-            };
-
-            string jsonString = JsonSerializer.Serialize(obj);
-
-            // Create the API request
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddPointUrl);
-            request.ContentType = "application/json; charset=utf-8";
-            request.Method = "POST";
-
-            // Prepare the message
-            byte[] message = new ASCIIEncoding().GetBytes(jsonString);
-            request.ContentLength = message.Length;
-            Stream stream = request.GetRequestStream();
-
-            // Send the message
-            stream.Write(message, 0, message.Length);
-
-            try
-            {
-                // Retrieve the API response
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
-                    return false;
-                }
-                else
-                {
-                    MessageBox.Show("Point was successfully inserted into the database.");
-                }
-            }
-            catch (WebException e)
-            {
-                MessageBox.Show("Something went wrong.\n" + e.Message);
-                return false;
-            }
-
-            return true;
         }
     }
 }

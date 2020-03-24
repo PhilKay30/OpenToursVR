@@ -16,6 +16,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock
@@ -47,18 +49,22 @@
             />
             <Button
                 x:Name="AddData"
-                Grid.Row="2"
-                Margin="5,48,5,-38"
+                Grid.Row="3"
+                Margin="5"
                 Padding="10"
                 Content="Add Tour Point"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 Click="OnClick_AddTourPoint"
             />
             <Button
                 x:Name="AddHistMap_Button"
-                Grid.Row="2"
-                Margin="5,91,5,-81"
+                Grid.Row="4"
+                Margin="5"
                 Padding="10"
                 Content="Add Historical Map"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 Click="OnClick_AddHistMap"
             />
         </Grid>

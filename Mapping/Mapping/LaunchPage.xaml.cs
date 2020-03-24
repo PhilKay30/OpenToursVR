@@ -42,7 +42,7 @@ namespace Mapping
         private void OnClick_AddTourPoint(object sender, RoutedEventArgs e)
         {
             NavigationService?.Navigate(new Uri(
-                "DataPoints/DataPoints.xaml", UriKind.Relative));
+                "TourPoints/TourPointsPage.xaml", UriKind.Relative));
         }
 
         private void OnClick_AddHistMap(object sender, RoutedEventArgs e)
@@ -54,22 +54,25 @@ namespace Mapping
                 string outputFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
                 File.Copy(inputFilePath, outputFilePath, true);
                 LaunchHistMapEditor();
-            } 
+            }
         }
 
-        private void LaunchHistMapEditor()
+        private static void LaunchHistMapEditor()
         {
-            using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
+            using System.Diagnostics.Process process = new System.Diagnostics.Process
             {
-                pProcess.StartInfo.FileName = @"../../../../HistMapConfig/UnityTool/MapConfig.exe";
-                pProcess.StartInfo.UseShellExecute = false;
-                pProcess.StartInfo.RedirectStandardOutput = true;
-                pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                pProcess.StartInfo.CreateNoWindow = true; //not diplay a windows
-                pProcess.Start();
-                string output = pProcess.StandardOutput.ReadToEnd(); //The output result
-                pProcess.WaitForExit();
-            }
+                StartInfo =
+                {
+                    FileName = @"../../../../HistMapConfig/UnityTool/MapConfig.exe",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
         }
     }
 }

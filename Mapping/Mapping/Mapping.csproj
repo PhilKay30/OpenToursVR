@@ -16,6 +16,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="HistMapConfig\**" />
+    <EmbeddedResource Remove="HistMapConfig\**" />
+    <None Remove="HistMapConfig\**" />
+    <Page Remove="HistMapConfig\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="MapSelector\HaversineFormula.cs" />
   </ItemGroup>
 
@@ -37,7 +44,6 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="HistMapConfig\UnityTool\" />
     <Folder Include="UnityApps\" />
     <Folder Include="Output\" />
   </ItemGroup>
