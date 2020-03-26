@@ -242,6 +242,9 @@ public class GenerateWorld : MonoBehaviour
     }
 
 
+
+
+
     /*
     * Function     :    CreateMapPlane
     * Description  :    This Set the size of the plane and load the map as a texture on the plane
@@ -256,19 +259,20 @@ public class GenerateWorld : MonoBehaviour
 
         // Creates the plane
         mapPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        mapPlane.transform.position = new Vector3(scaleX, mapPlane.transform.position.y, scaleZ);
-        bottomLayerPlane.transform.position = new Vector3(scaleX, bottomLayerPlane.transform.position.y, scaleZ);
+        //mapPlane.transform.position = new Vector3(scaleX, mapPlane.transform.position.y, scaleZ);
+        //bottomLayerPlane.transform.position = new Vector3(scaleX, bottomLayerPlane.transform.position.y, scaleZ);
         bottomLayerPlane.transform.localScale = new Vector3(scaleX, bottomLayerPlane.transform.localScale.y, scaleZ);
 
         // Creates and holds the material to go on the plane
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
+        material.renderQueue = 2998; //to fix the clipping issue
         material.mainTexture = osmMap;
 
         mapPlane.GetComponent<Renderer>().material = material;
 
         // Create the Teleport Area
         teleportPlane.transform.localScale = new Vector3(scaleX, teleportPlane.transform.localScale.y, scaleZ);
-        teleportPlane.transform.position = new Vector3(scaleX, teleportPlane.transform.position.y, scaleZ);
+        //teleportPlane.transform.position = new Vector3(scaleX, teleportPlane.transform.position.y, scaleZ);
     }
 
 
@@ -306,10 +310,18 @@ public class GenerateWorld : MonoBehaviour
       
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
         material.mainTexture = historyMap;
+        material.renderQueue = 2999; //to fix the clipping issue
         historyPlane.GetComponent<Renderer>().material = material;
     }
 
 
+
+
+    /// <summary>
+    /// Translates a GIS point to a Unity position
+    /// </summary>
+    /// <param name="gisCoords"></param>
+    /// <returns></returns>
     private Vector2 GisToUnity(Vector2 gisCoords)
     {
         /*   FANCY MATH HERE   */
@@ -331,6 +343,13 @@ public class GenerateWorld : MonoBehaviour
 
 
 
+
+
+    /// <summary>
+    /// Here be a possible Obsolete method, should be safe for deletion
+    /// </summary>
+    /// <param name="scale"></param>
+    /// <returns></returns>
     /*
     * Function     :    calculatePosition	
     * Description  :    This is to move the plane Lower left corner to the 0,0 position
