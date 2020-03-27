@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from logger import Logger
-import json
+import json 
 
 # Initialize the Logger
 log = Logger("API", "api.log")
@@ -40,7 +40,7 @@ class Bounds(db.Model):
     bottom_right = db.Column(db.String())  # Will represent a 'POINT()'
 
     def __init__(
-        self, map_name, top_left, bottom_right,
+         self, map_name, top_left, bottom_right,
     ):
         self.map_name = (map_name,)
         self.top_left = (top_left,)
@@ -54,7 +54,7 @@ class Bounds(db.Model):
 #
 class Points(db.Model):
     __tablename__ = "data_points"
-
+    
     point_id = db.Column(db.Integer(), primary_key=True)
     point_location = db.Column(
         db.String(), nullable=False
@@ -68,7 +68,7 @@ class Points(db.Model):
         self.point_name = (point_name,)
         self.point_desc = (point_desc,)
         self.point_image = point_image
-
+    
     def __repr__():
         return (
             f"Name: {self.point_name} ID:{self.point_id} Point: {self.point_location}"
@@ -76,7 +76,7 @@ class Points(db.Model):
 
 
 # Name: Images
-# Description: This class represents the images table that is in the database
+# Description: This class represents the images table that is in the database 
 class Images(db.Model):
     __tablename__ = "map_images"
 
@@ -105,7 +105,7 @@ class Images(db.Model):
         self.image_rotation = image_rotation
         self.km_height = km_height
         self.km_width = km_width
-
+    
     def __repr__(self):
         return f"image_name :{self.image_name} {self.image_size}"
 
@@ -116,7 +116,12 @@ class Images(db.Model):
 class Models(db.Model):
     __tablename__ = "map_models"
 
+<<<<<<< HEAD
     model_location = db.Column(db.String(), primary_key=True) # represents a GIS coordinate in POINT() format
+=======
+    model_id = db.Column(db.Integer(), primary_key=True)
+    model_location = db.Column(db.String()) # represents a GIS coordinate in POINT() format
+>>>>>>> master
     model_rotation = db.Column(db.String())
     model_scaling = db.Column(db.String())
     model_data = db.Column(db.String())
@@ -124,6 +129,10 @@ class Models(db.Model):
 
     def __init__(
         self,
+<<<<<<< HEAD
+=======
+        model_id
+>>>>>>> master
         model_location,
         model_rotation,
         model_scaling,
@@ -137,14 +146,18 @@ class Models(db.Model):
         self.model_offset = model_offset
 
     def __repr__(self):
+<<<<<<< HEAD
         return f"Model Location :{self.model_location} {self.model_rotation}"
+=======
+        return f"Model Location :{self.model_location} {self.model_offset}"
+>>>>>>> master
 
 
 
 # The base route of the app
 @app.route("/")
 def service_route():
-    log.log_info("Home root accessed")
+        log.log_info("Home root accessed")
     return "<h1>Service Running</h1>"
 
 
@@ -161,9 +174,9 @@ def get_image(image_name):
             Images.km_height,
             Images.km_width,
             Images.center_point,
-        )
+        ) 
         .filter(Images.image_name == image_name)
-        .all()
+        .all() 
     )
 
     log.log_info(f"Query for {image_name} returned {query}")
@@ -188,7 +201,7 @@ def get_image(image_name):
 def add_img():
     # Sanity Check
     if not request.json:
-        log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
+            log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
 
     # Dump the json into a string
@@ -260,7 +273,7 @@ def add_bounds():
     if not request.json:
         log.log_error(f"Add bounds failed returned a 400 error bad request\n{request}")
         abort(400)
-
+    
     boundData = json.dumps(request.json)
     boundObject = json.loads(boundData, object_hook=JSONObject)
 
@@ -316,9 +329,9 @@ def get_bounds(map_name):
             Bounds.map_name, Bounds.top_left, Bounds.bottom_right,
         )  # Add the filter
         .filter(Bounds.map_name == map_name)
-        .all()
+        .all() 
     )
-    log.log_info(f"Get Bounds: {map_name} query retrieved {query}")
+        log.log_info(f"Get Bounds: {map_name} query retrieved {query}")
 
     # parse the top left and bottom right into 4 specific sides
     results = [
@@ -342,7 +355,7 @@ def add_point():
     if not request.json:
         log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
-
+    
     point_data = json.dumps(request.json)
     point_object = json.loads(point_data, object_hook=JSONObject)
 
@@ -350,13 +363,13 @@ def add_point():
         point_object.point_location,
         point_object.point_name,
         point_object.point_desc,
-        point_object.point_image,
+        point_object.point_image,        
     )
 
     insert = False
     update = False
     ret = ""
-
+    
     try:
         log.log_info(f"Trying to INSERT point object to database")
         db.session.add(point)
@@ -373,7 +386,7 @@ def add_point():
         else:
             ret = "Error, could not be inserted or updated check server error log for more info"
 
-    return {"Status": ret}
+    return {"Status": ret}    
 
 
 # Get All Points Route
@@ -398,7 +411,7 @@ def get_point(point_id):
     query = (
         Points.query.with_entities(
             Points.point_name, Points.point_desc, Points.point_image,
-        )
+    )
         .filter(Points.point_id == point_id)
         .all()
     )
@@ -418,7 +431,31 @@ def get_point(point_id):
 
 # Get Model data from DB
 # Methods: GET
+<<<<<<< HEAD
 # Description: Using the model location from the get all models call, we can 
+=======
+# Description: Using the model_id from the get all models call, we can get the rest of the info for a model
+@app.route("/getmodel/<string:model_id>")
+def get_model(model_id):
+    query = (
+        Models.query.with_entities(
+            Models.model_offset, Models.model_scaling, Models.model_data,
+    )
+        .filter(Models.model_id == model_id)
+        .all()
+    )
+    log.log_info(f"Query for {model_id} returned {query}")
+    results = [
+        {
+            "model_offset": q.model_offset,
+            "model_scaling": q.model_scaling,
+            "model_data": q.model_data
+        }
+        for q in query
+    ]
+
+    return {"Result": results}
+>>>>>>> master
 
 
 # Get all Models from the DB
@@ -428,6 +465,10 @@ def get_point(point_id):
 def get_all_models():
     query = (
         Models.query.with_entities(
+<<<<<<< HEAD
+=======
+            Models.model_id,
+>>>>>>> master
             Models.model_location,
             Models.model_rotation,
         ).all()
@@ -445,8 +486,11 @@ def get_all_models():
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> master
 # Add Models to the DB
 # Methods: POST
 # Description: add, or updates the models in the Tool kit
@@ -459,7 +503,11 @@ def add_model():
     json_obj = json.loads(json_str, object_hook=JSONObject)
 
     model = Models(
+<<<<<<< HEAD
         json_object.model_location,
+=======
+        json_obj.model_location,
+>>>>>>> master
         json_obj.model_rotation,
         json_obj.model_scaling,
         json_obj.model_data,
@@ -485,7 +533,7 @@ def add_model():
         try:
             log.log_info(f"Updating model object in database")
             db.session.query(Models).filter(
-                Models.model_location == model.model_location
+                Models.model_id == model.model_id
             ).update(
                 {
                     "model_rotation": model.model_rotation,
