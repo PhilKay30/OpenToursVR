@@ -137,7 +137,7 @@ class Models(db.Model):
         self.model_offset = model_offset
 
     def __repr__(self):
-        return f"Model Location :{self.model_location} {self.model_offset}"
+        return f"Model Location :{self.model_location} {self.model_rotation}"
 
 
 
@@ -415,10 +415,42 @@ def get_point(point_id):
     return {"Result": results}
 
 
-# Add Models to the DB
+
+# Get Model data from DB
 # Methods: GET
+# Description: Using the model location from the get all models call, we can 
+
+
+# Get all Models from the DB
+# Methods: GET
+# Description: Get all model locations and rotation from DB
+@app.route("/getmodel/", methods=["GET"])
+def get_all_models():
+    query = (
+        Models.query.with_entities(
+            Models.model_location,
+            Models.model_rotation,
+        ).all()
+    )
+
+    results = [
+        {
+            "model_location": q.model_location,
+            "model_rotation": q.model_rotation
+        }
+        for q in query
+    ]
+
+    return {"Results": results}
+
+
+
+
+
+# Add Models to the DB
+# Methods: POST
 # Description: add, or updates the models in the Tool kit
-@app.route("/addmodel/", methods=["GET"])
+@app.route("/addmodel/", methods=["POST"])
 def add_model():
     if not request.json:
         abort 400
@@ -464,7 +496,7 @@ def add_model():
             )
             db.session.commit()
             update = True
-            log.log_info(f"Updating image object to database Successful")
+            log.log_info(f"Updating model object to database Successful")
         except Exception as e:
             log.log_error(f"Rolling back transaction. Updating failed: {e}")
             db.session.rollback()
