@@ -16,6 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -25,7 +26,7 @@
         <Border
             Grid.Row="0"
             Grid.Column="0"
-            Grid.RowSpan="2"
+            Grid.RowSpan="3"
             BorderBrush="DimGray"
             BorderThickness="0 0 1 0">
             <controls:MapControl
@@ -47,9 +48,9 @@
             <StackPanel>
                 <Label
                     HorizontalAlignment="Center"
-                    FontWeight="Black"
-                    Content="Point"
-                    />
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Content="Point"/>
                 <Label
                     Name="LabelPoint"
                     HorizontalAlignment="Center"
@@ -66,7 +67,8 @@
             <StackPanel>
                 <Label
                     HorizontalAlignment="Center"
-                    FontWeight="Black"
+                    FontSize="14"
+                    FontWeight="Bold"
                     Content="Name"/>
                 <TextBox
                     Name="TextBoxName"
@@ -84,7 +86,8 @@
             <StackPanel>
                 <Label
                     HorizontalAlignment="Center"
-                    FontWeight="Black"
+                    FontSize="14"
+                    FontWeight="Bold"
                     Content="Description"/>
                 <TextBox
                     Name="TextBoxDescription"
@@ -105,18 +108,16 @@
             <StackPanel>
                 <Label
                     HorizontalAlignment="Center"
-                    FontWeight="Black"
+                    FontSize="14"
+                    FontWeight="Bold"
                     Content="Add Image"/>
                 <Label
                     Name="LabelImage"
                     HorizontalAlignment="Center"
                     Content="No Image Selected"/>
-                <Button
-                    Name="ButtonSelectImage"
-                    Margin="5"
-                    Padding="10"
-                    HorizontalAlignment="Stretch"
-                    Content="Select Image"
+                <c:MenuButton
+                    x:Name="ButtonSelectImage"
+                    Text="Select Image"
                     Click="OnClick_AddImage"/>
             </StackPanel>
         </StackPanel>
@@ -127,7 +128,14 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 Text="Save Point"
-                VerticalAlignment="Bottom"
                 Click="OnClick_SavePoint"/>
+
+        <!-- Reset Button -->
+        <c:DeclineButton
+                x:Name="ButtonResetPoint"
+                Grid.Row="2"
+                Grid.Column="1"
+                Text="Reset Point"
+                Click="OnClick_ResetPoint"/>
     </Grid>
 </Page>

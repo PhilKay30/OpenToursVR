@@ -20,6 +20,7 @@ namespace Mapping.TourPoints
     /// </summary>
     // ReSharper disable once UnusedMember.Global
     // ReSharper disable once RedundantExtendsListEntry
+    // ReSharper disable CompareOfFloatsByEqualityOperator
     public partial class TourPointsPage : Page
     {
         private Geopoint TourPointLocation { get; set; }
@@ -46,7 +47,7 @@ namespace Mapping.TourPoints
         {
             (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
             ZoomToSelection();
-            AddBoxToMap();
+            UpdateSelectionVisual();
         }
 
 
@@ -128,7 +129,7 @@ namespace Mapping.TourPoints
         /// <summary>
         /// Displays the currently selected area to the user, as well as any selected point.
         /// </summary>
-        private void UpdateSelectionVisual(Geopoint point)
+        private void UpdateSelectionVisual(Geopoint point = null)
         {
             // Clear any current pins
             MyMapControl.MapElements.Clear();
@@ -136,9 +137,28 @@ namespace Mapping.TourPoints
             // Redraw box around map selection
             AddBoxToMap();
 
-            // Add a pin where the user tapped
-            MapIcon pin = new MapIcon { Location = point };
-            MyMapControl.MapElements.Add(pin);
+            // Check if point is actually specified
+            if (point == null)
+            {
+                // Point was not specified, so clear everything
+                ImagePath = string.Empty;
+                LabelPoint.Content = "Select a Point";
+                LabelImage.Content = "No Image Selected";
+                TextBoxName.Text = string.Empty;
+                TextBoxDescription.Text = string.Empty;
+                TextBoxName.IsEnabled = false;
+                TextBoxDescription.IsEnabled = false;
+                ButtonSelectImage.IsEnabled = false;
+            }
+            else
+            {
+                // Point was specified, so add it to the map and enabled fields
+                MapIcon pin = new MapIcon { Location = point };
+                MyMapControl.MapElements.Add(pin);
+                TextBoxName.IsEnabled = true;
+                TextBoxDescription.IsEnabled = true;
+                ButtonSelectImage.IsEnabled = true;
+            }
 
             // Keep track of the point
             TourPointLocation = point;
@@ -179,18 +199,18 @@ namespace Mapping.TourPoints
                 {
                     // Get the path of the specified file
                     ImagePath = openFileDialog.FileName;
-                    LabelImage.Content = "Image: " + openFileDialog.SafeFileName;
+                    LabelImage.Content = openFileDialog.SafeFileName;
                 }
                 else
                 {
                     // Dialog didn't open correctly
-                    LabelImage.Content = "Image: No Image Selected.";
+                    LabelImage.Content = "No Image Selected";
                 }
             }
             catch (Exception ex)
             {
                 // Something went wrong with the dialog
-                LabelImage.Content = "Image: No Image Selected.";
+                LabelImage.Content = "No Image Selected";
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -223,14 +243,12 @@ namespace Mapping.TourPoints
             }
 
             // Clear the current information
-            MyMapControl.MapElements.Clear();
-            AddBoxToMap();
-            ImagePath = string.Empty;
-            LabelPoint.Content = "Select a Point";
-            LabelImage.Content = "Image : No Image Selected";
-            TextBoxName.Text = string.Empty;
-            TextBoxDescription.Text = string.Empty;
-            TourPointLocation = new Geopoint(new BasicGeoposition());
+            UpdateSelectionVisual();
+        }
+
+        private void OnClick_ResetPoint(object sender, RoutedEventArgs e)
+        {
+            UpdateSelectionVisual();
         }
     }
 }
