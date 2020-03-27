@@ -116,12 +116,8 @@ class Images(db.Model):
 class Models(db.Model):
     __tablename__ = "map_models"
 
-<<<<<<< HEAD
-    model_location = db.Column(db.String(), primary_key=True) # represents a GIS coordinate in POINT() format
-=======
     model_id = db.Column(db.Integer(), primary_key=True)
     model_location = db.Column(db.String()) # represents a GIS coordinate in POINT() format
->>>>>>> master
     model_rotation = db.Column(db.String())
     model_scaling = db.Column(db.String())
     model_data = db.Column(db.String())
@@ -129,10 +125,7 @@ class Models(db.Model):
 
     def __init__(
         self,
-<<<<<<< HEAD
-=======
-        model_id
->>>>>>> master
+        model_id,
         model_location,
         model_rotation,
         model_scaling,
@@ -146,18 +139,14 @@ class Models(db.Model):
         self.model_offset = model_offset
 
     def __repr__(self):
-<<<<<<< HEAD
         return f"Model Location :{self.model_location} {self.model_rotation}"
-=======
-        return f"Model Location :{self.model_location} {self.model_offset}"
->>>>>>> master
 
 
 
 # The base route of the app
 @app.route("/")
 def service_route():
-        log.log_info("Home root accessed")
+    log.log_info("Home root accessed")
     return "<h1>Service Running</h1>"
 
 
@@ -201,7 +190,7 @@ def get_image(image_name):
 def add_img():
     # Sanity Check
     if not request.json:
-            log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
+        log.log_error(f"Add image failed returned a 400 error bad request\n{request}")
         abort(400)
 
     # Dump the json into a string
@@ -331,7 +320,7 @@ def get_bounds(map_name):
         .filter(Bounds.map_name == map_name)
         .all() 
     )
-        log.log_info(f"Get Bounds: {map_name} query retrieved {query}")
+    log.log_info(f"Get Bounds: {map_name} query retrieved {query}")
 
     # parse the top left and bottom right into 4 specific sides
     results = [
@@ -431,9 +420,6 @@ def get_point(point_id):
 
 # Get Model data from DB
 # Methods: GET
-<<<<<<< HEAD
-# Description: Using the model location from the get all models call, we can 
-=======
 # Description: Using the model_id from the get all models call, we can get the rest of the info for a model
 @app.route("/getmodel/<string:model_id>")
 def get_model(model_id):
@@ -455,7 +441,6 @@ def get_model(model_id):
     ]
 
     return {"Result": results}
->>>>>>> master
 
 
 # Get all Models from the DB
@@ -465,10 +450,7 @@ def get_model(model_id):
 def get_all_models():
     query = (
         Models.query.with_entities(
-<<<<<<< HEAD
-=======
             Models.model_id,
->>>>>>> master
             Models.model_location,
             Models.model_rotation,
         ).all()
@@ -486,28 +468,19 @@ def get_all_models():
 
 
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> master
 # Add Models to the DB
 # Methods: POST
 # Description: add, or updates the models in the Tool kit
 @app.route("/addmodel/", methods=["POST"])
 def add_model():
     if not request.json:
-        abort 400
+        abort(400)
 
     json_str = json.dumps(request.json)
     json_obj = json.loads(json_str, object_hook=JSONObject)
 
     model = Models(
-<<<<<<< HEAD
-        json_object.model_location,
-=======
         json_obj.model_location,
->>>>>>> master
         json_obj.model_rotation,
         json_obj.model_scaling,
         json_obj.model_data,
