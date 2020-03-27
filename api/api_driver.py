@@ -116,7 +116,8 @@ class Images(db.Model):
 class Models(db.Model):
     __tablename__ = "map_models"
 
-    model_location = db.Column(db.String(), primary_key=True) # represents a GIS coordinate in POINT() format
+    model_id = db.Column(db.Integer(), primary_key=True)
+    model_location = db.Column(db.String()) # represents a GIS coordinate in POINT() format
     model_rotation = db.Column(db.String())
     model_scaling = db.Column(db.String())
     model_data = db.Column(db.String())
@@ -124,6 +125,7 @@ class Models(db.Model):
 
     def __init__(
         self,
+        model_id
         model_location,
         model_rotation,
         model_scaling,
@@ -418,8 +420,28 @@ def get_point(point_id):
 
 # Get Model data from DB
 # Methods: GET
-# Description: Using the model location from the get all models call, we can 
-@app.route("")
+# Description: Using the model_id from the get all models call, we can get the rest of the info for a model
+@app.route("/getmodel/<string:model_id>")
+def get_model(model_id):
+    query = (
+        Models.query.with_entities(
+            Models.model_offset, Models.model_scaling, Models.model_data,
+    )
+        .filter(Models.model_id == model_id)
+        .all()
+    )
+    log.log_info(f"Query for {model_id} returned {query}")
+    results = [
+        {
+            "model_offset": q.model_offset,
+            "model_scaling": q.model_scaling,
+            "model_data": q.model_data
+        }
+        for q in query
+    ]
+
+    return {"Result": results}
+
 
 # Get all Models from the DB
 # Methods: GET
@@ -428,6 +450,7 @@ def get_point(point_id):
 def get_all_models():
     query = (
         Models.query.with_entities(
+            Models.model_id,
             Models.model_location,
             Models.model_rotation,
         ).all()
@@ -457,7 +480,7 @@ def add_model():
     json_obj = json.loads(json_str, object_hook=JSONObject)
 
     model = Models(
-        json_object.model_location,
+        json_obj.model_location,
         json_obj.model_rotation,
         json_obj.model_scaling,
         json_obj.model_data,
@@ -483,7 +506,7 @@ def add_model():
         try:
             log.log_info(f"Updating model object in database")
             db.session.query(Models).filter(
-                Models.model_location == model.model_location
+                Models.model_id == model.model_id
             ).update(
                 {
                     "model_rotation": model.model_rotation,
@@ -512,5 +535,5 @@ def add_model():
 
 # If this is the main file being called, run the app.
 if __name__ == "__main__":
-    
+
     app.run("0.0.0.0")
