@@ -112,7 +112,8 @@ class Images(db.Model):
 
 
 
-
+# Name: Models
+# Description: this class represents the models being used for the buildings in the VR app.
 class Models(db.Model):
     __tablename__ = "map_models"
 
@@ -419,6 +420,71 @@ def get_point(point_id):
 
     return {"Result": results}
 
+
+# Add Models to the DB
+# Methods: GET
+# Description: add, or updates the models in the Tool kit
+@app.route("/addmodel/", methods=["GET"])
+def add_model():
+    if not request.json:
+        abort 400
+
+    json_str = json.dumps(request.json)
+    json_obj = json.loads(json_str, object_hook=JSONObject)
+
+    model = Models(
+        json_object.model_location,
+        json_obj.model_rotation,
+        json_obj.model_scaling,
+        json_obj.model_data,
+        json_obj.model_offset,
+    )
+
+    log.log_info(f"Model object created")
+
+    insert = False
+    update = False
+    ret = ""
+
+    # Insert, if that throws an exception, update instead.
+    try:
+        log.log_info(f"Trying to INSERT model object to database")
+        db.session.add(model)
+        db.session.commit()
+        insert = True
+        log.log_info(f"Model successfully added to database")
+    except:
+        log.log_warning(f"INSERT model object failed. Rolling back transaction")
+        db.session.rollback()
+        try:
+            log.log_info(f"Updating model object in database")
+            db.session.query(Models).filter(
+                Models.model_location == model.model_location
+            ).update(
+                {
+                    "model_rotation": model.model_rotation,
+                    "model_scaling": model.model_scaling,
+                    "model_data": model.model_data,
+                    "model_offset": model.model_offset
+                }
+            )
+            db.session.commit()
+            update = True
+            log.log_info(f"Updating image object to database Successful")
+        except Exception as e:
+            log.log_error(f"Rolling back transaction. Updating failed: {e}")
+            db.session.rollback()
+    finally:
+        # Build the return
+        if insert:
+            ret = "Inserted"
+        elif update:
+            ret = "Updated"
+        else:
+            ret = "Error, could not be inserted or updated, check server logs for more info"
+
+    # return
+    return {"Status": ret}
 
 # If this is the main file being called, run the app.
 if __name__ == "__main__":
