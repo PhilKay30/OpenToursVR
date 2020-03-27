@@ -5,104 +5,70 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Mapping.SvgConverter"
       xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
+      xmlns:c="clr-namespace:Mapping.CustomControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SvgConverterPage">
 
-    <Grid>
+    <Grid
+        Background="GhostWhite">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="300"/>
         </Grid.ColumnDefinitions>
 
-        <TabControl
-            Name="TabRoads"
+        <Border
             Grid.Row="0"
             Grid.Column="0"
-            Margin="10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-        />
-
-        <Grid
-            Grid.Row="1"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <Button
-                Name="ButtonSelect"
-                Grid.Row="0"
-                Margin="10"
-                Padding="5"
+            Grid.RowSpan="3"
+            BorderBrush="DimGray"
+            BorderThickness="0 0 1 0">
+            <WebBrowser
+                Name="DisplayImage"
                 HorizontalAlignment="Stretch"
-                Content="Select All"
-                IsEnabled="False"
-                Click="OnClick_SelectAll"
-            />
-            <Button
-                Name="ButtonDeselect"
-                Grid.Row="1"
-                Margin="10"
-                Padding="5"
-                HorizontalAlignment="Stretch"
-                Content="Deselect All"
-                IsEnabled="False"
-                Click="OnClick_DeselectAll"
-            />
-            <Button
-                Name="ButtonGenerate"
-                Grid.Row="3"
-                Margin="10"
-                Padding="5"
-                HorizontalAlignment="Stretch"
-                Content="Generate Image"
-                IsEnabled="False"
-                Click="OnClick_GenerateImage"
-            />
-            <Button
-                Name="ButtonSave"
-                Grid.Row="4"
-                Margin="10"
-                Padding="5"
-                HorizontalAlignment="Stretch"
-                Content="Save Image"
-                IsEnabled="False"
-                Click="OnClick_SaveImage"
-            />
-        </Grid>
+                VerticalAlignment="Stretch"/>
+        </Border>
 
-
-        <WebBrowser
-            Name="DisplayImage"
+        <StackPanel
             Grid.Row="0"
             Grid.Column="1"
-            Grid.RowSpan="2"
-            Margin="10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-        />
+            Margin="5">
+            <TabControl
+                Name="TabRoads"
+                Height="200"
+                Margin="5"/>
+            <c:MenuButton
+                x:Name="ButtonSelect"
+                Text="Select All"
+                IsEnabled="False"
+                Click="OnClick_SelectAll"/>
+            <c:MenuButton
+                x:Name="ButtonDeselect"
+                Text="Deselect All"
+                IsEnabled="False"
+                Click="OnClick_DeselectAll"/>
+        </StackPanel>
 
-        <TextBlock
-            Name="StatusBlock"
+        <c:ConfirmButton
+            x:Name="ButtonGenerate"
+            Grid.Row="1"
+            Grid.Column="1"
+            Text="Generate Image"
+            IsEnabled="False"
+            Click="OnClick_GenerateImage"/>
+        <c:ConfirmButton
+            x:Name="ButtonSave"
             Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="10"
-            HorizontalAlignment="Stretch"
-        />
+            Grid.Column="1"
+            Text="Save Image"
+            IsEnabled="False"
+            Click="OnClick_SaveImage"/>
     </Grid>
 </Page>

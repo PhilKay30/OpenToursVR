@@ -65,19 +65,15 @@ namespace Mapping.SvgConverter
             await Task.Run(() =>
             {
                 // Calculate the offset points
-                RunOnUiThread(o => StatusBlock.Text = "Calculating offset...");
                 mDatabase.GetBounds(mTopLeft, mBottomRight);
 
                 // Load the polygons from the database
-                RunOnUiThread(o => StatusBlock.Text = "Loading polygons...");
                 mDataPoints.AddRange(mDatabase.GetPolygons(mTopLeft));
 
                 // Load the roads from the database
-                RunOnUiThread(o => StatusBlock.Text = "Loading roads...");
                 mDataPoints.AddRange(mDatabase.GetRoads(mTopLeft));
 
                 // Load the lines from the database
-                RunOnUiThread(o => StatusBlock.Text = "Loading lines...");
                 mDataPoints.AddRange(mDatabase.GetLines(mTopLeft));
 
                 // Callback on main thread
@@ -104,8 +100,6 @@ namespace Mapping.SvgConverter
         /// </summary>
         private void OnLoadFinished()
         {
-            StatusBlock.Text = "Generating options...";
-
             // Iterate through the tabs and add them to the UI
             foreach (TabItem tabItem in TabListInterface.GetTabs(mDataPoints))
             {
@@ -113,7 +107,6 @@ namespace Mapping.SvgConverter
             }
 
             // Enable the buttons
-            StatusBlock.Text = "Ready";
             ButtonSelect.IsEnabled = true;
             ButtonDeselect.IsEnabled = true;
             ButtonGenerate.IsEnabled = true;
@@ -267,7 +260,7 @@ namespace Mapping.SvgConverter
                 0.0f,
                 @"\output.png",
                 "osmMap.png",
-                new PostGisPoint { X = (((botRight.Longitude - topLeft.Longitude)/2)+ topLeft.Longitude), Y = (((topLeft.Latitude-botRight.Latitude)/2)+botRight.Latitude) },
+                new PostGisPoint { X = (((botRight.Longitude - topLeft.Longitude) / 2) + topLeft.Longitude), Y = (((topLeft.Latitude - botRight.Latitude) / 2) + botRight.Latitude) },
                 widthInKm,
                 heightInKm);
         }
