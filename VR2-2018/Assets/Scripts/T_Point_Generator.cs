@@ -27,8 +27,8 @@ public class T_Point_Generator : MonoBehaviour
     void Start()
     {
         var loadFile = gameObject.GetComponent<GenerateWorld>();
-        teleportMap = loadFile.LoadMaps(teleportMapFile);
-        GenerateLevel();
+       // teleportMap = loadFile.LoadMaps(teleportMapFile);
+       // GenerateLevel();
     }
 
 

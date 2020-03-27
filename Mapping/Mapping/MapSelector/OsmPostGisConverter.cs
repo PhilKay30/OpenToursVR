@@ -1,5 +1,5 @@
 ﻿using Mapping.Common;
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -19,6 +19,9 @@ namespace Mapping.MapSelector
         /// <returns>Null if data was converted and added successfully; false otherwise</returns>
         public string ConvertOsmToPostGis()
         {
+            // Set password environment variable
+            Environment.SetEnvironmentVariable("PGPASSWORD", ConfigInterface.ConnectionDb.Password);
+
             // Initialize process to convert OSM data to PostGis data
             Process process = new Process
             {
@@ -27,7 +30,7 @@ namespace Mapping.MapSelector
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = FileIO.GetOsm2PgsqlDirectory() + "\\osm2pgsql.exe",
                     Arguments = new StringBuilder()
-                        .Append("--create --password")
+                        .Append("--create")
                         .Append(" --database ").Append(ConfigInterface.ConnectionDb.DatabaseName)
                         .Append(" --username ").Append(ConfigInterface.ConnectionDb.Username)
                         .Append(" --host ").Append(ConfigInterface.ConnectionDb.Host)

@@ -58,6 +58,9 @@ namespace Mapping.Common
 
         /// <summary>
         /// Adds the user-selected bounds to the database for reference in the future
+        /// Due to requiring custom Select ST_AsText with a transform of 3857 for the 
+        ///     SVG, we are also going to perform an API call as well to insert the 
+        ///     bounds in to be used on unity
         /// </summary>
         /// <param name="minLon">The minimum longitudinal value</param>
         /// <param name="maxLon">The maximum longitudinal value</param>
@@ -99,6 +102,18 @@ namespace Mapping.Common
 
             // Execute the command in the database.
             new NpgsqlCommand(builder.ToString(), mConnection).ExecuteNonQuery();
+
+            // Now we build up our requirements to add the bounds to the API database, the table map_bounds
+            // Contains a map_name, a top left corner point, and a bot right corner point. Due to limitations
+            // on the API, the two points will be strings and not actually GIS points. This is due to the fact
+            // that we could not get geoalchemy2 to work with sqlalchemy on the API, and thus are keeping it as
+            // a string.
+
+            const string map_name = "osmMap";
+            string top_left = "POINT(" + minLon + " " + maxLat + ")";
+            string bottom_right = "POINT(" + maxLon + " " + minLat + ")";
+            ApiHandler.ApiHandler api = new ApiHandler.ApiHandler();
+            api.AddBounds(map_name, top_left, bottom_right);
         }
 
 

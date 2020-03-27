@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.JSONSerializeModule;
 using System.IO;
 using System;
 using System.Net;
@@ -63,10 +62,10 @@ public class MapLoader : MonoBehaviour
     {
         // Unity coords for BaseMap
         Vector2 basemapPosition = new Vector2(BaseMap.transform.position.x, BaseMap.transform.position.z);
-        Vector2 unityTopLeftCorner = new Vector2(basemapPosition.x - 5, basemapPosition.y + (5 * BaseMapRatio));
-        Vector2 unityTopRightCorner = new Vector2(basemapPosition.x + 5, basemapPosition.y + (5 * BaseMapRatio));
-        Vector2 unityBotLeftCorner = new Vector2(basemapPosition.x - 5, basemapPosition.y - (5 * BaseMapRatio));
-        Vector2 unityBotRightCorner = new Vector2(basemapPosition.x + 5, basemapPosition.y - (5 * BaseMapRatio));
+        Vector2 unityTopLeftCorner = new Vector2(basemapPosition.x - 5, basemapPosition.y + (5 * BaseMap.transform.localScale.z));
+        Vector2 unityTopRightCorner = new Vector2(basemapPosition.x + 5, basemapPosition.y + (5 * BaseMap.transform.localScale.z));
+        Vector2 unityBotLeftCorner = new Vector2(basemapPosition.x - 5, basemapPosition.y - (5 * BaseMap.transform.localScale.z));
+        Vector2 unityBotRightCorner = new Vector2(basemapPosition.x + 5, basemapPosition.y - (5 * BaseMap.transform.localScale.z));
 
         // Unity coord for center of OverlayMap
         Vector2 unityCenterPoint = new Vector2(OverlayMap.transform.position.x, OverlayMap.transform.position.z);
@@ -80,6 +79,8 @@ public class MapLoader : MonoBehaviour
         // ratio for basemap calculation
         double ratioX = baseMapWidthInGIS / baseMapWidthInUnity;
         double ratioY = baseMapHeightInGIS / baseMapHeightInUnity;
+
+        Debug.Log("Width: " + baseMapWidthInUnity + " Height: " + baseMapHeightInUnity);
 
         // get unity coord offsets for overlay map
         double overlayMapOffsetX = unityCenterPoint.x - unityTopLeftCorner.x;
@@ -101,18 +102,22 @@ public class MapLoader : MonoBehaviour
         double baseMapWidthInKM = HaversineDistance(topLeft, topRight, DistanceUnit.Kilometers);
         double baseMapHeightInKM = HaversineDistance(topLeft, botLeft, DistanceUnit.Kilometers);
 
+        Debug.Log("BaseMap: Width: " + baseMapWidthInKM + " Height: " + baseMapHeightInKM);
+
         // get pixels per KM ratio
-        double horizontalPPK = baseMapWidthInUnity / baseMapWidthInKM;
-        double verticalPPK = baseMapHeightInUnity / baseMapHeightInKM;
+        double horizontalPPK = baseMapWidthInKM / baseMapWidthInUnity;
+        double verticalPPK = baseMapHeightInKM / baseMapHeightInUnity;
 
         // get pixel counts for OverlayMap
-        double oMapPxlLen = 5;
-        double histMapPixelWidth = oMapPxlLen;
+        double oMapPxlLen = 10;
+        double histMapPixelWidth = oMapPxlLen * OverlayMap.transform.localScale.x;
         double histMapPixelHeight = oMapPxlLen * OverlayMap.transform.localScale.z;
 
         // get KM lnegths of the histrical map's sides
         double histMapWidthKM = histMapPixelWidth * horizontalPPK;
         double histMapHeightKM = histMapPixelHeight * verticalPPK;
+
+        Debug.Log("HistMap: Width: " + histMapWidthKM + " Height: " + histMapHeightKM);
 
         // get the image data into hex array
         string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
@@ -126,7 +131,7 @@ public class MapLoader : MonoBehaviour
         /// Center point = 'POINT(overlayMapXInGIS overlayMapYInGIS)' (both are double variables)
         /// img_data = imageHex (string variable)
 
-        ApiPostImage(botLeft, imageHex, rotation, histMapHeightKM, histMapWidthKM);
+        ApiPostImage(center_point, imageHex, rotation, histMapHeightKM, histMapWidthKM);
     }
 
 
@@ -134,13 +139,13 @@ public class MapLoader : MonoBehaviour
     {
         JsonAddImage json = new JsonAddImage()
         {
-            center_point = "POINT(" + botLeft.Longitude.ToString() + " " + botLeft.Latitude.ToString() + ")",
+            center_point = center_point,
             image_data = imageHex,
-            image_name = "historicalMap",
+            image_name = "historicalMap.png",
             image_rotation = rotation.ToString(),
             image_size = imageHex.Length.ToString(),
-            km_height = histMapHeightKM,
-            km_width = histMapWidthKM
+            km_height = histMapHeightKM.ToString(),
+            km_width = histMapWidthKM.ToString()
         };
 
         string strJson = JsonUtility.ToJson(json);
@@ -161,11 +166,13 @@ public class MapLoader : MonoBehaviour
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 // TODO: Error log that status wasnt OK.
+                //Debug.Log(response.StatusCode);
             }
         }
         catch (WebException e)
         {
             // TODO: Error log message.
+            //Debug.Log(e);
         }
     }
     
@@ -342,16 +349,16 @@ public class MapLoader : MonoBehaviour
 /// <summary>
 /// This is an object that represents our JSON structure for the POST request to add an image.
 /// </summary>
-[Serializable]
+[System.Serializable]
 public class JsonAddImage
 {
-    public string image_name { get; set; }
-    public string image_data { get; set; }
-    public string image_size { get; set; }
-    public string image_rotation { get; set; }
-    public string center_point { get; set; }
-    public string km_height { get; set; }
-    public string km_width { get; set; }
+    public string image_name;
+    public string image_data;
+    public string image_size;
+    public string image_rotation;
+    public string center_point;
+    public string km_height;
+    public string km_width;
 }
 
 

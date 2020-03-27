@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.vr22018.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "D:\\Dev\\CapstoneVR\\VR2-2018\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "D:\\Dev\\OpenToursVR\\VR2-2018\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "VR2-2018 [Testing]"

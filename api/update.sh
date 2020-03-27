@@ -10,4 +10,4 @@ pipenv install
 echo 'Restarting nginx and the daemon'
 sudo systemctl restart nginx
 sudo systemctl daemon-reload
-
+sudo systemctl restart api_driver
