@@ -110,6 +110,36 @@ class Images(db.Model):
         return f"image_name :{self.image_name} {self.image_size}"
 
 
+
+
+class Models(db.Model):
+    __tablename__ = "map_models"
+
+    model_location = db.Column(db.String(), primary_key=True) # represents a GIS coordinate in POINT() format
+    model_rotation = db.Column(db.String())
+    model_scaling = db.Column(db.String())
+    model_data = db.Column(db.String())
+    model_offset = db.Column(db.Float())
+
+    def __init__(
+        self,
+        model_location,
+        model_rotation,
+        model_scaling,
+        model_data,
+        model_offset,
+    ):
+        self.model_location = model_location
+        self.model_rotation = model_rotation
+        self.model_scaling = model_scaling
+        self.model_data = model_data
+        self.model_offset = model_offset
+
+    def __repr__(self):
+        return f"Model Location :{self.model_location} {self.model_offset}"
+
+
+
 # The base route of the app
 @app.route("/")
 def service_route():
