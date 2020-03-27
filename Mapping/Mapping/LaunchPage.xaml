@@ -8,39 +8,28 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="LaunchPage">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <UniformGrid
+        Margin="5">
 
-        <UniformGrid
-            Grid.Row="0"
-            Grid.Column="0">
-
-            <c:MenuButton
-                x:Name="ButtonSelectLocation"
-                Text="Select Location Boundaries"
-                Click="OnClick_SelectLocation"/>
-            <c:MenuButton
-                x:Name="ButtonGenerateImage"
-                Text="Generate Image"
-                Click="OnClick_GenerateImage"/>
-            <c:MenuButton
-                x:Name="ButtonAddData"
-                Text="Add Tour Point"
-                Click="OnClick_AddTourPoint"/>
-            <c:MenuButton
-                x:Name="ButtonAddModel"
-                Text="Add Model"
-                Click="OnClick_AddModel"/>
-            <c:MenuButton
-                x:Name="ButtonAddHistoricalMap"
-                Text="Add Historical Map"
-                IsEnabled="False"
-                Click="OnClick_AddHistMap"/>
-        </UniformGrid>
-    </Grid>
+        <c:MenuButton
+            x:Name="ButtonSelectLocation"
+            Text="Select Location Boundaries"
+            Click="OnClick_SelectLocation"/>
+        <c:MenuButton
+            x:Name="ButtonGenerateImage"
+            Text="Generate Image"
+            Click="OnClick_GenerateImage"/>
+        <c:MenuButton
+            x:Name="ButtonAddData"
+            Text="Add Tour Point"
+            Click="OnClick_AddTourPoint"/>
+        <c:MenuButton
+            x:Name="ButtonAddModel"
+            Text="Add Model"
+            Click="OnClick_AddModel"/>
+        <c:MenuButton
+            x:Name="ButtonAddHistoricalMap"
+            Text="Add Historical Map"
+            Click="OnClick_AddHistMap"/>
+    </UniformGrid>
 </Page>

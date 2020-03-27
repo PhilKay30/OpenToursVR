@@ -2,16 +2,16 @@
 
 namespace Mapping.CustomControls
 {
-    public class MenuButton : AbstractButton
+    public class DeclineButton : AbstractButton
     {
         protected override Brush GetMainColour()
         {
-            return Brushes.Lavender;
+            return Brushes.LightCoral;
         }
 
         protected override Brush GetHoverColour()
         {
-            return Brushes.Plum;
+            return Brushes.IndianRed;
         }
     }
 }

@@ -48,4 +48,28 @@
     <Folder Include="Output\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="CustomControls\AbstractButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\DeclineButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\ConfirmButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\NavigationButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\MenuButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="CustomControls\AbstractButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

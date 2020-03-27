@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml.Controls.Maps;
+using Mapping.Common;
 using BasicGeoposition = Windows.Devices.Geolocation.BasicGeoposition;
 using Geopoint = Windows.Devices.Geolocation.Geopoint;
 using MapInputEventArgs = Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.MapInputEventArgs;
@@ -43,6 +44,24 @@ namespace Mapping.MapSelector
         private void OnPageLoad(object sender, RoutedEventArgs e)
         {
             (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
+            ZoomToSelection();
+        }
+
+
+        /// <summary>
+        /// Zooms map to current selection.
+        /// </summary>
+        private void ZoomToSelection()
+        {
+            // Calculate the center point
+            Geopoint centerGeopoint = new Geopoint(new BasicGeoposition
+            {
+                Latitude = 43.1927816,
+                Longitude = -80.3851837
+            });
+
+            // Set viewport to bounds
+            MyMapControl.TrySetViewAsync(centerGeopoint, 16);
         }
 
         /// <summary>

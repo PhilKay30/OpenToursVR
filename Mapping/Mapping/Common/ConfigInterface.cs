@@ -10,6 +10,8 @@ namespace Mapping.Common
     /// </summary>
     internal static class ConfigInterface
     {
+        public static string MapServiceKey { get; private set; } =
+            "uHaoztFWrW9BWb3hs3k3~-CR23WS_nUUkNh-IiYDDCQ~An9mUBW3pbdSSp7ddxqrBB9qez92sFJXziSbOyHRTsYO1dmnknCj6TILNJqwma9N";
         public static DatabaseConnection ConnectionDb { get; private set; }
         public static ApiConnection ConnectionApi { get; private set; }
         private static ConfigStatus Status { get; set; } = ConfigStatus.Unknown;
