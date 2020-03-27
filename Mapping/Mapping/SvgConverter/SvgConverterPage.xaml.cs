@@ -77,7 +77,7 @@ namespace Mapping.SvgConverter
                 mDataPoints.AddRange(mDatabase.GetLines(mTopLeft));
 
                 // Callback on main thread
-                RunOnUiThread(o => OnLoadFinished());
+                RunOnUiThread(o => TabRoads.LoadDataPoints(mDataPoints));
             });
         }
 
@@ -95,21 +95,16 @@ namespace Mapping.SvgConverter
             });
         }
 
-        /// <summary>
-        /// Listener for database data load finishing.
-        /// </summary>
-        private void OnLoadFinished()
+        private void OnTabsLoaded(object sender, RoutedEventArgs e)
         {
-            // Iterate through the tabs and add them to the UI
-            foreach (TabItem tabItem in TabListInterface.GetTabs(mDataPoints))
-            {
-                TabRoads.Items.Add(tabItem);
-            }
-
             // Enable the buttons
             ButtonSelect.IsEnabled = true;
             ButtonDeselect.IsEnabled = true;
-            ButtonGenerate.IsEnabled = true;
+        }
+
+        private void OnOptionSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            ButtonGenerate.IsEnabled = TabRoads.HasSelection;
         }
 
         /// <summary>
@@ -129,18 +124,7 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_SelectAll(object sender, RoutedEventArgs e)
         {
-            // Iterate through the tabs
-            foreach (TabItem tabItem in TabRoads.Items)
-            {
-                // Iterate through the checkboxes in the tab
-                ListView listView = (ListView)tabItem.Content;
-                foreach (ListViewItem listViewItem in listView.Items)
-                {
-                    // Deselect the checkbox
-                    CheckBox checkBox = (CheckBox)listViewItem.Content;
-                    checkBox.IsChecked = true;
-                }
-            }
+            TabRoads.SelectAll();
         }
 
         /// <summary>
@@ -150,18 +134,7 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_DeselectAll(object sender, RoutedEventArgs e)
         {
-            // Iterate through the tabs
-            foreach (TabItem tabItem in TabRoads.Items)
-            {
-                // Iterate through the checkboxes in the tab
-                ListView listView = (ListView)tabItem.Content;
-                foreach (ListViewItem listViewItem in listView.Items)
-                {
-                    // Deselect the checkbox
-                    CheckBox checkBox = (CheckBox)listViewItem.Content;
-                    checkBox.IsChecked = false;
-                }
-            }
+            TabRoads.DeselectAll();
         }
 
         /// <summary>
@@ -172,7 +145,7 @@ namespace Mapping.SvgConverter
         private void OnClick_GenerateImage(object sender, RoutedEventArgs e)
         {
             // Make sure that something has been selected to display
-            if (TabListInterface.Options.Count == 0)
+            if (SvgTabControl.Options.Count == 0)
             {
                 DisplayImage.Source = null;
                 ButtonSave.IsEnabled = false;

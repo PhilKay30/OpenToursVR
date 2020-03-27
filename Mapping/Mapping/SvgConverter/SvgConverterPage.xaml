@@ -40,10 +40,11 @@
             Grid.Row="0"
             Grid.Column="1"
             Margin="5">
-            <TabControl
-                Name="TabRoads"
-                Height="200"
-                Margin="5"/>
+            <local:SvgTabControl
+                x:Name="TabRoads"
+                Height="400"
+                Margin="5"
+                OnDataLoaded="OnTabsLoaded" OnSelectionChanged="OnOptionSelectionChanged"/>
             <c:MenuButton
                 x:Name="ButtonSelect"
                 Text="Select All"
