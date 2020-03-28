@@ -3,16 +3,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
       xmlns:s="clr-namespace:Mapping.Common"
       xmlns:c="clr-namespace:Mapping.CustomControls"
+      xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MapSelectorPage">
+      Title="{StaticResource MapSelectorPageTitle}">
 
-    <Grid
-        Background="GhostWhite">
-
+    <Grid Background="GhostWhite">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -34,20 +32,20 @@
                 ZoomInteractionMode="GestureAndControl" 
                 RotateInteractionMode="Disabled" 
                 TiltInteractionMode="Disabled"
-                MapServiceToken="{x:Static s:ConfigInterface.MapServiceKey}"
+                MapServiceToken="{x:Static s:ConfigInterface.MapServiceToken}"
                 MapTapped="OnTapMap" />
         </Border>
         <c:ConfirmButton
             x:Name="ButtonQuery"
             Grid.Row="1"
             Grid.Column="0"
-            Text="Query Selection"
+            Text="{StaticResource ButtonSave}"
             Click="OnClickQuery"/>
         <c:DeclineButton
             x:Name="ButtonReset"
             Grid.Row="1"
             Grid.Column="1"
-            Text="Reset Selection"
+            Text="{StaticResource ButtonReset}"
             Click="OnClickReset"/>
     </Grid>
 </Page>

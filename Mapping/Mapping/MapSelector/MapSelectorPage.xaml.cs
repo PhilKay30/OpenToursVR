@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml.Controls.Maps;
-using Mapping.Common;
 using BasicGeoposition = Windows.Devices.Geolocation.BasicGeoposition;
 using Geopoint = Windows.Devices.Geolocation.Geopoint;
 using MapInputEventArgs = Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.MapInputEventArgs;
@@ -290,7 +289,7 @@ namespace Mapping.MapSelector
             // Check if map retrieval was successful
             if (response)
             {
-                MessageBox.Show("Map was retrieved successfully.");
+                MessageBox.Show(Application.Current.FindResource("PromptMapRetrievalSuccessful")?.ToString());
 
                 // Attempt to convert OSM data to PostGis data
                 string returnMessage = mOsmPostGisConverter.ConvertOsmToPostGis();
@@ -304,7 +303,7 @@ namespace Mapping.MapSelector
                 else
                 {
                     // Conversion worked so go back to main menu
-                    MessageBox.Show("Mapping selection was successfully uploaded to the database.");
+                    MessageBox.Show(Application.Current.FindResource("PromptMapUploadedSuccessful")?.ToString());
                     ResetSelection();
                     if (NavigationService != null && NavigationService.CanGoBack)
                     {
@@ -315,10 +314,7 @@ namespace Mapping.MapSelector
             else
             {
                 // Map was not retrieved successfully
-                MessageBox.Show(
-                    "The map was not able to be retrieved. " +
-                                "The likely cause for this is that the selected area was too large." +
-                                "\nTry selecting a smaller area and querying again.");
+                MessageBox.Show(Application.Current.FindResource("PromptMapRetrievalUnsuccessful")?.ToString());
             }
         }
     }

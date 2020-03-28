@@ -20,46 +20,47 @@ namespace Mapping
             string errorMessage;
 
             // Get result of configuration load
+            // ReSharper disable RedundantCaseLabel
+            // ReSharper disable PossibleNullReferenceException
             switch (status)
             {
                 case ConfigInterface.ConfigStatus.OK:
                     return;
                 case ConfigInterface.ConfigStatus.ConfigDoesNotExist:
-                    errorMessage = "The configuration file does not exist." +
-                                   "\nYou must create a configuration file to proceed.";
+                    errorMessage = Application.Current.FindResource("PromptConfigFileDoesNotExist")?.ToString();
                     break;
                 case ConfigInterface.ConfigStatus.InvalidBaseTag:
-                    errorMessage = "The configuration file must start with the <config> tag." +
-                                   "\nWould you like to replace the file with a new one?";
+                    errorMessage = Application.Current.FindResource("PromptConfigBaseTagInvalid")?.ToString();
                     break;
                 case ConfigInterface.ConfigStatus.DatabaseTagDoesNotExist:
-                    errorMessage = "The configuration file must include the <database> tag." +
-                                   "\nWould you like to replace the file with a new one?";
+                    errorMessage = string.Format(Application.Current.FindResource("PromptConfigTagMissing").ToString(), @"database");
                     break;
                 case ConfigInterface.ConfigStatus.ApiTagDoesNotExist:
-                    errorMessage = "The configuration file must include the <api> tag." +
-                                   "\nWould you like to replace the file with a new one?";
+                    errorMessage = string.Format(Application.Current.FindResource("PromptConfigTagMissing").ToString(), @"api");
+                    break;
+                case ConfigInterface.ConfigStatus.MapTagDoesNotExist:
+                    errorMessage = string.Format(Application.Current.FindResource("PromptConfigTagMissing").ToString(), @"map");
                     break;
                 case ConfigInterface.ConfigStatus.DatabaseTagIsMissingField:
-                    errorMessage = "The database configuration is missing a field." +
-                                   "\nWould you like to replace the file with a new one?";
+                    errorMessage = string.Format(Application.Current.FindResource("PromptConfigFieldInvalid").ToString(), @"database");
                     break;
                 case ConfigInterface.ConfigStatus.ApiTagIsMissingField:
-                    errorMessage = "The api configuration is missing a field." +
-                                   "\nWould you like to replace the file with a new one?";
+                    errorMessage = string.Format(Application.Current.FindResource("PromptConfigFieldInvalid").ToString(), @"api");
+                    break;
+                case ConfigInterface.ConfigStatus.MapTagIsMissingField:
+                    errorMessage = string.Format(Application.Current.FindResource("PromptConfigFieldInvalid").ToString(), @"map");
                     break;
                 case ConfigInterface.ConfigStatus.ErrorLoadingConfig:
                 case ConfigInterface.ConfigStatus.Unknown:
                 default:
-                    errorMessage = "Something went wrong loading the configuration file." +
-                                   "\nWould you like to replace the file with a new one?";
+                    errorMessage = Application.Current.FindResource("PromptConfigSomethingWentWrong")?.ToString();
                     break;
             }
 
             // Display error
             MessageBoxResult result = MessageBox.Show(
                 errorMessage,
-                "Configuration Error",
+                Application.Current.FindResource("PromptConfigTitle")?.ToString(),
                 MessageBoxButton.YesNo);
 
             // Check if user has requested to regenerate the config
@@ -71,8 +72,8 @@ namespace Mapping
 
             // Inform the user to fix the configuration file
             MessageBox.Show(
-                "Please take a moment to fix the configuration file.",
-                "Configuration Needs Attention");
+                Application.Current.FindResource("PromptConfigNeedsAttention")?.ToString(),
+                Application.Current.FindResource("PromptConfigTitle")?.ToString());
 
             // Close the application
             Application.Current.Shutdown();

@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Xml;
 
 namespace Mapping.MapSelector
@@ -47,7 +48,7 @@ namespace Mapping.MapSelector
             // Make sure the conversion was successful
             if (process.ExitCode != 0)
             {
-                return "Something went wrong while adding the map to the database.";
+                return Application.Current.FindResource("PromptMapOsmToPostGisFailure")?.ToString();
             }
 
             // Get reference to map.osm file
@@ -56,7 +57,7 @@ namespace Mapping.MapSelector
             // Make sure map.osm file exists
             if (!File.Exists(osmFile))
             {
-                return "The OSM file does not exist.";
+                return Application.Current.FindResource("PromptMapNoFile")?.ToString();
             }
 
             // Open map.osm file to read elements
@@ -70,7 +71,7 @@ namespace Mapping.MapSelector
             DatabaseInterface databaseInterface = new DatabaseInterface();
             if (!databaseInterface.Init())
             {
-                return "Database had issues.";
+                return Application.Current.FindResource("PromptMapDatabaseConnectionFailure")?.ToString();
             }
 
             // Add the bounds to the database

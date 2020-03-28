@@ -27,6 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <COMReference Include="{bed7f4ea-1a96-11d2-8f08-00a0c9a6186d}">
+      <Guid>bed7f4ea-1a96-11d2-8f08-00a0c9a6186d</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.Win32.UI.XamlApplication" Version="6.0.0" />
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls" Version="6.0.0" />
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.XamlHost" Version="6.0.0" />

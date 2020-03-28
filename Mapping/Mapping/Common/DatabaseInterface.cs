@@ -40,17 +40,21 @@ namespace Mapping.Common
                 mConnection.Open();
                 return true;
             }
-            catch (IOException)
+            catch (IOException e)
             {
-                MessageBox.Show("The operation threw an IOException for some unknown reason.");
+                MessageBox.Show("IOException: " + e.Message);
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
-                MessageBox.Show("The operation threw a SocketException because why not?");
+                MessageBox.Show("SocketException: " + e.Message);
             }
-            catch (TimeoutException)
+            catch (TimeoutException e)
             {
-                MessageBox.Show("The operation timed out before a connection to the database could be made.");
+                MessageBox.Show("TimeoutException: " + e.Message);
+            }
+            catch (NpgsqlException e)
+            {
+                MessageBox.Show("NpgsqlException: " + e.Message);
             }
 
             return false;

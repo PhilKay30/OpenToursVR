@@ -49,27 +49,28 @@ namespace Mapping.SvgConverter
 
 
 
+        // ReSharper disable AssignNullToNotNullAttribute
         private static Dictionary<string, string> OptionMap { get; } = new Dictionary<string, string>
         {
-            {"Aerialway", "aerialway"},
-            {"Aeroway", "aeroway"},
-            {"Amenity", "amenity"},
-            {"Bicycle", "bicycle"},
-            {"Bridge", "bridge"},
-            {"Building", "building"},
-            {"Harbour", "harbour"},
-            {"Highway", "highway"},
-            {"Historic", "historic"},
-            {"Landuse", "landuse"},
-            {"Leisure", "leisure"},
-            {"Motorcar", "motorcar"},
-            {"PublicTransport", "public_transport"},
-            {"Railway", "railway"},
-            {"Shop", "shop"},
-            {"Sport", "sport"},
-            {"Tourism", "tourism"},
-            {"Water", "water"},
-            {"Waterway", "waterway"},
+            {Application.Current.FindResource("TabAerialway")?.ToString(), "aerialway"},
+            {Application.Current.FindResource("TabAeroway")?.ToString(), "aeroway"},
+            {Application.Current.FindResource("TabAmenity")?.ToString(), "amenity"},
+            {Application.Current.FindResource("TabBicycle")?.ToString(), "bicycle"},
+            {Application.Current.FindResource("TabBridge")?.ToString(), "bridge"},
+            {Application.Current.FindResource("TabBuilding")?.ToString(), "building"},
+            {Application.Current.FindResource("TabHarbour")?.ToString(), "harbour"},
+            {Application.Current.FindResource("TabHighway")?.ToString(), "highway"},
+            {Application.Current.FindResource("TabHistoric")?.ToString(), "historic"},
+            {Application.Current.FindResource("TabLanduse")?.ToString(), "landuse"},
+            {Application.Current.FindResource("TabLeisure")?.ToString(), "leisure"},
+            {Application.Current.FindResource("TabMotorcar")?.ToString(), "motorcar"},
+            {Application.Current.FindResource("TabPublicTransport")?.ToString(), "public_transport"},
+            {Application.Current.FindResource("TabRailway")?.ToString(), "railway"},
+            {Application.Current.FindResource("TabShop")?.ToString(), "shop"},
+            {Application.Current.FindResource("TabSport")?.ToString(), "sport"},
+            {Application.Current.FindResource("TabTourism")?.ToString(), "tourism"},
+            {Application.Current.FindResource("TabWater")?.ToString(), "water"},
+            {Application.Current.FindResource("TabWaterway")?.ToString(), "waterway"},
         };
 
         public static Dictionary<string, List<string>> Options { get; } = new Dictionary<string, List<string>>();

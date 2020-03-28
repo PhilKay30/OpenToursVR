@@ -77,7 +77,7 @@ namespace Mapping.SvgConverter
                 mDataPoints.AddRange(mDatabase.GetLines(mTopLeft));
 
                 // Callback on main thread
-                RunOnUiThread(o => TabRoads.LoadDataPoints(mDataPoints));
+                RunOnUiThread(o => MyTabControl.LoadDataPoints(mDataPoints));
             });
         }
 
@@ -104,7 +104,7 @@ namespace Mapping.SvgConverter
 
         private void OnOptionSelectionChanged(object sender, RoutedEventArgs e)
         {
-            ButtonGenerate.IsEnabled = TabRoads.HasSelection;
+            ButtonGenerate.IsEnabled = MyTabControl.HasSelection;
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_SelectAll(object sender, RoutedEventArgs e)
         {
-            TabRoads.SelectAll();
+            MyTabControl.SelectAll();
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_DeselectAll(object sender, RoutedEventArgs e)
         {
-            TabRoads.DeselectAll();
+            MyTabControl.DeselectAll();
         }
 
         /// <summary>
@@ -145,11 +145,11 @@ namespace Mapping.SvgConverter
         private void OnClick_GenerateImage(object sender, RoutedEventArgs e)
         {
             // Make sure that something has been selected to display
-            if (SvgTabControl.Options.Count == 0)
+            if (!MyTabControl.HasSelection)
             {
                 DisplayImage.Source = null;
                 ButtonSave.IsEnabled = false;
-                MessageBox.Show("You must select something to display.");
+                MessageBox.Show(Application.Current.FindResource("PromptImageGenerationMustSelect")?.ToString());
             }
             else
             {
@@ -164,7 +164,8 @@ namespace Mapping.SvgConverter
         }
 
         /// <summary>
-        /// Begins image saving to database. This method was mobbed by Brendan Brading, Fred Chappuis and Phillip Kempton
+        /// Begins image saving to database.
+        /// Created by Brendan Brading, Fred Chappuis, and Phillip Kempton.
         /// </summary>
         /// <param name="sender">The event sender</param>
         /// <param name="e">The event arguments</param>

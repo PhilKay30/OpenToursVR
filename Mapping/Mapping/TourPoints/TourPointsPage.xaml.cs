@@ -142,8 +142,8 @@ namespace Mapping.TourPoints
             {
                 // Point was not specified, so clear everything
                 ImagePath = string.Empty;
-                LabelPoint.Content = "Select a Point";
-                LabelImage.Content = "No Image Selected";
+                LabelPoint.Content = Application.Current.FindResource("LabelNoPointSelected");
+                LabelImage.Content = Application.Current.FindResource("LabelNoImageSelected");
                 TextBoxName.Text = string.Empty;
                 TextBoxDescription.Text = string.Empty;
                 TextBoxName.IsEnabled = false;
@@ -204,13 +204,13 @@ namespace Mapping.TourPoints
                 else
                 {
                     // Dialog didn't open correctly
-                    LabelImage.Content = "No Image Selected";
+                    LabelImage.Content = Application.Current.FindResource("LabelNoImageSelected");
                 }
             }
             catch (Exception ex)
             {
                 // Something went wrong with the dialog
-                LabelImage.Content = "No Image Selected";
+                LabelImage.Content = Application.Current.FindResource("LabelNoImageSelected");
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -227,7 +227,7 @@ namespace Mapping.TourPoints
                 || string.IsNullOrEmpty(TextBoxDescription.Text)
                 || TourPointLocation == null)
             {
-                MessageBox.Show("A Tour Point must include a location, name, and description");
+                MessageBox.Show(Application.Current.FindResource("PromptTourPointMustInclude")?.ToString());
                 return;
             }
 
