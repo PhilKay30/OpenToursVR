@@ -416,7 +416,16 @@ def get_point(point_id):
     return {"Result": results}
 
 
-
+# {  
+#    "Result": [
+#       "0":
+#           {
+#               "model_data":	"test7"
+#               "model_offset":	"33.33"
+#               "model_scaling":"test6"
+#           }
+#      ]      
+# }
 # Get Model data from DB
 # Methods: GET
 # Description: Using the model_id from the get all models call, we can get the rest of the info for a model
@@ -442,6 +451,19 @@ def get_model(model_id):
     return {"Result": results}
 
 
+# {  
+#    "Result": [
+#       "0":
+#           {
+#               "model_location":	"test4"
+#               "model_rotation":	"test5"
+#           }
+#       "1":
+#           {
+#
+#           }
+#      ]      
+# }
 # Get all Models from the DB
 # Methods: GET
 # Description: Get all model locations and rotation from DB
@@ -457,6 +479,7 @@ def get_all_models():
 
     results = [
         {
+            "model_id": q.model_id,
             "model_location": q.model_location,
             "model_rotation": q.model_rotation
         }
@@ -467,6 +490,13 @@ def get_all_models():
 
 
 
+# {  
+#	"model_location":"test4",
+#	"model_rotation":"test5",
+#	"model_scaling":"test6",
+#	"model_data":"test7",
+#	"model_offset":"33.33"
+# }
 # Updates Model in the DB
 # MEthods PUT
 # Description: Updates the models table based on the model id
@@ -476,7 +506,7 @@ def update_model(model_id):
         abort(400)
     
     json_str = json.dumps(request.json)
-    json_obj == json.loads(json_str, object_hook=JSONObject)
+    json_obj = json.loads(json_str, object_hook=JSONObject)
 
     updated_model = Models(
         json_obj.model_location,
@@ -513,6 +543,13 @@ def update_model(model_id):
 
 
 
+# {  
+#	"model_location":"test4",
+#	"model_rotation":"test5",
+#	"model_scaling":"test6",
+#	"model_data":"test7",
+#	"model_offset":"33.33"
+# }
 # Add Models to the DB
 # Methods: POST
 # Description: add, or updates the models in the Tool kit
