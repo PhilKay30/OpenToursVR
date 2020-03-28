@@ -125,7 +125,6 @@ class Models(db.Model):
 
     def __init__(
         self,
-        model_id,
         model_location,
         model_rotation,
         model_scaling,
@@ -465,6 +464,52 @@ def get_all_models():
     ]
 
     return {"Results": results}
+
+
+
+# Updates Model in the DB
+# MEthods PUT
+# Description: Updates the models table based on the model id
+@app.route("/updatemodel/<string:model_id>", methods=["PUT"])
+def update_model(model_id):
+    if not request.json:
+        abort(400)
+    
+    json_str = json.dumps(request.json)
+    json_obj == json.loads(json_str, object_hook=JSONObject)
+
+    updated_model = Models(
+        json_obj.model_location,
+        json_obj.model_rotation,
+        json_obj.model_scaling,
+        json_obj.model_data,
+        json_obj.model_offset
+    )
+    log.log_info(f"Updating model object in database")
+
+    update_status = True
+    status_message = ""
+    try:
+        db.session.query(Models).filter(
+            Models.model_id == model_id
+        ).update(
+            {
+                "model_location": updated_model.model_location,
+                "model_rotation": updated_model.model_rotation,
+                "model_scaling": updated_model.model_scaling,
+                "model_data": updated_model.model_data,
+                "model_offset": updated_model.model_offset
+            }
+        )
+        db.session.commit()
+        log.log_info(f"Model with id {model_id} updated.")
+        status_message = f"Model with id {model_id} updated."
+    except Exception as e:
+        db.session.rollback()
+        log.log_error(f"Failled to update {model_id}. Message is {e}")
+        status_message = f"Failled to update {model_id}."
+
+    return {"Status": status_message}    
 
 
 
