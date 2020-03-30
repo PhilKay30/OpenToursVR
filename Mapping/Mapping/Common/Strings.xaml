@@ -9,6 +9,7 @@
     <system:String x:Key="MapSelectorPageTitle">Location Selection Page</system:String>
     <system:String x:Key="SvgConverterPageTitle">Image Generation Page</system:String>
     <system:String x:Key="TourPointsPageTitle">Tour Points Page</system:String>
+    <system:String x:Key="ModelsPageTitle">Models Page</system:String>
 
     <!-- Buttons -->
     <system:String x:Key="ButtonSelectLocation">Select Location Boundaries</system:String>
@@ -17,6 +18,7 @@
     <system:String x:Key="ButtonAddModel">Add Model</system:String>
     <system:String x:Key="ButtonAddMap">Add Historical Map</system:String>
     <system:String x:Key="ButtonSelectImage">Select Image</system:String>
+    <system:String x:Key="ButtonSelectModel">Select OBJ File</system:String>
     <system:String x:Key="ButtonSelectAll">Select All</system:String>
     <system:String x:Key="ButtonDeselectAll">Deselect All</system:String>
     <system:String x:Key="ButtonGenerate">Generate</system:String>
@@ -29,7 +31,9 @@
     <system:String x:Key="LabelName">Name</system:String>
     <system:String x:Key="LabelDescription">Description</system:String>
     <system:String x:Key="LabelImage">Image</system:String>
+    <system:String x:Key="LabelModel">Model</system:String>
     <system:String x:Key="LabelNoImageSelected">No Image Selected</system:String>
+    <system:String x:Key="LabelNoModelSelected">No Model Selected</system:String>
 
     <!-- Prompts -->
     <system:String x:Key="PromptConfigTitle">Configuration Problem</system:String>
@@ -53,6 +57,7 @@
     <system:String x:Key="PromptMapDatabaseConnectionFailure">Something went wrong while trying to connect to the database.</system:String>
     <system:String x:Key="PromptImageGenerationMustSelect">You must select something to display.</system:String>
     <system:String x:Key="PromptTourPointMustInclude">A Tour Point must include a location, name, and description.</system:String>
+    <system:String x:Key="PromptModelMustInclude">A model must include a location and model file.</system:String>
 
     <!-- Tab Names -->
     <system:String x:Key="TabAerialway">Aerialway</system:String>

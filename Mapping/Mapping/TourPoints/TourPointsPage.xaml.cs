@@ -50,7 +50,6 @@ namespace Mapping.TourPoints
             UpdateSelectionVisual();
         }
 
-
         /// <summary>
         /// Zooms map to current selection.
         /// </summary>
@@ -80,7 +79,6 @@ namespace Mapping.TourPoints
             // Set viewport to bounds
             MyMapControl.TrySetViewAsync(centerGeopoint, 16);
         }
-
 
         /// <summary>
         /// Adds box around the currently selected map.
@@ -152,7 +150,7 @@ namespace Mapping.TourPoints
             }
             else
             {
-                // Point was specified, so add it to the map and enabled fields
+                // Point was specified, so add it to the map and enable fields
                 MapIcon pin = new MapIcon { Location = point };
                 MyMapControl.MapElements.Add(pin);
                 TextBoxName.IsEnabled = true;
@@ -246,6 +244,11 @@ namespace Mapping.TourPoints
             UpdateSelectionVisual();
         }
 
+        /// <summary>
+        /// Resets the point and fields.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
         private void OnClick_ResetPoint(object sender, RoutedEventArgs e)
         {
             UpdateSelectionVisual();

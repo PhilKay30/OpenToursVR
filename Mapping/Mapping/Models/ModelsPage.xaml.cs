@@ -1,18 +1,19 @@
-﻿using System;
+﻿using Mapping.SvgConverter;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml.Controls.Maps;
-using Mapping.SvgConverter;
-using Microsoft.Win32;
+using BasicGeoposition = Windows.Devices.Geolocation.BasicGeoposition;
 using Geopoint = Windows.Devices.Geolocation.Geopoint;
 using MapInputEventArgs = Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.MapInputEventArgs;
-using System.IO;
-using System.Text;
 
 namespace Mapping.Models
 {
@@ -34,7 +35,7 @@ namespace Mapping.Models
         public ModelsPage()
         {
             InitializeComponent();
-            this.Loaded += OnPageLoad;
+            Loaded += OnPageLoad;
         }
 
         /// <summary>
@@ -47,9 +48,8 @@ namespace Mapping.Models
         {
             (Application.Current.MainWindow as LaunchWindow)?.UpdateNavigation();
             ZoomToSelection();
-            AddBoxToMap();
+            UpdateSelectionVisual();
         }
-
 
         /// <summary>
         /// Zooms map to current selection.
@@ -80,7 +80,6 @@ namespace Mapping.Models
             // Set viewport to bounds
             MyMapControl.TrySetViewAsync(centerGeopoint, 16);
         }
-
 
         /// <summary>
         /// Adds box around the currently selected map.
@@ -129,7 +128,7 @@ namespace Mapping.Models
         /// <summary>
         /// Displays the currently selected area to the user, as well as any selected point.
         /// </summary>
-        private void UpdateSelectionVisual(Geopoint point)
+        private void UpdateSelectionVisual(Geopoint point = null)
         {
             // Clear any current pins
             MyMapControl.MapElements.Clear();
@@ -137,12 +136,62 @@ namespace Mapping.Models
             // Redraw box around map selection
             AddBoxToMap();
 
-            // Add a pin where the user tapped
-            MapIcon pin = new MapIcon { Location = point };
-            MyMapControl.MapElements.Add(pin);
+            // Check if point is actually specified
+            if (point == null)
+            {
+                // Point was not specified, so clear everything
+                ModelPath = string.Empty;
+                LabelPoint.Content = Application.Current.FindResource("LabelNoPointSelected");
+                LabelModel.Content = Application.Current.FindResource("LabelNoModelSelected");
+                ButtonSelectModel.IsEnabled = false;
+            }
+            else
+            {
+                // Point was specified, so add it to the map and enable fields
+                MapIcon pin = new MapIcon { Location = point };
+                MyMapControl.MapElements.Add(pin);
+                ButtonSelectModel.IsEnabled = true;
+            }
 
             // Keep track of the point
             ModelLocation = point;
+        }
+
+        /// <summary>
+        /// Launches Unity tool.
+        /// </summary>
+        private static void LaunchUnityTool()
+        {
+            using Process process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = @"../../../../Models/UnityTool/New Unity Project.exe",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+        }
+
+        /// <summary>
+        /// Creates the required directories if they do not already exist.
+        /// </summary>
+        private static void CreateDirectory()
+        {
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR"))
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR");
+            }
+
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models"))
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models");
+            }
         }
 
         /// <summary>
@@ -157,8 +206,9 @@ namespace Mapping.Models
             LabelPoint.Content = tapped.Position.Longitude + " " + tapped.Position.Latitude;
         }
 
+
         /// <summary>
-        /// Marks an image file for upload.
+        /// Marks a model file for upload.
         /// </summary>
         /// <param name="sender">Event sender</param>
         /// <param name="e">Event arguments</param>
@@ -180,85 +230,73 @@ namespace Mapping.Models
                 {
                     // Get the path of the specified file
                     ModelPath = openFileDialog.FileName;
-                    string[] lines = new string[3];
-                    lines[0] = ModelPath + "\n";
-                    lines[1] = ModelLocation.Position.Longitude + "\n";
-                    lines[2] = ModelLocation.Position.Latitude.ToString();
-                    string outputPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models\\ModelData.txt";
-                    CreateDirectory();
-                    if (File.Exists(outputPath))
-                    {
-                        File.Delete(outputPath);
-                    }
-
-                    // Create a new file     
-                    using (FileStream fs = File.Create(outputPath))
-                    {
-                        foreach (string s in lines)
-                        {
-                            Byte[] line = new UTF8Encoding(true).GetBytes(s);
-                            fs.Write(line, 0, line.Length);
-                        }
-                    }
-                    // Launch the Unity app
-                    LaunchUnityTool();
+                    LabelModel.Content = openFileDialog.SafeFileName;
                 }
                 else
                 {
                     // Dialog didn't open correctly
-                    ClearInfo();
+                    LabelModel.Content = Application.Current.FindResource("LabelNoModelSelected");
                 }
             }
             catch (Exception ex)
             {
                 // Something went wrong with the dialog
-                ClearInfo();
-                MessageBox.Show(ex.ToString());
+                LabelModel.Content = Application.Current.FindResource("LabelNoModelSelected");
                 Debug.WriteLine(ex.Message);
             }
         }
 
-        private void LaunchUnityTool()
+        /// <summary>
+        /// Saves the point.
+        /// </summary>
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void OnClick_SaveModel(object sender, RoutedEventArgs e)
         {
-            using System.Diagnostics.Process process = new System.Diagnostics.Process
+            // Validate information
+            if (ModelLocation == null || ModelPath == null)
             {
-                StartInfo =
+                MessageBox.Show(Application.Current.FindResource("PromptModelMustInclude")?.ToString());
+                return;
+            }
+
+            string[] lines = new string[3];
+            lines[0] = ModelPath + "\n";
+            lines[1] = ModelLocation.Position.Longitude + "\n";
+            lines[2] = ModelLocation.Position.Latitude.ToString();
+            string outputPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models\\ModelData.txt";
+
+            CreateDirectory();
+
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+
+            // Create a new file     
+            using (FileStream fs = File.Create(outputPath))
+            {
+                foreach (string lineString in lines)
                 {
-                    FileName = @"../../../../Models/UnityTool/New Unity Project.exe",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true
+                    byte[] line = new UTF8Encoding(true).GetBytes(lineString);
+                    fs.Write(line, 0, line.Length);
                 }
-            };
-
-            process.Start();
-            process.WaitForExit();
-        }
-
-        private void CreateDirectory()
-        {
-            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR"))
-            {
-                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR");
             }
-            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models"))
-            {
-                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models");
-            }
+            // Launch the Unity app
+            LaunchUnityTool();
+
+            // Clear the current information
+            UpdateSelectionVisual();
         }
 
         /// <summary>
-        /// Clears any previosly selected / entered info or files
+        /// Resets the point and fields.
         /// </summary>
-        private void ClearInfo()
+        /// <param name="sender">Event sender</param>
+        /// <param name="e">Event arguments</param>
+        private void OnClick_ResetModel(object sender, RoutedEventArgs e)
         {
-            // Clear the current information
-            MyMapControl.MapElements.Clear();
-            AddBoxToMap();
-            ModelPath = string.Empty;
-            LabelPoint.Content = "No Point Selected";
-            ModelLocation = new Geopoint(new BasicGeoposition());
+            UpdateSelectionVisual();
         }
     }
 }
