@@ -28,15 +28,6 @@ public class rotate : MonoBehaviour
     /// </summary>
     void Update()
     {
-        // Check if any actions need to be performed
-        if (Input.GetKey("up")) // if UP key is currently own
-        {
-            MoveUp();
-        }
-        if (Input.GetKey("down")) // if down key is currently down
-        {
-            MoveDown();
-        }
         if (Input.GetKey("left")) // if left key is currently down
         {
             RotateLeft();
@@ -53,27 +44,6 @@ public class rotate : MonoBehaviour
         {
             ModifyScale(0.9f);
         }
-    } // END Update Method for Unity MonoBehaviour
-
-
-    /// <summary>
-    /// Move the object up.
-    /// Call this method once to move obj up by 0.01f.
-    /// </summary>
-    private void MoveUp()
-    {
-        var curr = Model.transform.position;
-        Model.transform.position = new Vector3(curr.x, curr.y + 0.01f, curr.z);
-    }
-
-    /// <summary>
-    /// Move the object down
-    /// Call this method once to move the obj down by 0.01f
-    /// </summary>
-    private void MoveDown()
-    {
-        var curr = Model.transform.position;
-        Model.transform.position = new Vector3(curr.x, curr.y - 0.01f, curr.z);
     }
 
     /// <summary>
