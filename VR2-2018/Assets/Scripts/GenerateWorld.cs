@@ -99,13 +99,24 @@ public class GenerateWorld : MonoBehaviour
         mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
 
-        
+        // load the models
+        LoadModels();
     }
 
-
-    void Update()
+    /// <summary>
+    /// This method loads and orients all models
+    /// </summary>
+    private void LoadModels()
     {
-       
+        List<ModelHandle> models = api.GetModels();
+        foreach (ModelHandle m in models)
+        {
+            m.GameObj.transform.localScale = m.Scale;
+            m.GameObj.transform.rotation = m.Rotation;
+            Vector3 pos = GisToUnity(m.Position);
+            pos.y = m.Offset + mapPlane.transform.position.y;
+            m.GameObj.transform.position = pos;
+        }
     }
 
    
