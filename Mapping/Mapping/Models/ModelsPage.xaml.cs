@@ -11,6 +11,8 @@ using Mapping.SvgConverter;
 using Microsoft.Win32;
 using Geopoint = Windows.Devices.Geolocation.Geopoint;
 using MapInputEventArgs = Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.MapInputEventArgs;
+using System.IO;
+using System.Text;
 
 namespace Mapping.Models
 {
@@ -21,10 +23,10 @@ namespace Mapping.Models
     // ReSharper disable once RedundantExtendsListEntry
     public partial class ModelsPage : Page
     {
-        private Geopoint TourPointLocation { get; set; }
+        private Geopoint ModelLocation { get; set; }
         private PostGisPoint BoundTopLeft { get; set; }
         private PostGisPoint BoundBottomRight { get; set; }
-        private string ImagePath { get; set; }
+        private string ModelPath { get; set; }
 
         /// <summary>
         /// Constructor.
@@ -140,7 +142,7 @@ namespace Mapping.Models
             MyMapControl.MapElements.Add(pin);
 
             // Keep track of the point
-            TourPointLocation = point;
+            ModelLocation = point;
         }
 
         /// <summary>
@@ -160,13 +162,13 @@ namespace Mapping.Models
         /// </summary>
         /// <param name="sender">Event sender</param>
         /// <param name="e">Event arguments</param>
-        private void OnClick_AddImage(object sender, RoutedEventArgs e)
+        private void OnClick_AddModel(object sender, RoutedEventArgs e)
         {
             // Initialize the file dialog
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 InitialDirectory = "c:\\",
-                Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*",
+                Filter = "OBJ Model Files|*.obj",
                 FilterIndex = 2,
                 RestoreDirectory = true
             };
@@ -177,59 +179,86 @@ namespace Mapping.Models
                 if (openFileDialog.ShowDialog() == true)
                 {
                     // Get the path of the specified file
-                    ImagePath = openFileDialog.FileName;
-                    LabelImage.Content = "Image: " + openFileDialog.SafeFileName;
+                    ModelPath = openFileDialog.FileName;
+                    string[] lines = new string[3];
+                    lines[0] = ModelPath + "\n";
+                    lines[1] = ModelLocation.Position.Longitude + "\n";
+                    lines[2] = ModelLocation.Position.Latitude.ToString();
+                    string outputPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models\\ModelData.txt";
+                    CreateDirectory();
+                    if (File.Exists(outputPath))
+                    {
+                        File.Delete(outputPath);
+                    }
+
+                    // Create a new file     
+                    using (FileStream fs = File.Create(outputPath))
+                    {
+                        foreach (string s in lines)
+                        {
+                            Byte[] line = new UTF8Encoding(true).GetBytes(s);
+                            fs.Write(line, 0, line.Length);
+                        }
+                    }
+                    // Launch the Unity app
+                    LaunchUnityTool();
                 }
                 else
                 {
                     // Dialog didn't open correctly
-                    LabelImage.Content = "Image: No Image Selected.";
+                    ClearInfo();
                 }
             }
             catch (Exception ex)
             {
                 // Something went wrong with the dialog
-                LabelImage.Content = "Image: No Image Selected.";
+                ClearInfo();
+                MessageBox.Show(ex.ToString());
                 Debug.WriteLine(ex.Message);
             }
         }
 
-        /// <summary>
-        /// Saves the point.
-        /// </summary>
-        /// <param name="sender">Event sender</param>
-        /// <param name="e">Event arguments</param>
-        private void OnClick_SavePoint(object sender, RoutedEventArgs e)
+        private void LaunchUnityTool()
         {
-            // Validate information
-            if (string.IsNullOrEmpty(TextBoxName.Text)
-                || string.IsNullOrEmpty(TextBoxDescription.Text)
-                || TourPointLocation == null)
+            using System.Diagnostics.Process process = new System.Diagnostics.Process
             {
-                MessageBox.Show("A Tour Point must include a location, name, and description");
-                return;
-            }
+                StartInfo =
+                {
+                    FileName = @"../../../../Models/UnityTool/New Unity Project.exe",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true
+                }
+            };
 
-            // Create point string for PostGIS
-            string point = "POINT(" + TourPointLocation.Position.Longitude + " " + TourPointLocation.Position.Latitude + ")";
+            process.Start();
+            process.WaitForExit();
+        }
 
-            // Use API to save the point
-            ApiHandler.ApiHandler handler = new ApiHandler.ApiHandler();
-            if (!handler.AddPoint(point, TextBoxName.Text, TextBoxDescription.Text, ImagePath))
+        private void CreateDirectory()
+        {
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR"))
             {
-                // Something went wrong, so go back
-                return;
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR");
             }
+            if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models"))
+            {
+                Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models");
+            }
+        }
 
+        /// <summary>
+        /// Clears any previosly selected / entered info or files
+        /// </summary>
+        private void ClearInfo()
+        {
             // Clear the current information
             MyMapControl.MapElements.Clear();
             AddBoxToMap();
-            ImagePath = string.Empty;
-            LabelPoint.Content = "Select a Point";
-            LabelImage.Content = "Image : No Image Selected";
-            TextBoxName.Text = string.Empty;
-            TextBoxDescription.Text = string.Empty;
-            TourPointLocation = new Geopoint(new BasicGeoposition());
+            ModelPath = string.Empty;
+            LabelPoint.Content = "No Point Selected";
+            ModelLocation = new Geopoint(new BasicGeoposition());
         }
     }
 }

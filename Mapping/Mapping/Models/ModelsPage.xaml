@@ -44,70 +44,17 @@
                         Content="No Point Selected"/>
                 </StackPanel>
 
-                <!-- Name StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Name"/>
-                    <TextBox
-                        Name="TextBoxName"
-                        Margin="5"
-                        MaxLength="30"/>
-                </StackPanel>
-
-                <!-- Description StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Description"/>
-                    <TextBox
-                        Name="TextBoxDescription"
-                        Margin="5"
-                        Height="200"
-                        AcceptsReturn="True"
-                        TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-
                 <!-- Image StackPanel -->
                 <StackPanel
                     Margin="0 5"
                     Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Add Image"/>
-                    <Label
-                        Name="LabelImage"
-                        HorizontalAlignment="Center"
-                        Content="No Image Selected"/>
                     <Button
                         Name="ButtonSelectImage"
                         Margin="5"
                         Padding="10"
                         HorizontalAlignment="Stretch"
-                        Content="Select Image"
-                        Click="OnClick_AddImage"/>
-                </StackPanel>
-
-                <!-- Save StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Button
-                        Name="ButtonSavePoint"
-                        Margin="5"
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
-                        Content="Save Point"
-                        Click="OnClick_SavePoint"/>
+                        Content="Select OBJ File"
+                        Click="OnClick_AddModel"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

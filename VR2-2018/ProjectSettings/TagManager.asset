@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Button
   - InfoPanel
+  - OSM
+  - TeleportLayer
+  - HistoryLayer
   layers:
   - Default
   - TransparentFX
@@ -16,8 +19,8 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
+  - OSM
+  - Historical
   - 
   - 
   - 
@@ -42,4 +45,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 1955842691
     locked: 0
