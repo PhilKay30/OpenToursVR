@@ -133,6 +133,12 @@ public class API_Handler
             }
         } // end of getting missing model data
 
+				// ToDo
+				// Use frags (List<frag>) to check if any folder inside "Models\\" exist that don't exist in frags list
+				// FOreach folder that exists that isn't in the list of frags, use EmptyFolder method (in objectLoader.cs in Model tool)
+				// then delete that directory using Directory.Delete("Models\\" + id);
+				
+				
         // time to load all models
         // get all models into a list to return
         List<ModelHandle> models = new List<ModelHandle>();
