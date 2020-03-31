@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
+using Dummiesman;
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,17 +14,172 @@ using UnityEngine.Networking;
 public class API_Handler
 {
 
-    //private string apiRequest = "http://10.192.114.53:5000/getimg/osmMap.png";
     private string osmMapApiRequest = "http://192.0.203.84:5000/getimg/osmMap.png";
     private string dataPointsApiRequest = "http://192.0.203.84:5000/getpoint/";
     private string mapBoundsApiRequest = "http://192.0.203.84:5000/getbounds/osmMap";
     private string dataPointInformation = "http://192.0.203.84:5000/getpoint/";
     private string histMapApiRequest = "http://192.0.203.84:5000/getimg/historicalMap.png";
+    private string getModelsApiRequest = "http://192.0.203.84:5000/getmodel/";
 
     /// <summary>
     /// Vector to hold the km dimensions of the osm map
     /// </summary>
     public Vector2 OsmMapDimensions = new Vector2();
+
+
+    /// <summary>
+    /// This method gets all missing models from database, instantiates all models, and returns thier orientation data
+    /// </summary>
+    /// <returns></returns>
+    public List<ModelHandle> GetModels()
+    {
+        // Get and parse request into model fragments (thing still only have id, roation, and location)
+        JSONObject jobject = MakeWebRequest(getModelsApiRequest);
+        List<ModelFrag> frags = new List<ModelFrag>();
+
+        // loop through each models returned
+        for (int i = 0; i < jobject.list[0].list.Count; i++)
+        {
+            JSONObject jo = jobject.list[0].list[i];
+            ModelFrag frag = new ModelFrag();
+
+            // loop through each field of the model, saving everything into a fragment object (in a list)
+            for (int j = 0; j < jo.list.Count; j++)
+            {
+                switch (j)
+                {
+                    case 0:
+                        frag.model_id = Int32.Parse(jo[j].ToString());
+                        break;
+                    case 1:
+                        frag.model_location = jo[j].ToString();
+                        break;
+                    case 2:
+                        frag.model_rotation = jo[j].ToString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            frags.Add(frag);
+        }
+
+        // create model directory if it doesn't exist
+        if (!Directory.Exists("Models"))
+        {
+            Directory.CreateDirectory("Models");
+        }
+
+        // Get all missing model data
+        foreach (ModelFrag frag in frags)
+        {
+            if (!Directory.Exists("Models\\" + frag.model_id))
+            {
+                // found a model that we don't already have
+                // make web request to get the rest of the data
+                string[] lines = new string[4];
+                Directory.CreateDirectory("Models\\" + frag.model_id);
+                JSONObject jsonData = MakeWebRequest(getModelsApiRequest + frag.model_id);
+                jsonData = jsonData.list[0].list[0];
+
+                // loop through the data returned for the model
+                for (int i = 0; i < jsonData.keys.Count; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            // we found the model zip data
+                            // write zip file to disk
+                            List<byte> bitey = new List<byte>();
+                            string imgString = jsonData[i].ToString();
+                            imgString = imgString.StripToHex();
+                            for (int j = 0; j < imgString.Length; j += 2)
+                            {
+                                char[] charArr =
+                                {
+                                    imgString[j],
+                                    imgString[j + 1]
+                                };
+                                bitey.Add(Convert.ToByte(new string(charArr), 16));
+                            }
+                            if (File.Exists("Models\\temp.zip"))
+                            {
+                                // delete any previous zip folder
+                                File.Delete("Models\\temp.zip");
+                            }
+                            File.WriteAllBytes("Models\\temp.zip", bitey.ToArray());
+
+                            // unzip to the Models\\frag.model_id folder
+                            DecompressToDirectory("Models\\temp.zip", "Models\\" + frag.model_id);
+
+                            // create meta file
+                            lines[0] = frag.model_rotation;
+                            lines[1] = frag.model_location;
+
+                            break;
+                        case 1:
+                            // it's the offset
+                            lines[2] = jsonData[i].ToString();
+                            break;
+                        case 2:
+                            // it's the scaling quat
+                            lines[3] = jsonData[i].ToString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                File.WriteAllLines("Models\\" + frag.model_id + "\\meta.txt", lines);
+            }
+        } // end of getting missing model data
+
+        // time to load all models
+        // get all models into a list to return
+        List<ModelHandle> models = new List<ModelHandle>();
+        string[] folders = Directory.GetDirectories("Models");
+
+        // loop through all files in each directory to find the obj and metadata files
+        foreach (string fold in folders)
+        {
+            ModelHandle newModel = new ModelHandle();
+            string[] files = Directory.GetFiles(fold);
+            foreach (string fileStr in files)
+            {
+                if (fileStr.EndsWith(".obj"))
+                {
+                    // found the obj file, make the object
+                    newModel.GameObj = new OBJLoader().Load(fileStr);
+                }
+                if (fileStr.EndsWith("meta.txt"))
+                {
+                    // found the metadata file
+                    // parse it and save to object
+                    string[] metaLines = File.ReadAllLines(fileStr);
+                    newModel.Rotation = JsonUtility.FromJson<Quaternion>(Destringify(metaLines[0]));
+                    newModel.Position = ParsePointStr(Destringify(metaLines[1]));
+                    newModel.Offset = float.Parse(Destringify(metaLines[2]));
+                    newModel.Scale = JsonUtility.FromJson<Vector3>(Destringify(metaLines[3]));
+                }
+            }
+            models.Add(newModel);
+        }
+
+        // return the list of all model handles (they still need to have their orientation data applied to them)
+        return models;
+    }
+
+    /// <summary>
+    /// This method removes all garbage characters from a printed JSON string to make it deserializeable
+    /// </summary>
+    /// <param name="sinput"></param>
+    /// <returns></returns>
+    private string Destringify(string sinput)
+    {
+        string s = sinput.Replace("\\", "");
+        s = s.TrimStart('"');
+        s = s.TrimEnd('"');
+        return s;
+    }
 
 
     /// <summary>
@@ -234,8 +392,11 @@ public class API_Handler
     }
 
 
-
-
+    /// <summary>
+    /// This method splits a point string
+    /// </summary>
+    /// <param name="point">point string to split</param>
+    /// <param name="values">dict of split up values</param>
     private void SplitPoints(string point, ref Dictionary<string, double> values)
     {
         int from = point.IndexOf("(") + "(".Length;
@@ -249,8 +410,11 @@ public class API_Handler
     }
 
 
-
-
+    /// <summary>
+    /// This method gets point info from db
+    /// </summary>
+    /// <param name="_id">id of point to get data for</param>
+    /// <returns></returns>
     public Dictionary<string, string> GetPointInformation(double _id)
     {
         string id = _id.ToString();
@@ -267,12 +431,14 @@ public class API_Handler
             info[dpInfo.keys[i].ToString()] = dpInfo.list[i].ToString();
         }
 
-
         return info;        
     }
 
 
-
+    /// <summary>
+    /// This method gets the map boundaries
+    /// </summary>
+    /// <returns></returns>
     public List<Dictionary<string, double>> GetMapBounds()
     {
         List<Dictionary<string, double>> keyValuePairs = new List<Dictionary<string, double>>();
@@ -305,11 +471,75 @@ public class API_Handler
 
         return keyValuePairs;
     }
+
+    /// <summary>
+    /// This method unzips a file
+    /// </summary>
+    /// <param name="sDir">src directory</param>
+    /// <param name="zipStream">zip stream to unzip with</param>
+    /// <returns></returns>
+    private bool DecompressFile(string sDir, GZipStream zipStream)
+    {
+        //Decompress file name
+        byte[] bytes = new byte[sizeof(int)];
+        int Readed = zipStream.Read(bytes, 0, sizeof(int));
+        if (Readed < sizeof(int))
+            return false;
+
+        int iNameLen = BitConverter.ToInt32(bytes, 0);
+        bytes = new byte[sizeof(char)];
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < iNameLen; i++)
+        {
+            zipStream.Read(bytes, 0, sizeof(char));
+            char c = BitConverter.ToChar(bytes, 0);
+            sb.Append(c);
+        }
+        string sFileName = sb.ToString();
+
+        //Decompress file content
+        bytes = new byte[sizeof(int)];
+        zipStream.Read(bytes, 0, sizeof(int));
+        int iFileLen = BitConverter.ToInt32(bytes, 0);
+
+        bytes = new byte[iFileLen];
+        zipStream.Read(bytes, 0, bytes.Length);
+
+        string sFilePath = Path.Combine(sDir, sFileName);
+        string sFinalDir = Path.GetDirectoryName(sFilePath);
+        if (!Directory.Exists(sFinalDir))
+            Directory.CreateDirectory(sFinalDir);
+
+        using (FileStream outFile = new FileStream(sFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            outFile.Write(bytes, 0, iFileLen);
+
+        return true;
+    }
+
+    /// <summary>
+    /// This method decompresses a zipped folder to a directory
+    /// </summary>
+    /// <param name="sCompressedFile">zip file to decompress</param>
+    /// <param name="sDir">output directory for contents</param>
+    private void DecompressToDirectory(string sCompressedFile, string sDir)
+    {
+        using (FileStream inFile = new FileStream(sCompressedFile, FileMode.Open, FileAccess.Read, FileShare.None))
+        using (GZipStream zipStream = new GZipStream(inFile, CompressionMode.Decompress, true))
+            while (DecompressFile(sDir, zipStream));
+    }
 }
 
 
+/// <summary>
+/// This class contains string extension methods
+/// </summary>
 public static class StringExtensions
 {
+    /// <summary>
+    /// This method strips all bad chars out of a hex string
+    /// </summary>
+    /// <param name="inputString"></param>
+    /// <returns></returns>
     public static string StripToHex(this string inputString)
     {
         Regex rgx = new Regex("[^a-fA-F0-9]");
@@ -341,4 +571,26 @@ public class HistMapObj
         HeightKM = -1;
         CenterPoint = new Vector2();
     }
+}
+
+/// <summary>
+/// This class represents a Model
+/// </summary>
+public class ModelHandle
+{
+    public GameObject GameObj { get; set; } // GameObject handle for the model
+    public Quaternion Rotation { get; set; } // the rotation to apply
+    public Vector3 Scale { get; set; } // the scale to apply
+    public Vector2 Position { get; set; } // the position to apply
+    public float Offset { get; set; } // the y offset to apply
+}
+
+/// <summary>
+/// This class represents a piece of model data
+/// </summary>
+public class ModelFrag
+{
+    public int model_id; // db id
+    public string model_rotation; // rotation of model
+    public string model_location; // GIS point of model
 }

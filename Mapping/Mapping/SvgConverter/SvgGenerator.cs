@@ -54,8 +54,8 @@ namespace Mapping.SvgConverter
 
                 // Iterate through the polygons which fit the specified options
                 foreach (PostGisData dataPoint in
-                    from optionsKey in TabListInterface.Options.Keys
-                    let allowedValues = TabListInterface.Options[optionsKey]
+                    from optionsKey in SvgTabControl.Options.Keys
+                    let allowedValues = SvgTabControl.Options[optionsKey]
                     from dataPoint in
                         from dataPoint in dataPoints
                         where dataPoint.Type == PostGisData.DataType.Polygon
@@ -74,8 +74,8 @@ namespace Mapping.SvgConverter
 
                 // Iterate through the rest of the data-points which fit the specified options
                 foreach (PostGisData dataPoint in
-                    from optionsKey in TabListInterface.Options.Keys
-                    let allowedValues = TabListInterface.Options[optionsKey]
+                    from optionsKey in SvgTabControl.Options.Keys
+                    let allowedValues = SvgTabControl.Options[optionsKey]
                     from dataPoint in
                         from dataPoint in dataPoints
                         where dataPoint.Type != PostGisData.DataType.Polygon

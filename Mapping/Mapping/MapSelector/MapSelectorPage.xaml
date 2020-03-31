@@ -3,46 +3,49 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:s="clr-namespace:Mapping.Common"
+      xmlns:c="clr-namespace:Mapping.CustomControls"
       xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MapSelectorPage">
+      Title="{StaticResource MapSelectorPageTitle}">
 
-    <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <Grid Background="GhostWhite">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-            <Button
-                Name="ButtonQuery"
-                Grid.Row="0"
-                Grid.Column="0"
-                Margin="10"
-                Content="Query Selection"
-                Click="OnClickQuery"/>
-            <Button
-                Name="ButtonReset"
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="10"
-                Content="Reset Selection"
-                Click="OnClickReset"/>
+        <Border
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            BorderBrush="DimGray"
+            BorderThickness="0 0 0 1">
             <controls:MapControl
                 Name="MyMapControl"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
                 ZoomInteractionMode="GestureAndControl" 
                 RotateInteractionMode="Disabled" 
                 TiltInteractionMode="Disabled"
+                MapServiceToken="{x:Static s:ConfigInterface.MapServiceToken}"
                 MapTapped="OnTapMap" />
-        </Grid>
+        </Border>
+        <c:ConfirmButton
+            x:Name="ButtonQuery"
+            Grid.Row="1"
+            Grid.Column="0"
+            Text="{StaticResource ButtonSave}"
+            Click="OnClickQuery"/>
+        <c:DeclineButton
+            x:Name="ButtonReset"
+            Grid.Row="1"
+            Grid.Column="1"
+            Text="{StaticResource ButtonReset}"
+            Click="OnClickReset"/>
     </Grid>
 </Page>

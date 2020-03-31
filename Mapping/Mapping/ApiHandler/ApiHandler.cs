@@ -15,7 +15,7 @@ namespace Mapping.ApiHandler
     /// <summary>
     /// A helper class to handle interfacing with the API.
     /// </summary>
-    // ReSharper disable StringIndexOfIsCultureSpecific.1
+    // ReSharper disable AssignNullToNotNullAttribute
     internal class ApiHandler
     {
         /// <summary>
@@ -73,15 +73,15 @@ namespace Mapping.ApiHandler
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
+                    MessageBox.Show(string.Format(Application.Current.FindResource("PromptApiWebResponseProblem")?.ToString(), response.StatusDescription));
                 }
             }
             catch (WebException e)
             {
-                MessageBox.Show("Something went wrong.\n" + e.Message);
+                MessageBox.Show(string.Format(Application.Current.FindResource("PromptApiWebException")?.ToString(), e.Message));
             }
 
-            MessageBox.Show("Image was successfully inserted into the database.");
+            MessageBox.Show(Application.Current.FindResource("PromptApiImageInsertedSuccessfully")?.ToString());
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Mapping.ApiHandler
             string jsonString = JsonSerializer.Serialize(jsonBounds);
 
             // Create the API request
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddBoundsURL);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(ConfigInterface.ConnectionApi.AddBoundsUrl);
             request.ContentType = "application/json; charset=utf-8";
             request.Method = "POST";
 
@@ -122,15 +122,15 @@ namespace Mapping.ApiHandler
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
+                    MessageBox.Show(string.Format(Application.Current.FindResource("PromptApiWebResponseProblem")?.ToString(), response.StatusDescription));
                 }
             }
             catch (WebException e)
             {
-                MessageBox.Show("Something went wrong.\n" + e.Message);
+                MessageBox.Show(string.Format(Application.Current.FindResource("PromptApiWebException")?.ToString(), e.Message));
             }
 
-            MessageBox.Show("The Bounds where successfully entered in database");
+            MessageBox.Show(Application.Current.FindResource("PromptApiBoundsInsertedSuccessfully")?.ToString());
         }
 
         /// <summary>
@@ -184,8 +184,7 @@ namespace Mapping.ApiHandler
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("There are more than 4 sides to the map.\n" +
-                                    "Clearing Data, please start over.");
+                    MessageBox.Show(Application.Current.FindResource("PromptApiTooManySides")?.ToString());
                 }
             }
             return points;
@@ -240,18 +239,17 @@ namespace Mapping.ApiHandler
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    MessageBox.Show("Something went wrong.\n" + response.StatusDescription);
+                    MessageBox.Show(string.Format(Application.Current.FindResource("PromptApiWebResponseProblem")?.ToString(), response.StatusDescription));
                     return false;
                 }
-
-                MessageBox.Show("Point was successfully inserted into the database.");
             }
             catch (WebException e)
             {
-                MessageBox.Show("Something went wrong.\n" + e.Message);
+                MessageBox.Show(string.Format(Application.Current.FindResource("PromptApiWebException")?.ToString(), e.Message));
                 return false;
             }
 
+            MessageBox.Show(Application.Current.FindResource("PromptApiPointInsertedSuccessfully")?.ToString());
             return true;
         }
 

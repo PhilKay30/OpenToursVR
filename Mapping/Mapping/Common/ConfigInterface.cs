@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Windows;
 using System.Xml;
 
 namespace Mapping.Common
@@ -10,6 +13,7 @@ namespace Mapping.Common
     /// </summary>
     internal static class ConfigInterface
     {
+        public static string MapServiceToken { get; private set; }
         public static DatabaseConnection ConnectionDb { get; private set; }
         public static ApiConnection ConnectionApi { get; private set; }
         private static ConfigStatus Status { get; set; } = ConfigStatus.Unknown;
@@ -76,6 +80,22 @@ namespace Mapping.Common
                         Status = apiStatus;
                         return Status;
                     }
+
+                    // Ensure that the map node exists
+                    if (!config.DocumentElement.Contains("map"))
+                    {
+                        Status = ConfigStatus.MapTagDoesNotExist;
+                        return Status;
+                    }
+
+                    // Ensure that the map configuration is valid
+                    XmlNode mapNode = config.GetElementsByTagName("map").Item(0);
+                    ConfigStatus mapStatus = ValidateMapNode(mapNode);
+                    if (mapStatus != ConfigStatus.OK)
+                    {
+                        Status = mapStatus;
+                        return Status;
+                    }
                 }
                 catch (XmlException)
                 {
@@ -102,36 +122,44 @@ namespace Mapping.Common
         /// <param name="path">The location to generate the config file</param>
         public static void GenerateEmptyConfigFile(string path)
         {
+            StringBuilder builder = new StringBuilder()
+                .AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+                .AppendLine("<config>")
+                .AppendLine("\t<database>")
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabaseHost"), "-->\n")
+                .AppendLine("\t\t<host>127.0.0.1</host>")
+                .AppendLine()
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabasePort"), "-->\n")
+                .AppendLine("\t\t<port>5432</port>")
+                .AppendLine()
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabaseName"), "-->\n")
+                .AppendLine("\t\t<name>databaseName</name>")
+                .AppendLine()
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabaseUser"), "-->\n")
+                .AppendLine("\t\t<user>databaseUser</user>")
+                .AppendLine()
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabasePass"), "-->\n")
+                .AppendLine("\t\t<pass>databasePass</pass>")
+                .AppendLine()
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabaseConnectionTimeout"), "-->\n")
+                .AppendLine("\t\t<connectionTimeout>10</connectionTimeout>")
+                .AppendLine()
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentDatabaseCommandTimeout"), "-->\n")
+                .AppendLine("\t\t<commandTimeout>10</commandTimeout>")
+                .AppendLine("\t</database>")
+                .AppendLine("\t<api>")
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentApiUrl"), "-->\n")
+                .AppendLine("\t\t<url>127.0.0.1</url>")
+                .AppendLine("\t</api>")
+                .AppendLine("\t<map>")
+                .AppendLine("\t\t<!-- https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key -->")
+                .AppendJoin(' ', "\t\t<!--", Application.Current.FindResource("ConfigCommentMapServiceToken"), "-->\n")
+                .AppendLine("\t\t<serviceToken></serviceToken>")
+                .AppendLine("\t</map>")
+                .Append("</config>");
+
             using StreamWriter sw = new StreamWriter(path);
-            sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            sw.WriteLine("<config>");
-            sw.WriteLine("\t<database>");
-            sw.WriteLine("\t\t<!-- Host to connect to -->");
-            sw.WriteLine("\t\t<host>127.0.0.1</host>");
-            sw.WriteLine();
-            sw.WriteLine("\t\t<!-- Port to connect to -->");
-            sw.WriteLine("\t\t<port>5432</port>");
-            sw.WriteLine();
-            sw.WriteLine("\t\t<!-- Name of database to connect to -->");
-            sw.WriteLine("\t\t<name>databaseName</name>");
-            sw.WriteLine();
-            sw.WriteLine("\t\t<!-- Username of account to connect with -->");
-            sw.WriteLine("\t\t<user>databaseUser</user>");
-            sw.WriteLine();
-            sw.WriteLine("\t\t<!-- Password of account to connect with -->");
-            sw.WriteLine("\t\t<pass>databasePass</pass>");
-            sw.WriteLine();
-            sw.WriteLine("\t\t<!-- Number of seconds to wait for a connection -->");
-            sw.WriteLine("\t\t<connectionTimeout>10</connectionTimeout>");
-            sw.WriteLine();
-            sw.WriteLine("\t\t<!-- Number of seconds to wait for a command to complete -->");
-            sw.WriteLine("\t\t<commandTimeout>10</commandTimeout>");
-            sw.WriteLine("\t</database>");
-            sw.WriteLine("\t<api>");
-            sw.WriteLine("\t\t<!-- API request connection URL -->");
-            sw.WriteLine("\t\t<url>127.0.0.1</url>");
-            sw.WriteLine("\t</api>");
-            sw.WriteLine("</config>");
+            sw.WriteLine(builder.ToString());
         }
 
         /// <summary>
@@ -203,6 +231,33 @@ namespace Mapping.Common
         }
 
         /// <summary>
+        /// Ensures that the map configuration is valid, and is filled in correctly.
+        /// </summary>
+        /// <param name="node">A reference to the map node in the file</param>
+        /// <returns>True if the map configuration is valid; false otherwise</returns>
+        private static ConfigStatus ValidateMapNode(XmlNode node)
+        {
+            // Ensure specified child node exists
+            if (!node.Contains("serviceToken"))
+            {
+                return ConfigStatus.MapTagIsMissingField;
+            }
+
+            // Read field
+            string serviceToken = node.ChildNodes.Cast<XmlNode>().Single(child => child.Name.Equals("serviceToken")).InnerText;
+
+            if (string.IsNullOrWhiteSpace(serviceToken))
+            {
+                return ConfigStatus.MapTagIsMissingField;
+            }
+
+            // Set up connection object
+            MapServiceToken = serviceToken;
+
+            return ConfigStatus.OK;
+        }
+
+        /// <summary>
         /// Possible states of the loaded configuration.
         /// </summary>
         internal enum ConfigStatus
@@ -214,6 +269,8 @@ namespace Mapping.Common
             DatabaseTagIsMissingField,
             ApiTagDoesNotExist,
             ApiTagIsMissingField,
+            MapTagDoesNotExist,
+            MapTagIsMissingField,
             OK,
             Unknown
         }

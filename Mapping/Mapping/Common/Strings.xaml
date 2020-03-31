@@ -1,0 +1,94 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xml:space="preserve">
+
+    <!-- Page Titles -->
+    <system:String x:Key="ApplicationTitle">Mapping Toolkit</system:String>
+    <system:String x:Key="NavigationPageTitle">Navigation Page</system:String>
+    <system:String x:Key="MapSelectorPageTitle">Location Selection Page</system:String>
+    <system:String x:Key="SvgConverterPageTitle">Image Generation Page</system:String>
+    <system:String x:Key="TourPointsPageTitle">Tour Points Page</system:String>
+    <system:String x:Key="ModelsPageTitle">Models Page</system:String>
+
+    <!-- Buttons -->
+    <system:String x:Key="ButtonSelectLocation">Select Location Boundaries</system:String>
+    <system:String x:Key="ButtonGenerateImage">Generate Image</system:String>
+    <system:String x:Key="ButtonAddTourPoint">Add Tour Point</system:String>
+    <system:String x:Key="ButtonAddModel">Add Model</system:String>
+    <system:String x:Key="ButtonAddMap">Add Historical Map</system:String>
+    <system:String x:Key="ButtonSelectImage">Select Image</system:String>
+    <system:String x:Key="ButtonSelectModel">Select OBJ File</system:String>
+    <system:String x:Key="ButtonSelectAll">Select All</system:String>
+    <system:String x:Key="ButtonDeselectAll">Deselect All</system:String>
+    <system:String x:Key="ButtonGenerate">Generate</system:String>
+    <system:String x:Key="ButtonSave">Save</system:String>
+    <system:String x:Key="ButtonReset">Reset</system:String>
+
+    <!-- Labels -->
+    <system:String x:Key="LabelPoint">Point</system:String>
+    <system:String x:Key="LabelNoPointSelected">No Point Selected</system:String>
+    <system:String x:Key="LabelName">Name</system:String>
+    <system:String x:Key="LabelDescription">Description</system:String>
+    <system:String x:Key="LabelImage">Image</system:String>
+    <system:String x:Key="LabelModel">Model</system:String>
+    <system:String x:Key="LabelNoImageSelected">No Image Selected</system:String>
+    <system:String x:Key="LabelNoModelSelected">No Model Selected</system:String>
+
+    <!-- Prompts -->
+    <system:String x:Key="PromptConfigTitle">Configuration Problem</system:String>
+    <system:String x:Key="PromptConfigFileDoesNotExist">The configuration file does not exist.&#13;You must create a configuration file to proceed.</system:String>
+    <system:String x:Key="PromptConfigBaseTagInvalid">The configuration file must start with the &lt;config&gt; tag.&#13;Would you like to replace the file with a new one?</system:String>
+    <system:String x:Key="PromptConfigTagMissing">The configuration file must include the &lt;{0}&gt; tag.&#13;Would you like to replace the file with a new one?</system:String>
+    <system:String x:Key="PromptConfigFieldInvalid">The {0} configuration is missing a field.&#13;Would you like to replace the file with a new one?</system:String>
+    <system:String x:Key="PromptConfigSomethingWentWrong">Something went wrong loading the configuration file.&#13;Would you like to replace the file with a new one?</system:String>
+    <system:String x:Key="PromptConfigNeedsAttention">Please take a moment to fix the configuration file.</system:String>
+    <system:String x:Key="PromptApiWebResponseProblem">Something went wrong with the API. The response is as follows:&#13;&quot;{0}&quot;</system:String>
+    <system:String x:Key="PromptApiWebException">Something went wrong trying to communicate with the API. The error is as follows:&#13;&quot;{0}&quot;</system:String>
+    <system:String x:Key="PromptApiTooManySides">There are more than 4 sides to the map.&#13;Clearing data, please start over.</system:String>
+    <system:String x:Key="PromptApiImageInsertedSuccessfully">Image was successfully inserted into the database.</system:String>
+    <system:String x:Key="PromptApiBoundsInsertedSuccessfully">Boundaries were successfully inserted into the database.</system:String>
+    <system:String x:Key="PromptApiPointInsertedSuccessfully">Tour Point was successfully inserted into the database.</system:String>
+    <system:String x:Key="PromptMapRetrievalSuccessful">Map was retrieved successfully.</system:String>
+    <system:String x:Key="PromptMapRetrievalUnsuccessful">The map was not able to be retrieved. The likely cause for this is that the selected area was too large.&#13;Try selecting a smaller area and querying again.</system:String>
+    <system:String x:Key="PromptMapUploadedSuccessful">Mapping selection was successfully uploaded to the database.</system:String>
+    <system:String x:Key="PromptMapOsmToPostGisFailure">Something went wrong while uploading the map to the database.</system:String>
+    <system:String x:Key="PromptMapNoFile">The OSM file is not where it was expected to be.</system:String>
+    <system:String x:Key="PromptMapDatabaseConnectionFailure">Something went wrong while trying to connect to the database.</system:String>
+    <system:String x:Key="PromptImageGenerationMustSelect">You must select something to display.</system:String>
+    <system:String x:Key="PromptTourPointMustInclude">A Tour Point must include a location, name, and description.</system:String>
+    <system:String x:Key="PromptModelMustInclude">A model must include a location and model file.</system:String>
+
+    <!-- Tab Names -->
+    <system:String x:Key="TabAerialway">Aerialway</system:String>
+    <system:String x:Key="TabAeroway">Aeroway</system:String>
+    <system:String x:Key="TabAmenity">Amenity</system:String>
+    <system:String x:Key="TabBicycle">Bicycle</system:String>
+    <system:String x:Key="TabBridge">Bridge</system:String>
+    <system:String x:Key="TabBuilding">Building</system:String>
+    <system:String x:Key="TabHarbour">Harbour</system:String>
+    <system:String x:Key="TabHighway">Highway</system:String>
+    <system:String x:Key="TabHistoric">Historic</system:String>
+    <system:String x:Key="TabLanduse">Landuse</system:String>
+    <system:String x:Key="TabLeisure">Leisure</system:String>
+    <system:String x:Key="TabMotorcar">Motorcar</system:String>
+    <system:String x:Key="TabPublicTransport">Public Transport</system:String>
+    <system:String x:Key="TabRailway">Railway</system:String>
+    <system:String x:Key="TabShop">Shop</system:String>
+    <system:String x:Key="TabSport">Sport</system:String>
+    <system:String x:Key="TabTourism">Tourism</system:String>
+    <system:String x:Key="TabWater">Water</system:String>
+    <system:String x:Key="TabWaterway">Waterway</system:String>
+
+    <!-- Configuration Comments -->
+    <system:String x:Key="ConfigCommentDatabaseHost">Host to connect to</system:String>
+    <system:String x:Key="ConfigCommentDatabasePort">Port to connect to</system:String>
+    <system:String x:Key="ConfigCommentDatabaseName">Name of database to connect to</system:String>
+    <system:String x:Key="ConfigCommentDatabaseUser">Username of account to connect with</system:String>
+    <system:String x:Key="ConfigCommentDatabasePass">Password of account to connect with</system:String>
+    <system:String x:Key="ConfigCommentDatabaseConnectionTimeout">Number of seconds to wait for a connection</system:String>
+    <system:String x:Key="ConfigCommentDatabaseCommandTimeout">Number of seconds to wait for a command to complete</system:String>
+    <system:String x:Key="ConfigCommentApiUrl">API request connection URL</system:String>
+    <system:String x:Key="ConfigCommentMapServiceToken">Follow the instructions at the above link to get your Map Service Token</system:String>
+
+</ResourceDictionary>

@@ -27,6 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <COMReference Include="{bed7f4ea-1a96-11d2-8f08-00a0c9a6186d}">
+      <Guid>bed7f4ea-1a96-11d2-8f08-00a0c9a6186d</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
       <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
       <VersionMajor>2</VersionMajor>
@@ -55,6 +64,30 @@
     <Folder Include="Config\" />
     <Folder Include="UnityApps\" />
     <Folder Include="Output\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CustomControls\AbstractButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\DeclineButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\ConfirmButton.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\NavigationButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="CustomControls\MenuButton.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="CustomControls\AbstractButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

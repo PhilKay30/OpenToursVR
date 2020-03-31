@@ -65,23 +65,19 @@ namespace Mapping.SvgConverter
             await Task.Run(() =>
             {
                 // Calculate the offset points
-                RunOnUiThread(o => StatusBlock.Text = "Calculating offset...");
                 mDatabase.GetBounds(mTopLeft, mBottomRight);
 
                 // Load the polygons from the database
-                RunOnUiThread(o => StatusBlock.Text = "Loading polygons...");
                 mDataPoints.AddRange(mDatabase.GetPolygons(mTopLeft));
 
                 // Load the roads from the database
-                RunOnUiThread(o => StatusBlock.Text = "Loading roads...");
                 mDataPoints.AddRange(mDatabase.GetRoads(mTopLeft));
 
                 // Load the lines from the database
-                RunOnUiThread(o => StatusBlock.Text = "Loading lines...");
                 mDataPoints.AddRange(mDatabase.GetLines(mTopLeft));
 
                 // Callback on main thread
-                RunOnUiThread(o => OnLoadFinished());
+                RunOnUiThread(o => MyTabControl.LoadDataPoints(mDataPoints));
             });
         }
 
@@ -99,24 +95,16 @@ namespace Mapping.SvgConverter
             });
         }
 
-        /// <summary>
-        /// Listener for database data load finishing.
-        /// </summary>
-        private void OnLoadFinished()
+        private void OnTabsLoaded(object sender, RoutedEventArgs e)
         {
-            StatusBlock.Text = "Generating options...";
-
-            // Iterate through the tabs and add them to the UI
-            foreach (TabItem tabItem in TabListInterface.GetTabs(mDataPoints))
-            {
-                TabRoads.Items.Add(tabItem);
-            }
-
             // Enable the buttons
-            StatusBlock.Text = "Ready";
             ButtonSelect.IsEnabled = true;
             ButtonDeselect.IsEnabled = true;
-            ButtonGenerate.IsEnabled = true;
+        }
+
+        private void OnOptionSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            ButtonGenerate.IsEnabled = MyTabControl.HasSelection;
         }
 
         /// <summary>
@@ -136,18 +124,7 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_SelectAll(object sender, RoutedEventArgs e)
         {
-            // Iterate through the tabs
-            foreach (TabItem tabItem in TabRoads.Items)
-            {
-                // Iterate through the checkboxes in the tab
-                ListView listView = (ListView)tabItem.Content;
-                foreach (ListViewItem listViewItem in listView.Items)
-                {
-                    // Deselect the checkbox
-                    CheckBox checkBox = (CheckBox)listViewItem.Content;
-                    checkBox.IsChecked = true;
-                }
-            }
+            MyTabControl.SelectAll();
         }
 
         /// <summary>
@@ -157,18 +134,7 @@ namespace Mapping.SvgConverter
         /// <param name="e">The event arguments</param>
         private void OnClick_DeselectAll(object sender, RoutedEventArgs e)
         {
-            // Iterate through the tabs
-            foreach (TabItem tabItem in TabRoads.Items)
-            {
-                // Iterate through the checkboxes in the tab
-                ListView listView = (ListView)tabItem.Content;
-                foreach (ListViewItem listViewItem in listView.Items)
-                {
-                    // Deselect the checkbox
-                    CheckBox checkBox = (CheckBox)listViewItem.Content;
-                    checkBox.IsChecked = false;
-                }
-            }
+            MyTabControl.DeselectAll();
         }
 
         /// <summary>
@@ -179,11 +145,11 @@ namespace Mapping.SvgConverter
         private void OnClick_GenerateImage(object sender, RoutedEventArgs e)
         {
             // Make sure that something has been selected to display
-            if (TabListInterface.Options.Count == 0)
+            if (!MyTabControl.HasSelection)
             {
                 DisplayImage.Source = null;
                 ButtonSave.IsEnabled = false;
-                MessageBox.Show("You must select something to display.");
+                MessageBox.Show(Application.Current.FindResource("PromptImageGenerationMustSelect")?.ToString());
             }
             else
             {
@@ -198,7 +164,8 @@ namespace Mapping.SvgConverter
         }
 
         /// <summary>
-        /// Begins image saving to database. This method was mobbed by Brendan Brading, Fred Chappuis and Phillip Kempton
+        /// Begins image saving to database.
+        /// Created by Brendan Brading, Fred Chappuis, and Phillip Kempton.
         /// </summary>
         /// <param name="sender">The event sender</param>
         /// <param name="e">The event arguments</param>
@@ -267,7 +234,7 @@ namespace Mapping.SvgConverter
                 0.0f,
                 @"\output.png",
                 "osmMap.png",
-                new PostGisPoint { X = (((botRight.Longitude - topLeft.Longitude)/2)+ topLeft.Longitude), Y = (((topLeft.Latitude-botRight.Latitude)/2)+botRight.Latitude) },
+                new PostGisPoint { X = (((botRight.Longitude - topLeft.Longitude) / 2) + topLeft.Longitude), Y = (((topLeft.Latitude - botRight.Latitude) / 2) + botRight.Latitude) },
                 widthInKm,
                 heightInKm);
         }

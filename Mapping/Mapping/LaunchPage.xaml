@@ -1,83 +1,35 @@
 ﻿<Page x:Class="Mapping.LaunchPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Mapping"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:c="clr-namespace:Mapping.CustomControls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="LaunchPage">
+      Title="{StaticResource NavigationPageTitle}">
 
-    <Grid>
-        <Grid
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+    <UniformGrid
+        Margin="5">
 
-            <TextBlock
-                Grid.Row="0"
-                Margin="10"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Text="Choose an Option:"
-            />
-            <Button
-                Name="ButtonSelectLocation"
-                Grid.Row="1"
-                Margin="5"
-                Padding="10"
-                Content="Select Location Boundaries"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Click="OnClick_SelectLocation"
-            />
-            <Button
-                Name="ButtonGenerateImage"
-                Grid.Row="2"
-                Margin="5"
-                Padding="10"
-                Content="Generate Image"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Click="OnClick_GenerateImage"
-            />
-            <Button
-                x:Name="ButtonAddData"
-                Grid.Row="3"
-                Margin="5"
-                Padding="10"
-                Content="Add Tour Point"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Click="OnClick_AddTourPoint"
-            />
-            <Button
-                x:Name="ButtonAddModel"
-                Grid.Row="4"
-                Margin="5"
-                Padding="10"
-                Content="Add Model"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Click="OnClick_AddModel"
-            />
-            <Button
-                x:Name="ButtonAddHistoricalMap"
-                Grid.Row="5"
-                Margin="5"
-                Padding="10"
-                Content="Add Historical Map"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Click="OnClick_AddHistMap"
-            />
-        </Grid>
-    </Grid>
+        <c:MenuButton
+            x:Name="ButtonSelectLocation"
+            Text="{StaticResource ButtonSelectLocation}"
+            Click="OnClick_SelectLocation"/>
+        <c:MenuButton
+            x:Name="ButtonGenerateImage"
+            Text="{StaticResource ButtonGenerateImage}"
+            Click="OnClick_GenerateImage"/>
+        <c:MenuButton
+            x:Name="ButtonAddData"
+            Text="{StaticResource ButtonAddTourPoint}"
+            Click="OnClick_AddTourPoint"/>
+        <c:MenuButton
+            x:Name="ButtonAddModel"
+            Text="{StaticResource ButtonAddModel}"
+            Click="OnClick_AddModel"/>
+        <c:MenuButton
+            x:Name="ButtonAddHistoricalMap"
+            Text="{StaticResource ButtonAddMap}"
+            Click="OnClick_AddHistMap"/>
+    </UniformGrid>
 </Page>

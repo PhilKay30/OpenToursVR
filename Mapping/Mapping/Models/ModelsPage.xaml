@@ -3,113 +3,102 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:s="clr-namespace:Mapping.Common"
+      xmlns:c="clr-namespace:Mapping.CustomControls"
       xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="DataPoints">
+      Title="{StaticResource ModelsPageTitle}">
 
-    <Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="300"/>
-            </Grid.ColumnDefinitions>
+    <Grid Background="GhostWhite">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
 
+        <Border
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.RowSpan="3"
+            BorderBrush="DimGray"
+            BorderThickness="0 0 1 0">
             <controls:MapControl
                 Name="MyMapControl"
-                Grid.Column="0"
                 ZoomInteractionMode="GestureAndControl" 
                 RotateInteractionMode="Disabled" 
                 TiltInteractionMode="Disabled"
+                MapServiceToken="{x:Static s:ConfigInterface.MapServiceToken}"
                 MapTapped="OnTapMap"/>
+        </Border>
 
-            <!-- Main StackPanel -->
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="1"
-                Margin="10">
+        <!-- Main StackPanel -->
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="5">
 
-                <!-- Point StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Point"
-                        />
-                    <Label
-                        Name="LabelPoint"
-                        HorizontalAlignment="Center"
-                        Content="No Point Selected"/>
-                </StackPanel>
-
-                <!-- Name StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Name"/>
-                    <TextBox
-                        Name="TextBoxName"
-                        Margin="5"
-                        MaxLength="30"/>
-                </StackPanel>
-
-                <!-- Description StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Description"/>
-                    <TextBox
-                        Name="TextBoxDescription"
-                        Margin="5"
-                        Height="200"
-                        AcceptsReturn="True"
-                        TextWrapping="Wrap"
-                        VerticalScrollBarVisibility="Auto"/>
-                </StackPanel>
-
-                <!-- Image StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Label
-                        HorizontalAlignment="Center"
-                        FontWeight="Black"
-                        Content="Add Image"/>
-                    <Label
-                        Name="LabelImage"
-                        HorizontalAlignment="Center"
-                        Content="No Image Selected"/>
-                    <Button
-                        Name="ButtonSelectImage"
-                        Margin="5"
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        Content="Select Image"
-                        Click="OnClick_AddImage"/>
-                </StackPanel>
-
-                <!-- Save StackPanel -->
-                <StackPanel
-                    Margin="0 5"
-                    Background="GhostWhite">
-                    <Button
-                        Name="ButtonSavePoint"
-                        Margin="5"
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
-                        Content="Save Point"
-                        Click="OnClick_SavePoint"/>
-                </StackPanel>
+            <!-- Point StackPanel -->
+            <StackPanel>
+                <Label
+                    HorizontalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Content="{StaticResource LabelPoint}"/>
+                <Label
+                    Name="LabelPoint"
+                    HorizontalAlignment="Center"
+                    Content="{StaticResource LabelNoPointSelected}"/>
             </StackPanel>
-        </Grid>
+
+            <!-- Dividing Line -->
+            <Border
+                BorderBrush="LightGray"
+                BorderThickness="0 0 0 1"
+                Margin="0 10"/>
+
+            <!-- Model StackPanel -->
+            <StackPanel>
+                <Label
+                    HorizontalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Content="{StaticResource LabelModel}"/>
+                <Label
+                    Name="LabelModel"
+                    HorizontalAlignment="Center"
+                    Content="{StaticResource LabelNoModelSelected}"/>
+                <c:MenuButton
+                    x:Name="ButtonSelectModel"
+                    Text="{StaticResource ButtonSelectModel}"
+                    Click="OnClick_AddModel"/>
+            </StackPanel>
+
+            <!-- Dividing Line -->
+            <Border
+                BorderBrush="LightGray"
+                BorderThickness="0 0 0 1"
+                Margin="0 10"/>
+        </StackPanel>
+
+        <!-- Save Button -->
+        <c:ConfirmButton
+            x:Name="ButtonSaveModel"
+            Grid.Row="1"
+            Grid.Column="1"
+            Text="{StaticResource ButtonSave}"
+            Click="OnClick_SaveModel"/>
+
+        <!-- Reset Button -->
+        <c:DeclineButton
+            x:Name="ButtonResetModel"
+            Grid.Row="2"
+            Grid.Column="1"
+            Text="{StaticResource ButtonReset}"
+            Click="OnClick_ResetModel"/>
     </Grid>
 </Page>

@@ -14,8 +14,8 @@
         // The following one is to be followed with an ID to get the data.
         public string GetPointData => BaseUrl + "getpointid/";
 
-        public string AddBoundsURL => BaseUrl + "addbounds/";
-        public string GetBoundsURL => BaseUrl + "getbounds/";
+        public string AddBoundsUrl => BaseUrl + "addbounds/";
+        public string GetBoundsUrl => BaseUrl + "getbounds/";
 
         public ApiConnection(string baseUrl)
         {
