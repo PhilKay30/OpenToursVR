@@ -449,6 +449,7 @@ GameObject:
   - component: {fileID: 614301247}
   - component: {fileID: 614301249}
   - component: {fileID: 614301251}
+  - component: {fileID: 614301248}
   m_Layer: 0
   m_Name: World Generation
   m_TagString: Untagged
@@ -470,6 +471,18 @@ Transform:
   m_Father: {fileID: 359694946}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &614301248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 614301246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c7009742e2a1847a65fb8feebeaa84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &614301249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -502,7 +515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tourInfoText: {fileID: 2115066129}
   tourImage: {fileID: 708012977}
-  player: {fileID: 0}
+  player: {fileID: 1447361435}
 --- !u!1 &708012975
 GameObject:
   m_ObjectHideFlags: 0
@@ -1098,6 +1111,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1239581231}
   m_CullTransparentMesh: 0
+--- !u!1 &1447361435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 107946, guid: dc06161b6d97feb419f45f03b62e14b9,
+    type: 3}
+  m_PrefabInstance: {fileID: 847703719}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1563395029
 GameObject:
   m_ObjectHideFlags: 0
