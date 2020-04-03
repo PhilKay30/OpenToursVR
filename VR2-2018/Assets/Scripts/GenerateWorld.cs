@@ -9,6 +9,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,12 +26,8 @@ public class GenerateWorld : MonoBehaviour
 
     private API_Handler api = new API_Handler();
     private byte[] osmMapData;
-    private byte[] historyMapData; // to hold future byte array from Db
+    private byte[] historyMapData; 
 
-    // Eventually get these from Db
-    //private string osmMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\output.png";
-    //private string teleportMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\32x32Marked2.png";
-    //private string historyMapFile = Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\historyMap.png";
     
     private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
     private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
@@ -60,48 +57,68 @@ public class GenerateWorld : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // API Calls 
+        APICalls();
+        CreatePlanes();
+        LoadModels();
+    }
+
+
+
+    /// <summary>
+    /// This function will make the necessary API calls to get map and model information.
+    /// </summary>
+    private void APICalls()
+    {
         osmMapData = api.GetOsmMap(); //working
         mapBounds = api.GetMapBounds(); //working
         dataPointId = api.GetPointLocations(); // working
-		try
-		{
-			histMapContainer = api.GetHistMap();
+        try
+        {
+            histMapContainer = api.GetHistMap();
             historyMapData = histMapContainer.MapData;
             historyMap = LoadDataIntoTexture(historyMapData);
-		}
-		catch (Exception e)
-		{
+        }
+        catch (Exception e)
+        {
             Debug.Log("Historical map not found: " + e);
-			// This means there was no historical map in the db
-		}
-        
+            // This means there was no historical map in the db
+        }
+          
+    }
 
+
+
+    /// <summary>
+    /// IN this function we will create the plane from the 
+    /// data we've received from the API calls
+    /// </summary>
+    private void CreatePlanes()
+    {
         osmMap = LoadDataIntoTexture(osmMapData);
-        
-        
         CreateMapPlane();
         PlacePointsOfInterest();
 
         try
-		{
-			PlaceHistoryMap();
-		}
-		catch (Exception e)
-		{
+        {
+            PlaceHistoryMap();
+        }
+        catch (Exception e)
+        {
             Debug.Log("PlaceHistoryMap:" + e);
-			// this means there was no historical map in the object returned from db
-			// this catch is just here so everything else continues
-			// if we want to disable the histPlane, it can be done here
-		}
-        
+            // this means there was no historical map in the object returned from db
+            // this catch is just here so everything else continues
+            // if we want to disable the histPlane, it can be done here
+        }
+
 
         mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
-
-        // load the models
-        LoadModels();
     }
+
+
+
+
+
 
     /// <summary>
     /// This method loads and orients all models
@@ -114,7 +131,8 @@ public class GenerateWorld : MonoBehaviour
             m.GameObj.transform.localScale = m.Scale;
             m.GameObj.transform.rotation = m.Rotation;
             Vector3 pos = GisToUnity(m.Position);
-            pos.y = m.Offset + mapPlane.transform.position.y;
+            //pos.y = m.Offset + mapPlane.transform.position.y;
+            pos.y = m.Offset + 0.1f;
             m.GameObj.transform.position = pos;
         }
     }
