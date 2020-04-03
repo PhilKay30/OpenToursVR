@@ -224,7 +224,7 @@ public class MapLoader : MonoBehaviour
     private void PlaceOverlayMap()
     {
         // Read historical png in from disk
-        string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
+        string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.jpg";
         byte[] imgData = File.ReadAllBytes(filePath);
 
         // place on the OverlayMap plane game object (see code in PlaceBaseMap() for example)

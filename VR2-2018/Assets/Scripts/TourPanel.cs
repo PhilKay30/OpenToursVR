@@ -73,8 +73,9 @@ public class TourPanel : MonoBehaviour
 
             if (CheckPosition(playerPos.x, item.PoiLocation.x))
             {
-                var something = dpInfo.Find(x => x.Id == item.Id);
-                //tourInfoText.text = new String();
+                var IcantThinkOfANameForThis = dpInfo.Find(x => x.Id == item.Id);
+                tourInfoText.text = IcantThinkOfANameForThis.PointDescription;
+                tourImage.material = IcantThinkOfANameForThis.ImageMaterial;
             }
         }
     }
@@ -89,12 +90,12 @@ public class TourPanel : MonoBehaviour
     private bool CheckPosition(float playerPos, float poiLocation)
     {
         float tollerance = 1.2f;
-        float difference = poiLocation - tollerance;
-
+        float difference = poiLocation - playerPos;
+        difference = Math.Abs(difference);
         // https://stackoverflow.com/questions/3188672/how-to-elegantly-check-if-a-number-is-within-a-range
         // but that work only for Int, thanks for nothing LINQ
         // https://stackoverflow.com/questions/42906439/check-if-a-value-exists-between-two-numbers-float-c-sharp
-        if (playerPos >= difference && playerPos <= poiLocation)
+        if (difference <= tollerance)
         {
             return true;
         }
