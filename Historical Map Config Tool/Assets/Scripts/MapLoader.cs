@@ -80,8 +80,6 @@ public class MapLoader : MonoBehaviour
         double ratioX = baseMapWidthInGIS / baseMapWidthInUnity;
         double ratioY = baseMapHeightInGIS / baseMapHeightInUnity;
 
-        Debug.Log("Width: " + baseMapWidthInUnity + " Height: " + baseMapHeightInUnity);
-
         // get unity coord offsets for overlay map
         double overlayMapOffsetX = unityCenterPoint.x - unityTopLeftCorner.x;
         double overlayMapOffsetY = unityCenterPoint.y - unityBotLeftCorner.y;
@@ -102,8 +100,6 @@ public class MapLoader : MonoBehaviour
         double baseMapWidthInKM = HaversineDistance(topLeft, topRight, DistanceUnit.Kilometers);
         double baseMapHeightInKM = HaversineDistance(topLeft, botLeft, DistanceUnit.Kilometers);
 
-        Debug.Log("BaseMap: Width: " + baseMapWidthInKM + " Height: " + baseMapHeightInKM);
-
         // get pixels per KM ratio
         double horizontalPPK = baseMapWidthInKM / baseMapWidthInUnity;
         double verticalPPK = baseMapHeightInKM / baseMapHeightInUnity;
@@ -116,8 +112,6 @@ public class MapLoader : MonoBehaviour
         // get KM lnegths of the histrical map's sides
         double histMapWidthKM = histMapPixelWidth * horizontalPPK;
         double histMapHeightKM = histMapPixelHeight * verticalPPK;
-
-        Debug.Log("HistMap: Width: " + histMapWidthKM + " Height: " + histMapHeightKM);
 
         // get the image data into hex array
         string filePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
