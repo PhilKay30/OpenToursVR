@@ -8,6 +8,7 @@
 *                       It will generate SteamVR Teleport points based on a tile map
 */
 
+using Dummiesman;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,7 +52,7 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     //HistMapObj histMapContainer = new HistMapObj();
 
-    public static List<DataPointContainer> dpc = new List<DataPointContainer>(); /// This will hold a list of datapoint and their vector3s
+    
     
 
     // Start is called before the first frame update
@@ -63,31 +64,6 @@ public class GenerateWorld : MonoBehaviour
     }
 
 
-
-    /// <summary>
-    /// This function will make the necessary API calls to get map and model information.
-    /// </summary>
-    
-        /*
-    private void APICalls()
-    {
-        osmMapData = api.GetOsmMap(); //working
-        mapBounds = api.GetMapBounds(); //working
-        dataPointId = api.GetPointLocations(); // working
-        try
-        {
-            histMapContainer = api.GetHistMap();
-            historyMapData = histMapContainer.MapData;
-            historyMap = LoadDataIntoTexture(historyMapData);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Historical map not found: " + e);
-            // This means there was no historical map in the db
-        }
-          
-    }
-    */
 
 
     /// <summary>
@@ -130,6 +106,7 @@ public class GenerateWorld : MonoBehaviour
         //List<ModelHandle> models = api.GetModels();
         foreach (ModelHandle m in API_Data_Loader.models)
         {
+            m.GameObj = new OBJLoader().Load(m.FilePath);
             m.GameObj.transform.localScale = m.Scale;
             m.GameObj.transform.rotation = m.Rotation;
             Vector3 pos = GisToUnity(m.Position);
@@ -198,19 +175,14 @@ public class GenerateWorld : MonoBehaviour
         botLeftMapLocation.z = (float)(mapLocation.z - (mapPixelLength / 2));
 
        
-        foreach (var entry in API_Data_Loader.dataPointId)
+        foreach (var entry in API_Data_Loader.dpInfo)
         {
-            double dataPointLatitude = entry["latitude"];
-            double dataPointLongitude = entry["longitude"];
-            Vector2 unityPos = GisToUnity(new Vector2((float)dataPointLongitude, (float)dataPointLatitude));
+            float dataPointLatitude = (float)entry.Latitude;
+            float dataPointLongitude = (float)entry.Longitude;
+            Vector2 unityPos = GisToUnity(new Vector2(dataPointLongitude, dataPointLatitude));
             Vector3 dataPointUnityCoord = new Vector3(unityPos.x, HeightOfDataPoints, unityPos.y);
-
-
-            DataPointContainer dp = new DataPointContainer();
-            dp.Id = entry["id"];
-            dp.PoiLocation = dataPointUnityCoord;
-            dpc.Add(dp);
             Instantiate(teleportPoint, dataPointUnityCoord, Quaternion.identity);
+            entry.PoiLocation = dataPointUnityCoord;
         }
 
     }
@@ -353,9 +325,9 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     /// <param name="gisCoords"></param>
     /// <returns></returns>
-    private Vector2 GisToUnity(Vector2 gisCoords)
+    public Vector2 GisToUnity(Vector2 gisCoords)
     {
-        /*   FANCY MATH HERE   */
+        //   FANCY MATH HERE   
         double distanceToMovePointLogitude = gisCoords.x - top_left["longitude"];
         double distanceToMovePointLatitude = gisCoords.y - bottom_right["latitude"];
 
@@ -370,59 +342,5 @@ public class GenerateWorld : MonoBehaviour
         // This is the position the datapoint needs to be placed at (in unity coord system)
         // NOTE: The y value is a public property you can fiddel with in the IDE at runtime
         return new Vector2(dataPointX, dataPointZ);
-    }
-
-
-
-
-
-    /// <summary>
-    /// Here be a possible Obsolete method, should be safe for deletion
-    /// </summary>
-    /// <param name="scale"></param>
-    /// <returns></returns>
-    /*
-    * Function     :    calculatePosition	
-    * Description  :    This is to move the plane Lower left corner to the 0,0 position
-    *                   based on the plane's X and Z scales
-    * Parameters   :    float scale: The scale of axis
-    * Return Value :    float: The position the plane needs to be 	
-    */
-    private float CalculatePosition(float scale)
-    {
-        // scale 1 positions
-        float baseScale = 1f;           // Starting scale for any GameObject is 1
-        float basePosition = 4.5f;      // A plane at scale one needs to be set at 4.5 X, Z position
-
-        float multiplier = 0.5f * 10f;  // Every 0.1 increment in scales means a 0.5 movement.
-                                        
-        // Calculate how far from baseScale the number
-        // multiply that number but the multiplier and then add the basePosition
-        // ie.  Scale of 1.4
-        // 1.4 - 1 = 0.4
-        // 0.4 * 0.5 * 10 = 2
-        // 2 + 4.5 = 6.5  So the new position for the plane will be 6.5
-        float position = (scale - baseScale) * multiplier + basePosition;
-        return position;
-    }
-
-
-}
-
-
-
-
-/// <summary>
-/// This will hold the contants of a point of interest
-/// </summary>
-public class DataPointContainer
-{
-    public double Id { set; get; }
-    public Vector3 PoiLocation { set; get; }
-
-    public DataPointContainer()
-    {
-        Id = 0;
-        PoiLocation = new Vector3();
     }
 }
