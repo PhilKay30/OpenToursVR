@@ -259,7 +259,9 @@ public class ObjecLoader : MonoBehaviour
 
         // copy the obj and material files over
         File.Copy(FilePath, string.Format("MyFolder\\{0}", filePathPcs[filePathPcs.Length - 1]));
-        File.Copy(FilePath, string.Format("MyFolder\\{0}", fileName + ".mtl"));
+        string[] pcs = FilePath.Split('.');
+        string mtlFile = pcs[0] + ".mtl";
+        File.Copy(mtlFile, string.Format("MyFolder\\{0}", fileName + ".mtl"));
         string subFolder = basePath + fileName;
 
         // check if any image files go with this obj model
