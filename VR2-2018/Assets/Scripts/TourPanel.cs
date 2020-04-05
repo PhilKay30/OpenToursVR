@@ -36,6 +36,7 @@ public class TourPanel : MonoBehaviour
         
     }
 
+    /*
     private void GetDataPointInfo(List<DataPointContainer> dpc)
     {
         foreach (var item in dpc)
@@ -53,7 +54,7 @@ public class TourPanel : MonoBehaviour
             //tourImage.material = mat;
         }
     }
-
+    */
 
     // Update is called once per frame
     void Update()
@@ -65,7 +66,7 @@ public class TourPanel : MonoBehaviour
         Vector3 playerPos = player.transform.position;
 
 
-        foreach (var item in GenerateWorld.dpc)
+        foreach (var item in API_Data_Loader.dpInfo)
         {
             Debug.Log("Player x: " + playerPos.x);
             Debug.Log("POI x: " + item.PoiLocation.x);
@@ -129,21 +130,28 @@ public class TourPanel : MonoBehaviour
 }
 
 
+
+
+
 public class DataPointInfo
 {
     private GenerateWorld gWorld = new GenerateWorld();
     public string PointDescription { set; get; }
     public Texture2D PointImage { set; get; }
     public double Id { set; get; }
+    public float Longitude { set; get; }
+    public float Latitude { set; get; }
     public Material ImageMaterial = new Material(Shader.Find("Transparent/Diffuse"));
-    
+    public Vector3 PoiLocation { set; get; }
 
-    public DataPointInfo(double id, string description, byte[] texture)
+    public DataPointInfo(double id, string description, byte[] texture, float lng, float lat)
     {
         Id = id;
         PointDescription = description;
         PointImage = gWorld.LoadDataIntoTexture(texture);
         ImageMaterial.mainTexture = PointImage;
+        Longitude = lng;
+        Latitude = lat;
     }
 
     public string GetTourInfo()

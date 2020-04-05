@@ -10,7 +10,7 @@ public class API_Data_Loader : MonoBehaviour
     public static byte[] osmMapData;
     public static List<Dictionary<string, double>> mapBounds;
     public static List<Dictionary<string, double>> dataPointId;
-    public static List<ModelHandle> models;
+    public static List<ModelHandle> models; 
     public static List<DataPointInfo> dpInfo = new List<DataPointInfo>();
     public static HistMapObj histMapContainer;
     public static byte[] historyMapData;
@@ -25,8 +25,9 @@ public class API_Data_Loader : MonoBehaviour
     void Start()
     {
         APICalls();
-        GetDataPointInfo(GenerateWorld.dpc);
-        List<ModelHandle> models = api.GetModels();
+        GetDataPointInfo();
+        
+        models = api.GetModels();
     }
 
     // Update is called once per frame
@@ -57,16 +58,29 @@ public class API_Data_Loader : MonoBehaviour
 
 
 
-
-    private void GetDataPointInfo(List<DataPointContainer> dpc)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="dpc"></param>
+    private void GetDataPointInfo()
     {
-        foreach (var item in dpc)
+
+        foreach (var item in dataPointId)
         {
             List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
+            
+            dataPointInformation.Add(api.GetPointInformation(item["id"]));
 
-            dataPointInformation.Add(api.GetPointInformation(item.Id));
-            DataPointInfo dpi = new DataPointInfo(item.Id, dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"], api.HexStringToBinary(dataPointInformation[0]["point_image"]));
+            DataPointInfo dpi = new DataPointInfo(item["id"],
+                dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"], 
+                api.HexStringToBinary(dataPointInformation[0]["point_image"]),
+                (float)item["longitude"],
+                (float)item["latitude"]);
             dpInfo.Add(dpi);
         }
     }
 }
+
+
+
+

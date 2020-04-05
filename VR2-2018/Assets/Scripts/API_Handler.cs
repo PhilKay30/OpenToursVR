@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -133,19 +134,36 @@ public class API_Handler
             }
         } // end of getting missing model data
 
-				// ToDo
-				// Use frags (List<frag>) to check if any folder inside "Models\\" exist that don't exist in frags list
-				// FOreach folder that exists that isn't in the list of frags, use EmptyFolder method (in objectLoader.cs in Model tool)
-				// then delete that directory using Directory.Delete("Models\\" + id);
-				
-				
+        string[] folders = Directory.GetDirectories("Models");
+        List<string> fragIDS = new List<string>();
+        foreach (ModelFrag frag in frags)
+        {
+            fragIDS.Add(frag.model_id.ToString());
+        }
+        List<string> folderID = new List<string>();
+        foreach (string folder in folders)
+        {
+            folderID.Add(folder.Split('\\')[1]);
+        }
+        List<string> PathToDelete = folderID.Except(fragIDS).ToList();
+        foreach (string path in PathToDelete)
+        {
+            EmptyFolder(path);
+            Directory.Delete(path);
+        }
+        // ToDo
+        // Use frags (List<frag>) to check if any folder inside "Models\\" exist that don't exist in frags list
+        // FOreach folder that exists that isn't in the list of frags, use EmptyFolder method (in objectLoader.cs in Model tool)
+        // then delete that directory using Directory.Delete("Models\\" + id);
+
+
         // time to load all models
         // get all models into a list to return
         List<ModelHandle> models = new List<ModelHandle>();
-        string[] folders = Directory.GetDirectories("Models");
+        string[] modelFolders = Directory.GetDirectories("Models");
 
         // loop through all files in each directory to find the obj and metadata files
-        foreach (string fold in folders)
+        foreach (string fold in modelFolders)
         {
             ModelHandle newModel = new ModelHandle();
             string[] files = Directory.GetFiles(fold);
@@ -154,7 +172,8 @@ public class API_Handler
                 if (fileStr.EndsWith(".obj"))
                 {
                     // found the obj file, make the object
-                    newModel.GameObj = new OBJLoader().Load(fileStr);
+                    //newModel.GameObj = new OBJLoader().Load(fileStr);
+                    newModel.FilePath = fileStr;
                 }
                 if (fileStr.EndsWith("meta.txt"))
                 {
@@ -284,7 +303,7 @@ public class API_Handler
                 if (jobject.list[0].list[0].keys[i] == "image_data")
                 {
                     imgData = HexStringToBinary(jobject.list[0].list[0].list[i].ToString());
-                    
+
                 }
                 else if (jobject.list[0].list[0].keys[i] == "km_height")
                 {
@@ -380,7 +399,7 @@ public class API_Handler
 
             for (int i = 0; i < lists.keys.Count; i++)
             {
-                
+
                 if (lists.keys[i] == "point_id")
                 {
                     values["id"] = Convert.ToDouble(lists.list[i].ToString());
@@ -392,7 +411,7 @@ public class API_Handler
             }
             keyValuePairs.Add(values);
         }
-        
+
 
         return keyValuePairs;
     }
@@ -430,14 +449,14 @@ public class API_Handler
         dpInfo = MakeWebRequest(api);
         dpInfo = dpInfo.list[0].list[0];
         Dictionary<string, string> info = new Dictionary<string, string>();
-        
-        for(int i = 0; i < dpInfo.Count; i++)
+
+        for (int i = 0; i < dpInfo.Count; i++)
         {
-            
+
             info[dpInfo.keys[i].ToString()] = dpInfo.list[i].ToString();
         }
 
-        return info;        
+        return info;
     }
 
 
@@ -453,7 +472,7 @@ public class API_Handler
         bounds = MakeWebRequest(mapBoundsApiRequest);
         bounds = bounds.list[0].list[0];
 
-        for(int i = 0; i < bounds.list.Count; i++)
+        for (int i = 0; i < bounds.list.Count; i++)
         {
             Dictionary<string, double> values = new Dictionary<string, double>();
             if (bounds.keys[i] == "top_left")
@@ -471,8 +490,8 @@ public class API_Handler
             {
                 keyValuePairs.Add(values);
             }
-            
-            
+
+
         }
 
         return keyValuePairs;
@@ -531,7 +550,35 @@ public class API_Handler
     {
         using (FileStream inFile = new FileStream(sCompressedFile, FileMode.Open, FileAccess.Read, FileShare.None))
         using (GZipStream zipStream = new GZipStream(inFile, CompressionMode.Decompress, true))
-            while (DecompressFile(sDir, zipStream));
+            while (DecompressFile(sDir, zipStream)) ;
+    }
+
+
+
+
+
+    /// <summary>
+    /// This method clears out a folder completely
+    /// </summary>
+    /// <param name="baseFolder">folder to clear out</param>
+    private void EmptyFolder(string baseFolder)
+    {
+        if (Directory.Exists(baseFolder))
+        {
+            // delete all files
+            string[] filePaths = Directory.GetFiles(baseFolder);
+            foreach (string filePath in filePaths)
+            {
+                File.Delete(filePath);
+            }
+            // recursively delete any subfolder contents
+            string[] folderPaths = Directory.GetDirectories(baseFolder);
+            foreach (string folder in folderPaths)
+            {
+                EmptyFolder(folder);
+                Directory.Delete(folder);
+            }
+        }
     }
 }
 
@@ -584,11 +631,12 @@ public class HistMapObj
 /// </summary>
 public class ModelHandle
 {
-    public GameObject GameObj { get; set; } // GameObject handle for the model
-    public Quaternion Rotation { get; set; } // the rotation to apply
-    public Vector3 Scale { get; set; } // the scale to apply
-    public Vector2 Position { get; set; } // the position to apply
-    public float Offset { get; set; } // the y offset to apply
+    public GameObject GameObj { get; set; }     /// GameObject handle for the model
+    public string FilePath { get; set; }        /// To store the file path of the GameObject
+    public Quaternion Rotation { get; set; }    /// the rotation to apply
+    public Vector3 Scale { get; set; }          /// the scale to apply
+    public Vector2 Position { get; set; }       /// the position to apply
+    public float Offset { get; set; }           /// the y offset to apply
 }
 
 /// <summary>

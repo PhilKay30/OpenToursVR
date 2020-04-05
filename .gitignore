@@ -202,6 +202,8 @@ dmypy.json
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 VR2-2018/[Ll]ibrary/
+VR2-2018/[Ll]ibrary/metadata/
+VR2-2018/Models/
 VR2-2018/[Tt]emp/
 VR2-2018/[Oo]bj/
 VR2-2018/[Bb]uild/
