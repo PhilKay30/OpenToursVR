@@ -32,7 +32,7 @@ public class TourPanel : MonoBehaviour
         Material mat = new Material(Shader.Find("Transparent/Diffuse"));
         mat.mainTexture = texture;
         tourImage.material = mat;
-        GetDataPointInfo(GenerateWorld.dpc);
+        //GetDataPointInfo(GenerateWorld.dpc);
         
     }
 
@@ -73,7 +73,7 @@ public class TourPanel : MonoBehaviour
 
             if (CheckPosition(playerPos.x, item.PoiLocation.x))
             {
-                var IcantThinkOfANameForThis = dpInfo.Find(x => x.Id == item.Id);
+                var IcantThinkOfANameForThis = API_Data_Loader.dpInfo.Find(x => x.Id == item.Id);
                 tourInfoText.text = IcantThinkOfANameForThis.PointDescription;
                 tourImage.material = IcantThinkOfANameForThis.ImageMaterial;
             }

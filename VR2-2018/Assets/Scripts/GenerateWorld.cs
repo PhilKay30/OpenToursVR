@@ -22,15 +22,15 @@ public class GenerateWorld : MonoBehaviour
     // Unity Objects
     private Texture2D teleportMap;
     private Texture osmMap;
-    private Texture historyMap;
+    //private Texture historyMap;
 
-    private API_Handler api = new API_Handler();
+    //private API_Handler api = new API_Handler();
     private byte[] osmMapData;
-    private byte[] historyMapData; 
+    //private byte[] historyMapData; 
 
     
-    private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
-    private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
+    //private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
+    //private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
    
 
     private float scaler = 400.0f;  /// To translate pixel to scale in unity
@@ -49,7 +49,7 @@ public class GenerateWorld : MonoBehaviour
     /// <summary>
     /// This object will conatin all of the historical map data
     /// </summary>
-    HistMapObj histMapContainer = new HistMapObj();
+    //HistMapObj histMapContainer = new HistMapObj();
 
     public static List<DataPointContainer> dpc = new List<DataPointContainer>(); /// This will hold a list of datapoint and their vector3s
     
@@ -57,7 +57,7 @@ public class GenerateWorld : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        APICalls();
+        //APICalls();
         CreatePlanes();
         LoadModels();
     }
@@ -67,6 +67,8 @@ public class GenerateWorld : MonoBehaviour
     /// <summary>
     /// This function will make the necessary API calls to get map and model information.
     /// </summary>
+    
+        /*
     private void APICalls()
     {
         osmMapData = api.GetOsmMap(); //working
@@ -85,7 +87,7 @@ public class GenerateWorld : MonoBehaviour
         }
           
     }
-
+    */
 
 
     /// <summary>
@@ -94,7 +96,7 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     private void CreatePlanes()
     {
-        osmMap = LoadDataIntoTexture(osmMapData);
+        osmMap = LoadDataIntoTexture(API_Data_Loader.osmMapData);
         CreateMapPlane();
         PlacePointsOfInterest();
 
@@ -125,8 +127,8 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     private void LoadModels()
     {
-        List<ModelHandle> models = api.GetModels();
-        foreach (ModelHandle m in models)
+        //List<ModelHandle> models = api.GetModels();
+        foreach (ModelHandle m in API_Data_Loader.models)
         {
             m.GameObj.transform.localScale = m.Scale;
             m.GameObj.transform.rotation = m.Rotation;
@@ -169,10 +171,10 @@ public class GenerateWorld : MonoBehaviour
     {
         // This will be ugly and should be done better
         // Here there be magic
-        bottom_right["longitude"] = mapBounds[0]["longitude"];
-        bottom_right["latitude"] = mapBounds[0]["latitude"];
-        top_left["longitude"] = mapBounds[1]["longitude"];
-        top_left["latitude"] = mapBounds[1]["latitude"];
+        bottom_right["longitude"] = API_Data_Loader.mapBounds[0]["longitude"];
+        bottom_right["latitude"] = API_Data_Loader.mapBounds[0]["latitude"];
+        top_left["longitude"] = API_Data_Loader.mapBounds[1]["longitude"];
+        top_left["latitude"] = API_Data_Loader.mapBounds[1]["latitude"];
 
 
 
@@ -196,7 +198,7 @@ public class GenerateWorld : MonoBehaviour
         botLeftMapLocation.z = (float)(mapLocation.z - (mapPixelLength / 2));
 
        
-        foreach (var entry in dataPointId)
+        foreach (var entry in API_Data_Loader.dataPointId)
         {
             double dataPointLatitude = entry["latitude"];
             double dataPointLongitude = entry["longitude"];
@@ -311,8 +313,8 @@ public class GenerateWorld : MonoBehaviour
     private void PlaceHistoryMap()
     {
         // get km dimensions of OSM map and historical map
-        Vector2 OsmDimensionsKM = api.OsmMapDimensions;
-        Vector2 HistMapDimensionsKM = new Vector2(histMapContainer.WidthKM, histMapContainer.HeightKM);
+        Vector2 OsmDimensionsKM = API_Data_Loader.api.OsmMapDimensions;
+        Vector2 HistMapDimensionsKM = new Vector2(API_Data_Loader.histMapContainer.WidthKM, API_Data_Loader.histMapContainer.HeightKM);
         // get ratios between the 2 map sizes
         float horizontalRatio = HistMapDimensionsKM.x / OsmDimensionsKM.x;
         float verticalRatio = HistMapDimensionsKM.y / OsmDimensionsKM.y;
@@ -331,14 +333,14 @@ public class GenerateWorld : MonoBehaviour
         historyPlane.transform.localScale = new Vector3(horizontalScaler, historyPlane.transform.localScale.y, verticalScaler);
         
         // rotate the hist plane by correct amount (pretty sure this will do what I want)
-        historyPlane.transform.Rotate(0, histMapContainer.Rotation, 0, Space.Self);
+        historyPlane.transform.Rotate(0, API_Data_Loader.histMapContainer.Rotation, 0, Space.Self);
         
         // get the location that the historical map is supposed to be in and then move it there
-        Vector2 unityPos = GisToUnity(histMapContainer.CenterPoint);
+        Vector2 unityPos = GisToUnity(API_Data_Loader.histMapContainer.CenterPoint);
         historyPlane.transform.position = new Vector3(unityPos.x, historyPlane.transform.position.y, unityPos.y);
       
         Material material = new Material(Shader.Find("Transparent/Diffuse"));
-        material.mainTexture = historyMap;
+        material.mainTexture = API_Data_Loader.historyMap;
         material.renderQueue = 2999; //to fix the clipping issue
         historyPlane.GetComponent<Renderer>().material = material;
     }
