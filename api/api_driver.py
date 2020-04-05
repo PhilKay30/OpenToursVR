@@ -122,6 +122,8 @@ class Models(db.Model):
     model_scaling = db.Column(db.String())
     model_data = db.Column(db.String())
     model_offset = db.Column(db.Float())
+	model_x_name = db.Column(db.String())
+	
 
     def __init__(
         self,

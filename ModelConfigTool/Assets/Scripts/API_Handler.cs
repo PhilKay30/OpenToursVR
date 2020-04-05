@@ -368,6 +368,7 @@ public class ModelObj
     public string model_scaling;
     public string model_data;
     public float model_offset;
+    public string model_x_name;
 }
 
 

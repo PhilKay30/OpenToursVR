@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using Dummiesman;
+using System.Linq;
 
 using UnityEngine;
 using UnityEngine.Networking;
@@ -115,7 +116,6 @@ public class API_Handler
                             // create meta file
                             lines[0] = frag.model_rotation;
                             lines[1] = frag.model_location;
-
                             break;
                         case 1:
                             // it's the offset
@@ -133,10 +133,24 @@ public class API_Handler
             }
         } // end of getting missing model data
 
-				// ToDo
-				// Use frags (List<frag>) to check if any folder inside "Models\\" exist that don't exist in frags list
-				// FOreach folder that exists that isn't in the list of frags, use EmptyFolder method (in objectLoader.cs in Model tool)
-				// then delete that directory using Directory.Delete("Models\\" + id);
+        // Get the Folder path IDs and the frag ids, and use a third list to perform an except operation on list1 with list2 to find the differences in them, delete the differences.
+        string[] folders = Directory.GetDirectories("Models");
+        List<string> fragIDS = new List<string>();
+        foreach (ModelFrag frag in frags)
+        {
+            fragIDS.Add(frag.model_id);
+        }
+        List<string> folderID = new List<string>();
+        foreach (string folder in folders)
+        {
+            folderID.Add(folder.Split("\\")[1]);
+        }
+        List<string> PathToDelete = folderID.Except(fragIDS).ToList();
+        foreach (string path in PathToDelete)
+        {
+            EmptyFolder(path);
+        }
+       
 				
 				
         // time to load all models
@@ -173,6 +187,35 @@ public class API_Handler
         // return the list of all model handles (they still need to have their orientation data applied to them)
         return models;
     }
+
+
+
+    /// <summary>
+    /// This method clears out a folder completely
+    /// </summary>
+    /// <param name="baseFolder">folder to clear out</param>
+    private void EmptyFolder(string baseFolder)
+    {
+        if (Directory.Exists(baseFolder))
+        {
+            // delete all files
+            string[] filePaths = Directory.GetFiles(baseFolder);
+            foreach (string filePath in filePaths)
+            {
+                File.Delete(filePath);
+            }
+
+            // recursively delete any subfolder contents
+            string[] folderPaths = Directory.GetDirectories(baseFolder);
+            foreach (string folder in folderPaths)
+            {
+                EmptyFolder(folder);
+                Directory.Delete(folder);
+            }
+
+        }
+    }
+
 
     /// <summary>
     /// This method removes all garbage characters from a printed JSON string to make it deserializeable

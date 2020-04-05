@@ -53,6 +53,11 @@ public class ObjecLoader : MonoBehaviour
     float pntLatitude;
 
     /// <summary>
+    /// the name of the model that the user enters.
+    /// </summary>
+    string model_x_name;
+
+    /// <summary>
     /// The full path of the model file
     /// </summary>
     private string FilePath;
@@ -112,6 +117,7 @@ public class ObjecLoader : MonoBehaviour
         MapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
     }
 
+    
     /// <summary>
     /// Load the model onto the plane
     /// </summary>
@@ -122,6 +128,7 @@ public class ObjecLoader : MonoBehaviour
         FilePath = lines[0];
         pntLongitude = float.Parse(lines[1]);
         pntLatitude = float.Parse(lines[2]);
+        model_x_name = string.Parse(lines[3]);
 
         // Make sure file exists
         if (!File.Exists(FilePath))
@@ -178,6 +185,7 @@ public class ObjecLoader : MonoBehaviour
         model.model_location = string.Format("POINT({0} {1})", pntLongitude, pntLatitude);
         model.model_rotation = JsonUtility.ToJson(Model.transform.rotation);
         model.model_scaling = JsonUtility.ToJson(Model.transform.localScale);
+        model.model_x_name = JsonUtility.ToJson(this.model_x_name)
         // do the save
         api.AddModel(model);
     }

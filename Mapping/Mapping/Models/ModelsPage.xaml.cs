@@ -260,10 +260,11 @@ namespace Mapping.Models
                 return;
             }
 
-            string[] lines = new string[3];
+            string[] lines = new string[4];
             lines[0] = ModelPath + "\n";
             lines[1] = ModelLocation.Position.Longitude + "\n";
             lines[2] = ModelLocation.Position.Latitude.ToString();
+            lines[3] = this.TextModelName.Text;
             string outputPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\OpenToursVR\\Models\\ModelData.txt";
 
             CreateDirectory();
