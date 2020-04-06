@@ -1,5 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿/// File: ObjecLoader.cs
+/// Project: Paris VR 2.0
+/// Programmers: Weeping Angels
+/// First Version: March 20th, 2020
+/// Description: This file contains a class for loading and savings a model
+
 using UnityEngine;
 using Dummiesman;
 using System.IO;
@@ -141,7 +145,8 @@ public class ObjecLoader : MonoBehaviour
             Model.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
             // Assign the model to the Model Control script so user can control it
-            ScriptHandle.GetComponent<rotate>().Model = Model;
+            MainCamera.GetComponent<CamController>().Model = Model;
+            MapPlane.GetComponent<ModelController>().Model = Model;
 
             // move the model to where it's supposed to be on plane
             Model.transform.position = GisToUnity(new Vector2(pntLongitude, pntLatitude));

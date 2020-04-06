@@ -1,8 +1,10 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - ButtonHandler
+    - CamController
+    - ModelController
     - ObjecLoader
-    - rotate
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -13,8 +15,10 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.HorizontalLayoutGroup
     - UnityEngine.UI.Image
     - UnityEngine.UI.Text
+    - UnityEngine.UI.VerticalLayoutGroup
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
     - Class: 1
@@ -48,8 +52,6 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9670}
     - Class: 114
-      Script: {instanceID: 9752}
-    - Class: 114
       Script: {instanceID: 9820}
     - Class: 114
       Script: {instanceID: 9860}
@@ -60,11 +62,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10580}
     - Class: 114
+      Script: {instanceID: 10664}
+    - Class: 114
+      Script: {instanceID: 10790}
+    - Class: 114
       Script: {instanceID: 11028}
     - Class: 114
       Script: {instanceID: 11346}
     - Class: 114
       Script: {instanceID: 11378}
+    - Class: 114
+      Script: {instanceID: 13550}
+    - Class: 114
+      Script: {instanceID: 13816}
+    - Class: 114
+      Script: {instanceID: 13932}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -106,12 +118,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_Dropdown
-  - hash:
-      serializedVersion: 2
-      Hash: 40104d036e9643e516c5d22dcda8c04f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: rotate
   - hash:
       serializedVersion: 2
       Hash: e7a73f5f78ba6445195ec23b74a1ce2d
@@ -520,6 +526,24 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 40104d036e9643e516c5d22dcda8c04f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CamController
+  - hash:
+      serializedVersion: 2
+      Hash: bfff8b3987e3da782ba95b9bd2f66a4c
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ModelController
+  - hash:
+      serializedVersion: 2
+      Hash: c27b9e662fd10330430887af801f5fbc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ButtonHandler
   platform: 5
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
