@@ -1,7 +1,7 @@
 ﻿/// File: API_Handler.cs
 /// Project: Paris VR 2.0
 /// Programmers: Weeping Angels
-/// First Version: April 6th, 2020
+/// First Version: March 20th, 2020
 /// Description: This file contains button handlers for the UI
 
 using System;
@@ -9,14 +9,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 
 using UnityEngine;
 
 public class API_Handler
 {
-
-    //private string apiRequest = "http://10.192.114.53:5000/getimg/osmMap.png";
     private string osmMapApiRequest = "http://192.0.203.84:5000/getimg/osmMap.png";
     private string mapBoundsApiRequest = "http://192.0.203.84:5000/getbounds/osmMap";
     private string addModelApiRequest = "http://192.0.203.84:5000/addmodel/";
@@ -43,7 +40,7 @@ public class API_Handler
             {
                 if (jobject.list[0].list[0].keys[i] == "image_data")
                 {
-                    imgData = HexStringToBinary(jobject.list[0].list[0].list[i].ToString());
+                    imgData = Converter.HexStringToBinary(jobject.list[0].list[0].list[i].ToString());
                     break;
                 }
             }
@@ -54,30 +51,6 @@ public class API_Handler
         }
 
         return imgData;
-    }
-
-
-    /// <summary>
-    /// Converts a hex encoding string into binary data
-    /// </summary>
-    /// <param name="hexStr">string to convert</param>
-    /// <returns>the binary array</returns>
-    public byte[] HexStringToBinary(string hexStr)
-    {
-        string strBuff = hexStr.StripToHex();
-        List<byte> bitey = new List<byte>();
-        for (int i = 0; i < strBuff.Length; i++)
-        {
-            char[] charArr =
-            {
-                    strBuff[i],
-                    strBuff[++i]
-            };
-            string biteme = new string(charArr);
-            byte number = Convert.ToByte(biteme, 16);
-            bitey.Add(number);
-        }
-        return bitey.ToArray();
     }
 
 
@@ -112,7 +85,7 @@ public class API_Handler
     /// <summary>
     /// This method adds a model to the DB
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">the model to add</param>
     public void AddModel(ModelObj model)
     {
         string strJson = JsonUtility.ToJson(model);
@@ -134,27 +107,7 @@ public class API_Handler
         {
             Debug.Log("API_Handler Exception: " + e.ToString());
         }
-    }
-
-
-
-    /// <summary>
-    /// This method splits a POINT string into its pieces
-    /// </summary>
-    /// <param name="point">string to split</param>
-    /// <param name="values">OUT param to hold values</param>
-    private void SplitPoints(string point, ref Dictionary<string, double> values)
-    {
-        int from = point.IndexOf("(") + "(".Length;
-        int to = point.LastIndexOf(")");
-        point = point.Substring(from, to - from);
-        string[] points = point.Split(' ');
-
-        // Here there be magic jazz hands
-        values["longitude"] = Convert.ToDouble(points[0]);
-        values["latitude"] = Convert.ToDouble(points[1]);
-    }
-
+    }    
 
     /// <summary>
     /// This methods gets map boundaries from db
@@ -174,54 +127,19 @@ public class API_Handler
             if (bounds.keys[i] == "top_left")
             {
                 values["top_left"] = i;
-                SplitPoints(bounds.list[i].ToString(), ref values);
+                bounds.list[i].ToString().ToPoint(ref values);
             }
             if (bounds.keys[i] == "bottom_right")
             {
                 values["bottom_right"] = i;
-                SplitPoints(bounds.list[i].ToString(), ref values);
+                bounds.list[i].ToString().ToPoint(ref values);
             }
-
             if (values.Count != 0)
             {
                 keyValuePairs.Add(values);
             }
-
-
         }
 
         return keyValuePairs;
     }
-}
-
-
-/// <summary>
-/// This class represents a set of string extensions
-/// </summary>
-public static class StringExtensions
-{
-    /// <summary>
-    /// This extension method strips everything except for hex chars out of a string
-    /// </summary>
-    /// <param name="inputString"></param>
-    /// <returns></returns>
-    public static string StripToHex(this string inputString)
-    {
-        Regex rgx = new Regex("[^a-fA-F0-9]");
-        return rgx.Replace(inputString, "");
-    }
-}
-
-
-/// <summary>
-/// This object represents a Model
-/// </summary>
-[System.Serializable]
-public class ModelObj
-{
-    public string model_location;
-    public string model_rotation;
-    public string model_scaling;
-    public string model_data;
-    public float model_offset;
 }

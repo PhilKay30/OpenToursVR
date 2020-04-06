@@ -449,7 +449,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d106aa3954407854f997ccfa723cdf7a, type: 2}
+  - {fileID: 2100000, guid: 330a96bd78883d241bfc0dc42ca171fa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1286,8 +1286,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bed6172227175f24a8e1abaccf50f0f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScriptHandle: {fileID: 219042347}
-  shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   MainCamera: {fileID: 963194227}
   MapPlane: {fileID: 219042347}
 --- !u!1 &1079443991

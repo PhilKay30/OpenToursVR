@@ -5,6 +5,7 @@ ScriptsOnlyBuild:
     - CamController
     - ModelController
     - ObjecLoader
+    - SceneLoader
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -20,7 +21,56 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Text
     - UnityEngine.UI.VerticalLayoutGroup
   sceneClasses:
-    Assets/Scenes/SampleScene.unity:
+    Assets/Scenes/LoadingScene.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9670}
+    - Class: 114
+      Script: {instanceID: 9818}
+    - Class: 114
+      Script: {instanceID: 9858}
+    - Class: 114
+      Script: {instanceID: 10240}
+    - Class: 114
+      Script: {instanceID: 10666}
+    - Class: 114
+      Script: {instanceID: 11030}
+    - Class: 114
+      Script: {instanceID: 11382}
+    - Class: 114
+      Script: {instanceID: 13268}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/MainScene.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -52,31 +102,31 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9670}
     - Class: 114
-      Script: {instanceID: 9820}
+      Script: {instanceID: 9818}
     - Class: 114
-      Script: {instanceID: 9860}
+      Script: {instanceID: 9858}
     - Class: 114
-      Script: {instanceID: 9900}
+      Script: {instanceID: 9898}
+    - Class: 114
+      Script: {instanceID: 10228}
     - Class: 114
       Script: {instanceID: 10240}
     - Class: 114
       Script: {instanceID: 10580}
     - Class: 114
-      Script: {instanceID: 10664}
+      Script: {instanceID: 10656}
     - Class: 114
-      Script: {instanceID: 10790}
+      Script: {instanceID: 10666}
     - Class: 114
-      Script: {instanceID: 11028}
+      Script: {instanceID: 10792}
     - Class: 114
-      Script: {instanceID: 11346}
+      Script: {instanceID: 11030}
     - Class: 114
-      Script: {instanceID: 11378}
+      Script: {instanceID: 11150}
     - Class: 114
-      Script: {instanceID: 13550}
+      Script: {instanceID: 11350}
     - Class: 114
-      Script: {instanceID: 13816}
-    - Class: 114
-      Script: {instanceID: 13932}
+      Script: {instanceID: 11382}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -180,7 +230,7 @@ ScriptsOnlyBuild:
     className: TMP_InputField
   - hash:
       serializedVersion: 2
-      Hash: 39303a7177d0ced9b6e2bf16eec36bd2
+      Hash: f42833cf8e98efd6e96d2f120ee515ec
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ObjecLoader
@@ -264,6 +314,12 @@ ScriptsOnlyBuild:
     className: Shadow
   - hash:
       serializedVersion: 2
+      Hash: 40104d036e9643e516c5d22dcda8c04f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CamController
+  - hash:
+      serializedVersion: 2
       Hash: cc4274b586df3c02688bac01b88bd16c
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -340,6 +396,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: RawImage
+  - hash:
+      serializedVersion: 2
+      Hash: c27b9e662fd10330430887af801f5fbc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ButtonHandler
   - hash:
       serializedVersion: 2
       Hash: 5ad4aa237d47ac2bab17bacb672edf7a
@@ -424,6 +486,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools
     className: BeforeAfterTestCommandState
+  - hash:
+      serializedVersion: 2
+      Hash: bfff8b3987e3da782ba95b9bd2f66a4c
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: ModelController
   - hash:
       serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
@@ -528,24 +596,55 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: 40104d036e9643e516c5d22dcda8c04f
+      Hash: b460392685e281c983a8731edca5a45b
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: CamController
+    className: SceneLoader
   - hash:
       serializedVersion: 2
-      Hash: bfff8b3987e3da782ba95b9bd2f66a4c
+      Hash: afc5b93a7b192de2dcb3832fe35a5c7e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: ModelController
+    className: loadingcolorful
   - hash:
       serializedVersion: 2
-      Hash: c27b9e662fd10330430887af801f5fbc
+      Hash: 316e863320b8c87159004b8b8d6eeace
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: ButtonHandler
+    className: loadingtext
+  - hash:
+      serializedVersion: 2
+      Hash: 5bddb32bcb848f51c6efb9a0b86ba855
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: simplerotate
+  - hash:
+      serializedVersion: 2
+      Hash: afc5b93a7b192de2dcb3832fe35a5c7e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: loadingbar
+  - hash:
+      serializedVersion: 2
+      Hash: 5bddb32bcb848f51c6efb9a0b86ba855
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: rotatetotate
+  - hash:
+      serializedVersion: 2
+      Hash: abb74232924aeae3cb0affcdf05292df
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Loading
+  - hash:
+      serializedVersion: 2
+      Hash: 5bddb32bcb848f51c6efb9a0b86ba855
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SimpleLoading
   platform: 5
   scenePathNames:
-  - Assets/Scenes/SampleScene.unity
+  - Assets/Scenes/LoadingScene.unity
+  - Assets/Scenes/MainScene.unity
   playerPath: C:/Users/p_kem/Desktop/OpenToursVR/OpenToursVR/Mapping/Mapping/Models/UnityTool/New
     Unity Project.exe
