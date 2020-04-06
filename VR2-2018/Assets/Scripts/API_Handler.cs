@@ -367,7 +367,6 @@ public class API_Handler
             StreamReader reader = new StreamReader(response.GetResponseStream());
             string jsonResponse = reader.ReadToEnd();
             jobject = new JSONObject(jsonResponse);
-            Debug.Log(jobject);
         }
         catch (Exception e)
         {

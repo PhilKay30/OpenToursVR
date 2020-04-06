@@ -21,22 +21,34 @@ using Valve.VR.InteractionSystem;
 public class GenerateWorld : MonoBehaviour
 {
     // Unity Objects
-    private Texture2D teleportMap;
     private Texture osmMap;
-    //private Texture historyMap;
-
-    //private API_Handler api = new API_Handler();
-    private byte[] osmMapData;
-    //private byte[] historyMapData; 
-
     
-    //private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
-    //private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
-   
-
     private float scaler = 400.0f;  /// To translate pixel to scale in unity
                                     /// To hold the scale. 10 pixels per scale point
                                     /// For example a 32 pixel will need a scale of 3.2
+
+    /// <summary>
+    /// These hold the width and height of osm map in unity pixels
+    /// </summary>
+    private double mapPixelWidth = 0;
+    private double mapPixelLength = 0;
+
+    /// <summary>
+    /// These will hold the map boundaries
+    /// </summary>
+    private Dictionary<string, double> bottom_right = new Dictionary<string, double>();
+    private Dictionary<string, double> top_left = new Dictionary<string, double>();
+
+    // This will give ratios between the unity coord system and the GIS coord system (pixels per GIS)
+    private double pixelsToGISRatioWidth = 0;
+    private double pixelsToGISRatioLength = 0;
+
+    /// <summary>
+    /// This will be the bottom left point in unity coords of base map
+    /// </summary>
+    private Vector3 botLeftMapLocation = new Vector3();
+
+
 
     public GameObject teleportPoint;    /// The object that will hold the teleport point (a point of interest)
     public GameObject mapPlane;         /// The plane that will hold the map
@@ -45,22 +57,17 @@ public class GenerateWorld : MonoBehaviour
     public GameObject bottomLayerPlane; /// The under plane to hide any transparency
 
     // This is the height the datapoints will be created at (accessible from IDE)
-    public float HeightOfDataPoints = 0.05f;
+    private float HeightOfDataPoints = 0.0f;
 
-    /// <summary>
-    /// This object will conatin all of the historical map data
-    /// </summary>
-    //HistMapObj histMapContainer = new HistMapObj();
 
-    
+
     
 
     // Start is called before the first frame update
     void Start()
     {
-        //APICalls();
-        CreatePlanes();
-        LoadModels();
+        StartCoroutine(CreatePlanes());
+        StartCoroutine(LoadModels());
     }
 
 
@@ -70,11 +77,11 @@ public class GenerateWorld : MonoBehaviour
     /// IN this function we will create the plane from the 
     /// data we've received from the API calls
     /// </summary>
-    private void CreatePlanes()
+    private IEnumerator CreatePlanes()
     {
         osmMap = LoadDataIntoTexture(API_Data_Loader.osmMapData);
         CreateMapPlane();
-        PlacePointsOfInterest();
+        StartCoroutine(PlacePointsOfInterest());
 
         try
         {
@@ -91,6 +98,7 @@ public class GenerateWorld : MonoBehaviour
 
         mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
+        yield return new WaitForEndOfFrame();
     }
 
 
@@ -101,18 +109,17 @@ public class GenerateWorld : MonoBehaviour
     /// <summary>
     /// This method loads and orients all models
     /// </summary>
-    private void LoadModels()
+    private IEnumerator LoadModels()
     {
-        //List<ModelHandle> models = api.GetModels();
         foreach (ModelHandle m in API_Data_Loader.models)
         {
             m.GameObj = new OBJLoader().Load(m.FilePath);
             m.GameObj.transform.localScale = m.Scale;
             m.GameObj.transform.rotation = m.Rotation;
             Vector3 pos = GisToUnity(m.Position);
-            //pos.y = m.Offset + mapPlane.transform.position.y;
             pos.y = m.Offset + 0.1f;
             m.GameObj.transform.position = pos;
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -120,34 +127,9 @@ public class GenerateWorld : MonoBehaviour
 
 
 
-    /// <summary>
-    /// These hold the width and height of osm map in unity pixels
-    /// </summary>
-    double mapPixelWidth = 0;
-    double mapPixelLength = 0;
 
-    /// <summary>
-    /// These will hold the map boundaries
-    /// </summary>
-    Dictionary<string, double> bottom_right = new Dictionary<string, double>();
-    Dictionary<string, double> top_left = new Dictionary<string, double>();
-
-    // This will give ratios between the unity coord system and the GIS coord system (pixels per GIS)
-    double pixelsToGISRatioWidth = 0;
-    double pixelsToGISRatioLength = 0;
-
-    /// <summary>
-    /// This will be the bottom left point in unity coords of base map
-    /// </summary>
-    Vector3 botLeftMapLocation = new Vector3();
-
-
-
-
-    private void PlacePointsOfInterest()
+    private IEnumerator PlacePointsOfInterest()
     {
-        // This will be ugly and should be done better
-        // Here there be magic
         bottom_right["longitude"] = API_Data_Loader.mapBounds[0]["longitude"];
         bottom_right["latitude"] = API_Data_Loader.mapBounds[0]["latitude"];
         top_left["longitude"] = API_Data_Loader.mapBounds[1]["longitude"];
@@ -155,18 +137,18 @@ public class GenerateWorld : MonoBehaviour
 
 
 
-        // This will give current width of osmMap (10 is base size of plane)
+        // This will give current width/length of osmMap (10 is base size of plane)
         mapPixelWidth = 10f * (double)mapPlane.transform.localScale.x;
-        // This will give current length of osmMap (10 is base size of plane)
         mapPixelLength = 10f * (double)mapPlane.transform.localScale.z;
-        // This will give the width of the osmMap in GIS value
+        
+        // This will give the width/length of the osmMap in GIS value
         double mapGISWidth = bottom_right["longitude"] - top_left["longitude"];
-        // This will give the length of the osmMap in GIS value
         double mapGISLength = top_left["latitude"] - bottom_right["latitude"];
 
         // This will give ratios between the unity coord system and the GIS coord system (pixels per GIS)
         pixelsToGISRatioWidth = mapPixelWidth / mapGISWidth;
         pixelsToGISRatioLength = mapPixelLength / mapGISLength;
+
 
         // Now get the bottom left corner of the map (in unity coords)
         Vector3 mapLocation = mapPlane.transform.position;
@@ -183,6 +165,7 @@ public class GenerateWorld : MonoBehaviour
             Vector3 dataPointUnityCoord = new Vector3(unityPos.x, HeightOfDataPoints, unityPos.y);
             Instantiate(teleportPoint, dataPointUnityCoord, Quaternion.identity);
             entry.PoiLocation = dataPointUnityCoord;
+            yield return new WaitForEndOfFrame();
         }
 
     }
@@ -204,48 +187,6 @@ public class GenerateWorld : MonoBehaviour
 
 
 
-    /// <summary>
-    /// LoadMaps
-    /// Description  :    This will load the map files into memory 
-    /// </summary>
-    /// <param name="mapFile">The path of the file</param>
-    /// <returns>Texture2D</returns>
-    public Texture2D LoadMaps(string mapFile)
-    {
-        return LoadPNG(mapFile);
-    }
-
-
-
-
-
-    /// <summary>
-    /// LoadPNG
-    /// Description  :    This will take an image file and load it into a Texture object
-    ///                   Used this post to help out
-    ///                   https://answers.unity.com/questions/432655/loading-texture-file-from-pngjpg-file-on-disk.html
-    /// </summary>
-    /// <param name="filePath">the path of the file</param>
-    /// <returns>Texture2D</returns>
-    public Texture2D LoadPNG(string filePath)
-    {
-        Debug.Log("Dir: " + Directory.GetCurrentDirectory().ToString());
-        Debug.Log("filePath: " + filePath);
-        Texture2D tex = null;
-        byte[] fileData;
-
-        if (File.Exists(filePath))
-        {
-            Debug.Log("File exists");
-            fileData = File.ReadAllBytes(filePath);
-            tex = new Texture2D(2, 2);
-            tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
-        }
-        return tex;
-    }
-
-
-
 
 
     /*
@@ -262,8 +203,6 @@ public class GenerateWorld : MonoBehaviour
 
         // Creates the plane
         mapPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
-        //mapPlane.transform.position = new Vector3(scaleX, mapPlane.transform.position.y, scaleZ);
-        //bottomLayerPlane.transform.position = new Vector3(scaleX, bottomLayerPlane.transform.position.y, scaleZ);
         bottomLayerPlane.transform.localScale = new Vector3(scaleX, bottomLayerPlane.transform.localScale.y, scaleZ);
 
         // Creates and holds the material to go on the plane
@@ -275,7 +214,6 @@ public class GenerateWorld : MonoBehaviour
 
         // Create the Teleport Area
         teleportPlane.transform.localScale = new Vector3(scaleX, teleportPlane.transform.localScale.y, scaleZ);
-        //teleportPlane.transform.position = new Vector3(scaleX, teleportPlane.transform.position.y, scaleZ);
     }
 
 
@@ -287,9 +225,11 @@ public class GenerateWorld : MonoBehaviour
         // get km dimensions of OSM map and historical map
         Vector2 OsmDimensionsKM = API_Data_Loader.api.OsmMapDimensions;
         Vector2 HistMapDimensionsKM = new Vector2(API_Data_Loader.histMapContainer.WidthKM, API_Data_Loader.histMapContainer.HeightKM);
+ 
         // get ratios between the 2 map sizes
         float horizontalRatio = HistMapDimensionsKM.x / OsmDimensionsKM.x;
         float verticalRatio = HistMapDimensionsKM.y / OsmDimensionsKM.y;
+        
         // apply the ratio to the OsmPlane size to get the size of historical map in unity size
         float histMapWidthPxl = horizontalRatio * (float)mapPixelWidth;
         float histMapLengthPxl = verticalRatio * (float)mapPixelLength;
