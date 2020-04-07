@@ -22,7 +22,21 @@ public class GenerateWorld : MonoBehaviour
 {
     // Unity Objects
     private Texture osmMap;
+<<<<<<< HEAD
     
+=======
+    //private Texture historyMap;
+
+    //private API_Handler api = new API_Handler();
+    private byte[] osmMapData;
+    //private byte[] historyMapData; 
+
+    
+    //private List<Dictionary<string, double>> mapBounds = new List<Dictionary<string, double>>();            /// Will hold the top left and bottom right points
+    //private List<Dictionary<string, double>> dataPointId = new List<Dictionary<string, double>>();          /// Will hold point_id, and point location
+   
+
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     private float scaler = 400.0f;  /// To translate pixel to scale in unity
                                     /// To hold the scale. 10 pixels per scale point
                                     /// For example a 32 pixel will need a scale of 3.2
@@ -60,14 +74,29 @@ public class GenerateWorld : MonoBehaviour
     private float HeightOfDataPoints = 0.0f;
 
 
+<<<<<<< HEAD
 
+=======
+    /// <summary>
+    /// This object will conatin all of the historical map data
+    /// </summary>
+    //HistMapObj histMapContainer = new HistMapObj();
+
+    
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     
 
     // Start is called before the first frame update
     void Start()
     {
+<<<<<<< HEAD
         StartCoroutine(CreatePlanes());
         StartCoroutine(LoadModels());
+=======
+        //APICalls();
+        CreatePlanes();
+        LoadModels();
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     }
 
 
@@ -77,7 +106,11 @@ public class GenerateWorld : MonoBehaviour
     /// IN this function we will create the plane from the 
     /// data we've received from the API calls
     /// </summary>
+<<<<<<< HEAD
     private IEnumerator CreatePlanes()
+=======
+    private void CreatePlanes()
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     {
         osmMap = LoadDataIntoTexture(API_Data_Loader.osmMapData);
         CreateMapPlane();
@@ -98,7 +131,10 @@ public class GenerateWorld : MonoBehaviour
 
         mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
+<<<<<<< HEAD
         yield return new WaitForEndOfFrame();
+=======
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     }
 
 
@@ -111,12 +147,20 @@ public class GenerateWorld : MonoBehaviour
     /// </summary>
     private IEnumerator LoadModels()
     {
+<<<<<<< HEAD
+=======
+        //List<ModelHandle> models = api.GetModels();
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
         foreach (ModelHandle m in API_Data_Loader.models)
         {
             m.GameObj = new OBJLoader().Load(m.FilePath);
             m.GameObj.transform.localScale = m.Scale;
             m.GameObj.transform.rotation = m.Rotation;
             Vector3 pos = GisToUnity(m.Position);
+<<<<<<< HEAD
+=======
+            //pos.y = m.Offset + mapPlane.transform.position.y;
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
             pos.y = m.Offset + 0.1f;
             m.GameObj.transform.position = pos;
             yield return new WaitForEndOfFrame();
@@ -130,6 +174,11 @@ public class GenerateWorld : MonoBehaviour
 
     private IEnumerator PlacePointsOfInterest()
     {
+<<<<<<< HEAD
+=======
+        // This will be ugly and should be done better
+        // Here there be magic
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
         bottom_right["longitude"] = API_Data_Loader.mapBounds[0]["longitude"];
         bottom_right["latitude"] = API_Data_Loader.mapBounds[0]["latitude"];
         top_left["longitude"] = API_Data_Loader.mapBounds[1]["longitude"];
@@ -165,7 +214,10 @@ public class GenerateWorld : MonoBehaviour
             Vector3 dataPointUnityCoord = new Vector3(unityPos.x, HeightOfDataPoints, unityPos.y);
             Instantiate(teleportPoint, dataPointUnityCoord, Quaternion.identity);
             entry.PoiLocation = dataPointUnityCoord;
+<<<<<<< HEAD
             yield return new WaitForEndOfFrame();
+=======
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
         }
 
     }
@@ -225,7 +277,10 @@ public class GenerateWorld : MonoBehaviour
         // get km dimensions of OSM map and historical map
         Vector2 OsmDimensionsKM = API_Data_Loader.api.OsmMapDimensions;
         Vector2 HistMapDimensionsKM = new Vector2(API_Data_Loader.histMapContainer.WidthKM, API_Data_Loader.histMapContainer.HeightKM);
+<<<<<<< HEAD
  
+=======
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
         // get ratios between the 2 map sizes
         float horizontalRatio = HistMapDimensionsKM.x / OsmDimensionsKM.x;
         float verticalRatio = HistMapDimensionsKM.y / OsmDimensionsKM.y;

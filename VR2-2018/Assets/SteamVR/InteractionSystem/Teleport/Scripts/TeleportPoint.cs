@@ -7,8 +7,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+<<<<<<< HEAD
 using System;
 using System.Collections;
+=======
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -226,9 +229,13 @@ namespace Valve.VR.InteractionSystem
 			{
 				this.gameObject.SetActive(true);
 				Debug.Log("<b>[SteamVR Interaction]</b> TeleportPoint: Hook up your level loading logic to switch to new scene: " + switchToScene, this);
+<<<<<<< HEAD
 				//SceneManager.LoadScene(switchToScene);
 				StartCoroutine(LoadAsyncOp(switchToScene));
 
+=======
+				SceneManager.LoadScene(1);
+>>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
 			}
 			else
 			{
