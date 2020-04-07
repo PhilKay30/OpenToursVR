@@ -6,6 +6,9 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System;
+using System.Collections;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -221,12 +224,27 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( !string.IsNullOrEmpty( switchToScene ) )
 			{
+				this.gameObject.SetActive(true);
 				Debug.Log("<b>[SteamVR Interaction]</b> TeleportPoint: Hook up your level loading logic to switch to new scene: " + switchToScene, this);
+				//SceneManager.LoadScene(switchToScene);
+				StartCoroutine(LoadAsyncOp(switchToScene));
+
 			}
 			else
 			{
 				Debug.LogError("<b>[SteamVR Interaction]</b> TeleportPoint: Invalid scene name to switch to: " + switchToScene, this);
 			}
+		}
+		IEnumerator LoadAsyncOp(string scene)
+		{
+			AsyncOperation loadLevel = SceneManager.LoadSceneAsync(scene);
+
+			while (loadLevel.progress < 1)
+			{
+				Debug.Log("level Progress: " + loadLevel.progress);
+				yield return new WaitForSeconds(0.25f);
+			}
+
 		}
 
 
