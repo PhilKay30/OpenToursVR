@@ -9,12 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Construct.unity
     guid: c825f2ae2563db34290d5673ce737cb7
   - enabled: 1
-<<<<<<< HEAD
     path: Assets/Scenes/Loading.unity
     guid: a48e56a31edbd394a968278c3d7d6ccc
   - enabled: 1
-=======
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     path: Assets/Scenes/VR_Level.unity
     guid: f78894a1874fa184184fe40e63d6994a
   m_configObjects: {}

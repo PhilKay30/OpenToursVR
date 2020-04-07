@@ -415,13 +415,8 @@
     <Compile Include="Assets\Scripts\ColourToPrefab.cs" />
     <Compile Include="Assets\Scripts\GenerateWorld.cs" />
     <Compile Include="Assets\Scripts\LaserInput.cs" />
-<<<<<<< HEAD
     <Compile Include="Assets\Scripts\Loading.cs" />
     <Compile Include="Assets\Scripts\PlayerSetup.cs" />
-=======
-    <Compile Include="Assets\Scripts\PlayerSetup.cs" />
-    <Compile Include="Assets\Scripts\T_Point_Generator.cs" />
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     <Compile Include="Assets\Scripts\TourPanel.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />

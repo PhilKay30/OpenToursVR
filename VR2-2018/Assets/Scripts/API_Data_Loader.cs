@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-<<<<<<< HEAD
 using System.Threading;
 using System.Threading.Tasks;
-=======
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
 using UnityEngine;
 
 public class API_Data_Loader : MonoBehaviour
 {
-<<<<<<< HEAD
     [SerializeField]
     private GameObject tp;
     [SerializeField]
@@ -18,10 +14,6 @@ public class API_Data_Loader : MonoBehaviour
     private GenerateWorld gWorld = new GenerateWorld();
     private bool goForApi = false;
     private bool goForDataPoints = false;
-    
-=======
-    private GenerateWorld gWorld = new GenerateWorld();
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     public static API_Handler api = new API_Handler();
     public static byte[] osmMapData;
     public static List<Dictionary<string, double>> mapBounds;
@@ -38,7 +30,7 @@ public class API_Data_Loader : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
     // Start is called before the first frame update
-<<<<<<< HEAD
+
     async void Start()
     {
         tp.SetActive(false);
@@ -46,21 +38,11 @@ public class API_Data_Loader : MonoBehaviour
 
         await APICalls();
         GetDataPointInfo();
-        
-=======
-    void Start()
-    {
-        APICalls();
-        GetDataPointInfo();
-        
-        models = api.GetModels();
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     }
 
     // Update is called once per frame
     void Update()
     {
-<<<<<<< HEAD
         if(goForApi && goForDataPoints)
         {
             tp.SetActive(true);
@@ -84,18 +66,6 @@ APICalls()
         dataPointId = await Task.Run(() => api.GetPointLocations());
         
         models = await Task.Run(() => api.GetModels());
-        
-=======
-        
-    }
-
-
-    private void APICalls()
-    {
-        osmMapData = api.GetOsmMap(); //working
-        mapBounds = api.GetMapBounds(); //working
-        dataPointId = api.GetPointLocations(); // working
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
         try
         {
             histMapContainer = api.GetHistMap();
@@ -107,11 +77,8 @@ APICalls()
             Debug.Log("Historical map not found: " + e);
             // This means there was no historical map in the db
         }
-<<<<<<< HEAD
         goForApi = true;
-=======
 
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     }
 
 
@@ -120,7 +87,6 @@ APICalls()
     /// 
     /// </summary>
     /// <param name="dpc"></param>
-<<<<<<< HEAD
     void GetDataPointInfo()
     {
         while (!goForApi)
@@ -137,32 +103,15 @@ APICalls()
 
             DataPointInfo dpi = new DataPointInfo(item["id"],
                 dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"],
-=======
-    private void GetDataPointInfo()
-    {
-
-        foreach (var item in dataPointId)
-        {
-            List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
-            
-            dataPointInformation.Add(api.GetPointInformation(item["id"]));
-
-            DataPointInfo dpi = new DataPointInfo(item["id"],
-                dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"], 
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
                 api.HexStringToBinary(dataPointInformation[0]["point_image"]),
                 (float)item["longitude"],
                 (float)item["latitude"]);
             dpInfo.Add(dpi);
-<<<<<<< HEAD
             Debug.Log("Entered dp info");
 
         }
                 
         goForDataPoints = true;
-=======
-        }
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     }
 }
 

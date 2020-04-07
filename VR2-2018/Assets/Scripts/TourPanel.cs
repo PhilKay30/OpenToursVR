@@ -30,41 +30,10 @@ public class TourPanel : MonoBehaviour
         
         //https://forum.unity.com/threads/generating-sprites-dynamically-from-png-or-jpeg-files-in-c.343735/
         Texture2D texture = LoadPNG(Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\controller.png");
-<<<<<<< HEAD
-        
         mat.mainTexture = texture;
         tourImage.material = mat;
     }
 
-=======
-        Material mat = new Material(Shader.Find("Transparent/Diffuse"));
-        mat.mainTexture = texture;
-        tourImage.material = mat;
-        //GetDataPointInfo(GenerateWorld.dpc);
-        
-    }
-
-    /*
-    private void GetDataPointInfo(List<DataPointContainer> dpc)
-    {
-        foreach (var item in dpc)
-        {
-            List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
-
-            dataPointInformation.Add(api.GetPointInformation(item.Id));
-            DataPointInfo dpi = new DataPointInfo(item.Id, dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"], api.HexStringToBinary(dataPointInformation[0]["point_image"]));
-            dpInfo.Add(dpi);
-            
-            //tourInfoText.text = dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"];
-            //Material mat = new Material(Shader.Find("Transparent/Diffuse"));
-            //Texture2D tex = gWorld.LoadDataIntoTexture(api.HexStringToBinary(dataPointInformation[0]["point_image"]));
-            //mat.mainTexture = tex;
-            //tourImage.material = mat;
-        }
-    }
-    */
-
->>>>>>> 4e83e02852b8e6dc3b11a81d7fc7ea7ae5b4e6fa
     // Update is called once per frame
     void Update()
     {
