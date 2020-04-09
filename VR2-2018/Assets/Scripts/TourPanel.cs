@@ -15,10 +15,12 @@ public class TourPanel : MonoBehaviour
         "To navigate look in the direction you wish to go push " +
         "forward on the left analog stick and let go. To make " +
         "me disapear press down on the left analog stick";
+    private Material mat = new Material(Shader.Find("Transparent/Diffuse"));
 
     public TextMeshProUGUI tourInfoText;
     public Image tourImage;
     public GameObject player;
+    public List<DataPointInfo> dpInfo = new List<DataPointInfo>();
 
    
     // Start is called before the first frame update
@@ -27,15 +29,11 @@ public class TourPanel : MonoBehaviour
         tourInfoText.text = openingText;
         
         //https://forum.unity.com/threads/generating-sprites-dynamically-from-png-or-jpeg-files-in-c.343735/
-        Texture2D texture = LoadPNG(Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\default.jpg");
-        Material mat = new Material(Shader.Find("Transparent/Diffuse"));
+        Texture2D texture = LoadPNG(Directory.GetCurrentDirectory() + "\\Assets\\Materials\\Pictures\\controller.png");
         mat.mainTexture = texture;
         tourImage.material = mat;
-
-        
     }
 
-    
     // Update is called once per frame
     void Update()
     {
@@ -46,23 +44,19 @@ public class TourPanel : MonoBehaviour
         Vector3 playerPos = player.transform.position;
 
 
-        foreach (var item in GenerateWorld.dpc)
+        foreach (var item in API_Data_Loader.dpInfo)
         {
-            Debug.Log("Player x: " + playerPos.x);
-            Debug.Log("POI x: " + item.PoiLocation.x);
-            Debug.Log("Difference: " + (item.PoiLocation.x - playerPos.x));
+            //Debug.Log("Player x: " + playerPos.x);
+            //Debug.Log("POI x: " + item.PoiLocation.x);
+            //Debug.Log("Difference: " + (item.PoiLocation.x - playerPos.x));
 
             if (CheckPosition(playerPos.x, item.PoiLocation.x))
             {
-                List<Dictionary<string, string>> dataPointInformation = new List<Dictionary<string, string>>(); /// Will hold point name, description and image hex
-
-                dataPointInformation.Add(api.GetPointInformation(item.Id));
-                tourInfoText.text = dataPointInformation[0]["point_name"] + "\n" + dataPointInformation[0]["point_desc"];
-                Material mat = new Material(Shader.Find("Transparent/Diffuse"));
-                Texture2D tex = gWorld.LoadDataIntoTexture(api.HexStringToBinary(dataPointInformation[0]["point_image"]));
-                mat.mainTexture = tex;
-                tourImage.material = mat;
+                var IcantThinkOfANameForThis = API_Data_Loader.dpInfo.Find(x => x.Id == item.Id);
+                tourInfoText.text = IcantThinkOfANameForThis.PointDescription;
+                tourImage.material = IcantThinkOfANameForThis.ImageMaterial;
             }
+        
         }
     }
 
@@ -75,13 +69,13 @@ public class TourPanel : MonoBehaviour
     /// <returns></returns>
     private bool CheckPosition(float playerPos, float poiLocation)
     {
-        float tollerance = 1.15f;
-        float difference = poiLocation - tollerance;
-
+        float tollerance = 1.2f;
+        float difference = poiLocation - playerPos;
+        difference = Math.Abs(difference);
         // https://stackoverflow.com/questions/3188672/how-to-elegantly-check-if-a-number-is-within-a-range
         // but that work only for Int, thanks for nothing LINQ
         // https://stackoverflow.com/questions/42906439/check-if-a-value-exists-between-two-numbers-float-c-sharp
-        if (playerPos >= difference && playerPos <= poiLocation)
+        if (difference <= tollerance)
         {
             return true;
         }
@@ -111,5 +105,36 @@ public class TourPanel : MonoBehaviour
             tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
         }
         return tex;
+    }
+}
+
+
+
+
+
+public class DataPointInfo
+{
+    private GenerateWorld gWorld = new GenerateWorld();
+    public string PointDescription { set; get; }
+    public Texture2D PointImage { set; get; }
+    public double Id { set; get; }
+    public float Longitude { set; get; }
+    public float Latitude { set; get; }
+    public Material ImageMaterial = new Material(Shader.Find("Transparent/Diffuse"));
+    public Vector3 PoiLocation { set; get; }
+
+    public DataPointInfo(double id, string description, byte[] texture, float lng, float lat)
+    {
+        Id = id;
+        PointDescription = description;
+        PointImage = gWorld.LoadDataIntoTexture(texture);
+        ImageMaterial.mainTexture = PointImage;
+        Longitude = lng;
+        Latitude = lat;
+    }
+
+    public string GetTourInfo()
+    {
+        return PointDescription;
     }
 }
