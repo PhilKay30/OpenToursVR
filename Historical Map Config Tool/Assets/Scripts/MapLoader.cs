@@ -217,6 +217,18 @@ public class MapLoader : MonoBehaviour
         return vec;
     }
 
+    /// <summary>
+    /// This public method exits the application
+    /// </summary>
+    public void ExitApp()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
 
     /// <summary>
     /// This method loads the historical map to the OverlayMap plane
