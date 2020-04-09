@@ -74,8 +74,14 @@
      <Compile Include="Assets\OBJImport\TextureLoader\ImageUtils.cs" />
      <Compile Include="Assets\OBJImport\TextureLoader\TGALoader.cs" />
      <Compile Include="Assets\Scripts\API_Handler.cs" />
+     <Compile Include="Assets\Scripts\API_Models.cs" />
+     <Compile Include="Assets\Scripts\ButtonHandler.cs" />
+     <Compile Include="Assets\Scripts\CamController.cs" />
+     <Compile Include="Assets\Scripts\Extensions.cs" />
+     <Compile Include="Assets\Scripts\ModelController.cs" />
      <Compile Include="Assets\Scripts\ObjecLoader.cs" />
-     <Compile Include="Assets\Scripts\rotate.cs" />
+     <Compile Include="Assets\Scripts\SceneLoader.cs" />
+     <Compile Include="Assets\Scripts\Zip.cs" />
      <None Include="Assets\JSON\readme.txt" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>C:/Users/p_kem/Desktop/OpenToursVR/OpenToursVR/ModelConfigTool/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

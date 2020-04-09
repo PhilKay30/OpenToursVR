@@ -1,5 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿/// File: ObjecLoader.cs
+/// Project: Paris VR 2.0
+/// Programmers: Weeping Angels
+/// First Version: March 20th, 2020
+/// Description: This file contains a class for loading and savings a model
+
 using UnityEngine;
 using Dummiesman;
 using System.IO;
@@ -10,16 +14,6 @@ using System.Linq;
 
 public class ObjecLoader : MonoBehaviour
 {
-    /// <summary>
-    /// this object contains the orientation script to allow it's Model to be set (so it can control the object)
-    /// </summary>
-    public GameObject ScriptHandle;
-
-    /// <summary>
-    /// Public shader to include it in compilation
-    /// </summary>
-    public Shader shader;
-
     /// <summary>
     /// The main camera
     /// </summary>
@@ -49,13 +43,13 @@ public class ObjecLoader : MonoBehaviour
     /// <summary>
     /// a Point representing the GIS coord of the Model
     /// </summary>
-    float pntLongitude;
-    float pntLatitude;
+    private float pntLongitude = 0f;
+    private float pntLatitude = 0f;
 
     /// <summary>
     /// The full path of the model file
     /// </summary>
-    private string FilePath;
+    private string FilePath = "";
 
     /// <summary>
     /// Start
@@ -103,7 +97,7 @@ public class ObjecLoader : MonoBehaviour
         MapPlane.transform.localScale = new Vector3(scaleX, 1, scaleZ);
 
         // Wrap the texture in a Material and apply it to the plane
-        Material material = new Material(shader);
+        Material material = new Material(Shader.Find("Standard"));
         material.renderQueue = 2998; //to fix the clipping issue
         material.mainTexture = mapTexture;
         MapPlane.GetComponent<Renderer>().material = material;
@@ -141,7 +135,8 @@ public class ObjecLoader : MonoBehaviour
             Model.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
             // Assign the model to the Model Control script so user can control it
-            ScriptHandle.GetComponent<rotate>().Model = Model;
+            MainCamera.GetComponent<CamController>().Model = Model;
+            MapPlane.GetComponent<ModelController>().Model = Model;
 
             // move the model to where it's supposed to be on plane
             Model.transform.position = GisToUnity(new Vector2(pntLongitude, pntLatitude));
@@ -160,7 +155,7 @@ public class ObjecLoader : MonoBehaviour
     {
         DeleteTempFiles();
         CopyModelFiles();
-        ZipFiles();
+        Zip.CompressDirectory("MyFolder", @"MyFolder\Temp\myZip.zip");
         SaveToApi();
         DeleteTempFiles();
     }
@@ -180,22 +175,6 @@ public class ObjecLoader : MonoBehaviour
         model.model_scaling = JsonUtility.ToJson(Model.transform.localScale);
         // do the save
         api.AddModel(model);
-    }
-
-    /// <summary>
-    /// This method zips the current model into a temp directory
-    /// </summary>
-    private void ZipFiles()
-    {
-        CompressDirectory("MyFolder", @"MyFolder\Temp\myZip.zip");
-    }
-
-    /// <summary>
-    /// This method unzips a zip files
-    /// </summary>
-    private void UnzipFiles()
-    {
-        DecompressToDirectory(@"MyFolder\Temp\myZip.zip", @"C:\Users\p_kem\Desktop\Folder");
     }
 
     /// <summary>
@@ -315,101 +294,5 @@ public class ObjecLoader : MonoBehaviour
         // This is the position the datapoint needs to be placed at (in unity coord system)
         // NOTE: The y value is a public property you can fiddel with in the IDE at runtime
         return new Vector3(dataPointX, 0, dataPointZ);
-    }
-
-    /// <summary>
-    /// This method zips a file
-    /// </summary>
-    /// <param name="sDir">source dir</param>
-    /// <param name="sRelativePath">relative path to src dir</param>
-    /// <param name="zipStream">zip stream to use for zipping</param>
-    private void CompressFile(string sDir, string sRelativePath, GZipStream zipStream)
-    {
-        //Compress file name
-        char[] chars = sRelativePath.ToCharArray();
-        zipStream.Write(BitConverter.GetBytes(chars.Length), 0, sizeof(int));
-        foreach (char c in chars)
-            zipStream.Write(BitConverter.GetBytes(c), 0, sizeof(char));
-
-        //Compress file content
-        byte[] bytes = File.ReadAllBytes(Path.Combine(sDir, sRelativePath));
-        zipStream.Write(BitConverter.GetBytes(bytes.Length), 0, sizeof(int));
-        zipStream.Write(bytes, 0, bytes.Length);
-    }
-
-
-    /// <summary>
-    /// This method unzips a file
-    /// </summary>
-    /// <param name="sDir">src directory</param>
-    /// <param name="zipStream">zip stream to unzip with</param>
-    /// <returns></returns>
-    private bool DecompressFile(string sDir, GZipStream zipStream)
-    {
-        //Decompress file name
-        byte[] bytes = new byte[sizeof(int)];
-        int Readed = zipStream.Read(bytes, 0, sizeof(int));
-        if (Readed < sizeof(int))
-            return false;
-
-        int iNameLen = BitConverter.ToInt32(bytes, 0);
-        bytes = new byte[sizeof(char)];
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < iNameLen; i++)
-        {
-            zipStream.Read(bytes, 0, sizeof(char));
-            char c = BitConverter.ToChar(bytes, 0);
-            sb.Append(c);
-        }
-        string sFileName = sb.ToString();
-
-        //Decompress file content
-        bytes = new byte[sizeof(int)];
-        zipStream.Read(bytes, 0, sizeof(int));
-        int iFileLen = BitConverter.ToInt32(bytes, 0);
-
-        bytes = new byte[iFileLen];
-        zipStream.Read(bytes, 0, bytes.Length);
-
-        string sFilePath = Path.Combine(sDir, sFileName);
-        string sFinalDir = Path.GetDirectoryName(sFilePath);
-        if (!Directory.Exists(sFinalDir))
-            Directory.CreateDirectory(sFinalDir);
-
-        using (FileStream outFile = new FileStream(sFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            outFile.Write(bytes, 0, iFileLen);
-
-        return true;
-    }
-
-    /// <summary>
-    /// This method zips a directory
-    /// </summary>
-    /// <param name="sInDir">directory to sip</param>
-    /// <param name="sOutFile">path/name of zip file to create</param>
-    private void CompressDirectory(string sInDir, string sOutFile)
-    {
-        string[] sFiles = Directory.GetFiles(sInDir, "*.*", SearchOption.AllDirectories);
-        int iDirLen = sInDir[sInDir.Length - 1] == Path.DirectorySeparatorChar ? sInDir.Length : sInDir.Length + 1;
-
-        using (FileStream outFile = new FileStream(sOutFile, FileMode.Create, FileAccess.Write, FileShare.None))
-        using (GZipStream str = new GZipStream(outFile, CompressionMode.Compress))
-            foreach (string sFilePath in sFiles)
-            {
-                string sRelativePath = sFilePath.Substring(iDirLen);
-                CompressFile(sInDir, sRelativePath, str);
-            }
-    }
-
-    /// <summary>
-    /// This method decompresses a zipped folder to a directory
-    /// </summary>
-    /// <param name="sCompressedFile">zip file to decompress</param>
-    /// <param name="sDir">output directory for contents</param>
-    private void DecompressToDirectory(string sCompressedFile, string sDir)
-    {
-        using (FileStream inFile = new FileStream(sCompressedFile, FileMode.Open, FileAccess.Read, FileShare.None))
-        using (GZipStream zipStream = new GZipStream(inFile, CompressionMode.Decompress, true))
-            while (DecompressFile(sDir, zipStream)) ;
     }
 }
