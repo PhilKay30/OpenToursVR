@@ -69,7 +69,7 @@ namespace Mapping
             {
                 StartInfo =
                 {
-                    FileName = @"../../../../HistMapConfig/UnityTool/MapConfig.exe",
+                    FileName = @"../../../../HistMapConfig/UnityTool/HistMapConfigTool.exe",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,

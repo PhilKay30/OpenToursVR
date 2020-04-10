@@ -13,9 +13,11 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.HorizontalLayoutGroup
     - UnityEngine.UI.Image
     - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
+    - UnityEngine.UI.VerticalLayoutGroup
   sceneClasses:
     Assets/Scenes/MainScene.unity:
     - Class: 1
@@ -45,27 +47,31 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 9674}
+      Script: {instanceID: 14412}
     - Class: 114
-      Script: {instanceID: 9822}
+      Script: {instanceID: 14558}
     - Class: 114
-      Script: {instanceID: 9862}
+      Script: {instanceID: 14598}
     - Class: 114
-      Script: {instanceID: 10232}
+      Script: {instanceID: 14966}
     - Class: 114
-      Script: {instanceID: 10572}
+      Script: {instanceID: 15302}
     - Class: 114
-      Script: {instanceID: 10686}
+      Script: {instanceID: 15386}
     - Class: 114
-      Script: {instanceID: 11014}
+      Script: {instanceID: 15416}
     - Class: 114
-      Script: {instanceID: 11016}
+      Script: {instanceID: 15500}
     - Class: 114
-      Script: {instanceID: 11358}
+      Script: {instanceID: 15728}
     - Class: 114
-      Script: {instanceID: 11390}
+      Script: {instanceID: 15730}
     - Class: 114
-      Script: {instanceID: 11408}
+      Script: {instanceID: 16070}
+    - Class: 114
+      Script: {instanceID: 16102}
+    - Class: 114
+      Script: {instanceID: 16120}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -516,4 +522,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainScene.unity
-  playerPath: C:/Users/p_kem/Desktop/OpenToursVR/OpenToursVR/Mapping/Mapping/HistMapConfig/UnityTool/MapConfig.exe
+  playerPath: C:/Users/p_kem/Desktop/OpenToursVR/OpenToursVR/Mapping/Mapping/HistMapConfig/UnityTool/HistMapConfigTool.exe

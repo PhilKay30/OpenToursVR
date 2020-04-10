@@ -133,6 +133,8 @@ public class ObjecLoader : MonoBehaviour
             // Get the game object from the location on disk (also scale the model down to 10% size...)
             Model = new OBJLoader().Load(FilePath);
             Model.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            var temp = Model.transform.localScale;
+            Model.transform.localScale = new Vector3(temp.x, temp.y, temp.z * -1f);
 
             // Assign the model to the Model Control script so user can control it
             MainCamera.GetComponent<CamController>().Model = Model;

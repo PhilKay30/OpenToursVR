@@ -166,7 +166,7 @@ namespace Mapping.Models
             {
                 StartInfo =
                 {
-                    FileName = @"../../../../Models/UnityTool/New Unity Project.exe",
+                    FileName = @"../../../../Models/UnityTool/ModelConfigTool.exe",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     WindowStyle = ProcessWindowStyle.Hidden,
