@@ -15,17 +15,32 @@ using UnityEngine.Networking;
 public class API_Handler
 {
 
-    private string osmMapApiRequest = "http://192.0.203.84:5000/getimg/osmMap.png";
-    private string dataPointsApiRequest = "http://192.0.203.84:5000/getpoint/";
-    private string mapBoundsApiRequest = "http://192.0.203.84:5000/getbounds/osmMap";
-    private string dataPointInformation = "http://192.0.203.84:5000/getpoint/";
-    private string histMapApiRequest = "http://192.0.203.84:5000/getimg/historicalMap.png";
-    private string getModelsApiRequest = "http://192.0.203.84:5000/getmodel/";
+    private string osmMapApiRequest = "";
+    private string dataPointsApiRequest = "";
+    private string mapBoundsApiRequest = "";
+    private string dataPointInformation = "";
+    private string histMapApiRequest = "";
+    private string getModelsApiRequest = "";
 
     /// <summary>
     /// Vector to hold the km dimensions of the osm map
     /// </summary>
     public Vector2 OsmMapDimensions = new Vector2();
+
+    /// <summary>
+    /// Constructor
+    /// Creates URLs for api calls from a config class
+    /// </summary>
+    public API_Handler()
+    {
+        string baseURL = new ConfigReader().GetApiURL();
+        osmMapApiRequest = baseURL + "/getimg/osmMap.png";
+        dataPointsApiRequest = baseURL + "/getpoint/";
+        mapBoundsApiRequest = baseURL + "/getbounds/osmMap";
+        dataPointInformation = baseURL + "/getpoint/";
+        histMapApiRequest = baseURL + "/getimg/historicalMap.png";
+        getModelsApiRequest = baseURL + "/getmodel/";
+    }
 
 
     /// <summary>

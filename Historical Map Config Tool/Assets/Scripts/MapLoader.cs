@@ -20,9 +20,9 @@ public class MapLoader : MonoBehaviour
     /// <summary>
     /// API calls (should be replaced by reading the config file of the WPF application... TJ?)
     /// </summary>
-    private string getMapRequest = "http://192.0.203.84:5000/getimg/osmMap.png";
-    private string getBoundsRequest = "http://192.0.203.84:5000/getbounds/osmMap";
-    private string addMapRequest = "http://192.0.203.84:5000/addimg/";
+    private string getMapRequest = "";
+    private string getBoundsRequest = "";
+    private string addMapRequest = "";
 
     /// <summary>
     /// GIS points for four corner of the base map
@@ -49,6 +49,10 @@ public class MapLoader : MonoBehaviour
     /// </summary>
     void Start()
     {
+        string baseURL = new ConfigReader().GetApiURL();
+        getMapRequest = baseURL + "/getimg/osmMap.png";
+        getBoundsRequest = baseURL + "/getbounds/osmMap";
+        addMapRequest = baseURL + "/addimg/";
         RetrieveMapCoords();
         PlaceBaseMap();
         PlaceOverlayMap();
