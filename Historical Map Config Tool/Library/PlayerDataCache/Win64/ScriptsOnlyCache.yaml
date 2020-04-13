@@ -6,7 +6,6 @@ ScriptsOnlyBuild:
     - SliderController
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
-    - UnityEditor.TestTools.TestRunner.TestListCacheData
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.StandaloneInputModule
@@ -63,15 +62,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10778}
     - Class: 114
-      Script: {instanceID: 11014}
-    - Class: 114
       Script: {instanceID: 11016}
     - Class: 114
-      Script: {instanceID: 11358}
+      Script: {instanceID: 11018}
     - Class: 114
-      Script: {instanceID: 11390}
+      Script: {instanceID: 11360}
     - Class: 114
-      Script: {instanceID: 11408}
+      Script: {instanceID: 11392}
+    - Class: 114
+      Script: {instanceID: 11410}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128

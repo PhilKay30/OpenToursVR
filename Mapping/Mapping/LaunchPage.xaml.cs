@@ -53,11 +53,17 @@ namespace Mapping
 
         private void OnClick_AddHistMap(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                InitialDirectory = "c:\\",
+                Filter = "Select a JPEG|*.jpg",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
             if (openFileDialog.ShowDialog() == true)
             {
                 string inputFilePath = openFileDialog.FileName;
-                string outputFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.png";
+                string outputFilePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\histMap.jpg";
                 File.Copy(inputFilePath, outputFilePath, true);
                 LaunchHistMapEditor();
             }
