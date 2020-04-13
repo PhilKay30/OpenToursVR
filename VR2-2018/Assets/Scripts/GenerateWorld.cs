@@ -63,8 +63,8 @@ public class GenerateWorld : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(CreatePlanes());
-        StartCoroutine(LoadModels());
+        CreatePlanes();
+        LoadModels();
     }
 
 
@@ -74,7 +74,7 @@ public class GenerateWorld : MonoBehaviour
     /// IN this function we will create the plane from the 
     /// data we've received from the API calls
     /// </summary>
-    private IEnumerator CreatePlanes()
+    private void CreatePlanes()
     {
         osmMap = LoadDataIntoTexture(API_Data_Loader.osmMapData);
         CreateMapPlane();
@@ -95,7 +95,7 @@ public class GenerateWorld : MonoBehaviour
 
         mapPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
         historyPlane.GetComponent<Renderer>().material.SetTextureScale("_MainTex", new Vector2(-1, -1));
-        yield return new WaitForEndOfFrame();
+        
     }
 
 
@@ -106,7 +106,7 @@ public class GenerateWorld : MonoBehaviour
     /// <summary>
     /// This method loads and orients all models
     /// </summary>
-    private IEnumerator LoadModels()
+    private void LoadModels()
     {
         foreach (ModelHandle m in API_Data_Loader.models)
         {
@@ -116,7 +116,8 @@ public class GenerateWorld : MonoBehaviour
             Vector3 pos = GisToUnity(m.Position);
             pos.y = m.Offset + 0.1f;
             m.GameObj.transform.position = pos;
-            yield return new WaitForEndOfFrame();
+            var buff = m.GameObj.transform.localScale;
+            m.GameObj.transform.localScale = new Vector3(buff.x, buff.y, buff.z * -1f);
         }
     }
 

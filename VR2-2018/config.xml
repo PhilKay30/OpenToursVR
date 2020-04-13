@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<api>
+		<url>http://192.0.203.84:5000</url>
+	</api>
+</config>

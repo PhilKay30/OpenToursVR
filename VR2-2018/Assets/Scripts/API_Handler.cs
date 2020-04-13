@@ -149,6 +149,8 @@ public class API_Handler
             }
         } // end of getting missing model data
 
+
+
         string[] folders = Directory.GetDirectories("Models");
         List<string> fragIDS = new List<string>();
         foreach (ModelFrag frag in frags)
@@ -164,7 +166,15 @@ public class API_Handler
         foreach (string path in PathToDelete)
         {
             EmptyFolder(path);
-            Directory.Delete(path);
+            //Directory.Delete(path);
+        }
+        foreach(string f in folders)
+        {
+            string[] files = Directory.GetFiles(f);
+            if(files.Length == 0)
+            {
+                Directory.Delete(f);
+            }
         }
         // ToDo
         // Use frags (List<frag>) to check if any folder inside "Models\\" exist that don't exist in frags list
@@ -575,8 +585,14 @@ public class API_Handler
     /// This method clears out a folder completely
     /// </summary>
     /// <param name="baseFolder">folder to clear out</param>
-    private void EmptyFolder(string baseFolder)
+    private void EmptyFolder(string folderId)
     {
+        string baseFolder = folderId;
+        if (!folderId.Contains(Directory.GetCurrentDirectory()))
+        {
+            baseFolder = Directory.GetCurrentDirectory() + "\\Models\\" + folderId;
+        }
+        
         if (Directory.Exists(baseFolder))
         {
             // delete all files
