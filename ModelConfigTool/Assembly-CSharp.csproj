@@ -77,6 +77,7 @@
      <Compile Include="Assets\Scripts\API_Models.cs" />
      <Compile Include="Assets\Scripts\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\CamController.cs" />
+     <Compile Include="Assets\Scripts\ConfigReader.cs" />
      <Compile Include="Assets\Scripts\Extensions.cs" />
      <Compile Include="Assets\Scripts\ModelController.cs" />
      <Compile Include="Assets\Scripts\ObjecLoader.cs" />

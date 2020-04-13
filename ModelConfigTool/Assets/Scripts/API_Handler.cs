@@ -14,9 +14,17 @@ using UnityEngine;
 
 public class API_Handler
 {
-    private string osmMapApiRequest = "http://192.0.203.84:5000/getimg/osmMap.png";
-    private string mapBoundsApiRequest = "http://192.0.203.84:5000/getbounds/osmMap";
-    private string addModelApiRequest = "http://192.0.203.84:5000/addmodel/";
+    private string osmMapApiRequest = "";
+    private string mapBoundsApiRequest = "";
+    private string addModelApiRequest = "";
+
+    public API_Handler()
+    {
+        string baseURL = new ConfigReader().GetApiURL();
+        osmMapApiRequest = baseURL + "/getimg/osmMap.png";
+        mapBoundsApiRequest = baseURL + "/getbounds/osmMap";
+        addModelApiRequest = baseURL + "/addmodel/";
+    }
 
     /// <summary>
     /// This method will make an Web request to the API to retrieved 

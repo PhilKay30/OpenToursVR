@@ -413,6 +413,7 @@
     <Compile Include="Assets\Scripts\API_Handler.cs" />
     <Compile Include="Assets\Scripts\ButtonFunctions.cs" />
     <Compile Include="Assets\Scripts\ColourToPrefab.cs" />
+    <Compile Include="Assets\Scripts\ConfigReader.cs" />
     <Compile Include="Assets\Scripts\GenerateWorld.cs" />
     <Compile Include="Assets\Scripts\LaserInput.cs" />
     <Compile Include="Assets\Scripts\Loading.cs" />

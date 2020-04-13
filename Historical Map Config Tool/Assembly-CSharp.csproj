@@ -57,6 +57,7 @@
   <ItemGroup>
      <Compile Include="Assets\JSON\JSONObject.cs" />
      <Compile Include="Assets\JSON\VectorTemplates.cs" />
+     <Compile Include="Assets\Scripts\ConfigReader.cs" />
      <Compile Include="Assets\Scripts\DragHandler.cs" />
      <Compile Include="Assets\Scripts\MapLoader.cs" />
      <Compile Include="Assets\Scripts\SliderController.cs" />
