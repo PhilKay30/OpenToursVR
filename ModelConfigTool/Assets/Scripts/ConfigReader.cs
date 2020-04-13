@@ -6,6 +6,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 
 public class ConfigReader
@@ -18,7 +19,8 @@ public class ConfigReader
     {
         string apiURL = "";
         XmlDocument doc = new XmlDocument();
-        doc.Load(@"..\..\Config\config.xml");
+        string configFile = GetConfigFile();
+        doc.Load(configFile);
         foreach (XmlNode pNode in doc.DocumentElement.ChildNodes)
         {
             if (pNode.Name == "api")
@@ -34,5 +36,24 @@ public class ConfigReader
             }
         }
         return apiURL;
+    }
+
+    /// <summary>
+    /// This method finds the config file
+    /// </summary>
+    /// <returns>config file address</returns>
+    private string GetConfigFile()
+    {
+        string directory = Directory.GetCurrentDirectory();
+
+        // Backtrack through the directory structure until the "Tools" sub-directory is found
+        while (directory.Length > 0 && !Directory.GetDirectories(directory).Contains(directory + "\\Config"))
+        {
+            int sub = directory.LastIndexOf('\\');
+            directory = sub < 0 ? string.Empty : directory.Substring(0, sub);
+        }
+
+        // Return the config file path
+        return directory + "\\Config\\config.xml";
     }
 }

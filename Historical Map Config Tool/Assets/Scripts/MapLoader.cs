@@ -49,13 +49,26 @@ public class MapLoader : MonoBehaviour
     /// </summary>
     void Start()
     {
-        string baseURL = new ConfigReader().GetApiURL();
-        getMapRequest = baseURL + "/getimg/osmMap.png";
-        getBoundsRequest = baseURL + "/getbounds/osmMap";
-        addMapRequest = baseURL + "/addimg/";
-        RetrieveMapCoords();
-        PlaceBaseMap();
-        PlaceOverlayMap();
+        try
+        {
+            string baseURL = new ConfigReader().GetApiURL();
+            getMapRequest = baseURL + "/getimg/osmMap.png";
+            getBoundsRequest = baseURL + "/getbounds/osmMap";
+            addMapRequest = baseURL + "/addimg/";
+            RetrieveMapCoords();
+            PlaceBaseMap();
+            PlaceOverlayMap();
+        }
+        catch (Exception e)
+        {
+            if (!File.Exists("myLog.txt"))
+            {
+                File.Create("myLog.txt");
+            }
+            List<string> lines = new List<string>();
+            lines.Add(e.ToString());
+            File.WriteAllLines("myLog.txt", lines.ToArray());
+        }
     }
 
 
