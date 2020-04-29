@@ -8,7 +8,7 @@ namespace SVGConverter
     class DbConnect
     {
         private const string CONNECTION_STRING =
-            "Host=192.0.203.84;Port=5432;Username=doctor;Database=capstone;Password=wh0";
+            "Host=127.0.0.1;Port=5432;Username=user;Database=capstone;Password=passwd";
 
         private const string QUERY_STRING =
             "SELECT access, \"addr:housename\", \"addr:housenumber\", \"addr:interpolation\", admin_level, aerialway," +
