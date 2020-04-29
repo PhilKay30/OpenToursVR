@@ -3,11 +3,11 @@ from psycopg2 import IntegrityError
 
 
 class DbUtils:
-    db_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/capstone"
+    db_string = "postgresql+psycopg2://"
 
     @staticmethod
     def addNewPNG(img_name, img, size, corner, rotation):
-        db_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/capstone"
+        db_string = "postgresql+psycopg2://"
         db = create_engine(db_string)
         conn = db.connect()
         try:
@@ -32,7 +32,7 @@ class DbUtils:
 
     @staticmethod
     def getPNG(img_name):
-        db_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/capstone"
+        db_string = "postgresql+psycopg2://"
         db = create_engine(db_string)
         conn = db.connect()
         img = conn.execute(
@@ -46,7 +46,7 @@ class DbUtils:
 
     @staticmethod
     def getBounds():
-        db_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/capstone"
+        db_string = "postgresql+psycopg2://"
         db = create_engine(db_string)
         conn = db.connect()
         bounds = conn.execute("SELECT ST_AsText(geom) AS point FROM bounds;")
@@ -56,7 +56,7 @@ class DbUtils:
 
     @staticmethod
     def getPoints(void):
-        db_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/capstone"
+        db_string = "postgresql+psycopg2://"
         db = create_engine(db_string)
         conn = db.connect()
         points = conn.execute("SELECT * FROM tour_points;")
