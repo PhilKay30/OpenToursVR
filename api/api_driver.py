@@ -10,7 +10,7 @@ import json
 log = Logger("API", "api.log")
 
 # Connection String to the PostgreSQL Database
-connect_string = "postgresql+psycopg2://doctor:wh0@192.0.203.84:5432/osm_map"
+connect_string = "postgresql+psycopg2://"
 
 # Set up the app, configure it with the connection string and disable tracking modifications.
 app = Flask(__name__)
