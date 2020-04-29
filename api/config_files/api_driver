@@ -1,9 +1,9 @@
 server {
 	listen 5000;
-	server_name 192.0.203.84;
+	server_name 127.0.0.1;
 
 	location / {
 		include uwsgi_params;
-		uwsgi_pass unix:/home/doctor/OpenToursVR/api/api_driver.sock;
+		uwsgi_pass unix:/home/user/OpenToursVR/api/api_driver.sock;
 	}
 }
