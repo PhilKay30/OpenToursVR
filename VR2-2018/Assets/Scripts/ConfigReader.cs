@@ -19,7 +19,7 @@ public class ConfigReader
     /// <summary>
     /// Default URL to put in the config file if it's being created from scratch
     /// </summary>
-    private string defaultURL = "http://192.0.203.84:5000";
+    private string defaultURL = "http://127.0.0.1:5000";
 
     /// <summary>
     /// Constructor
