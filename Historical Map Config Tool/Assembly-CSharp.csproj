@@ -60,6 +60,7 @@
      <Compile Include="Assets\Scripts\ConfigReader.cs" />
      <Compile Include="Assets\Scripts\DragHandler.cs" />
      <Compile Include="Assets\Scripts\MapLoader.cs" />
+     <Compile Include="Assets\Scripts\SceneLoader.cs" />
      <Compile Include="Assets\Scripts\SliderController.cs" />
      <None Include="Assets\JSON\readme.txt" />
  <Reference Include="Unity.Timeline.Editor">

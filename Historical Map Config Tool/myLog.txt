@@ -1,0 +1,14 @@
+System.IO.DirectoryNotFoundException: Could not find a part of the path "C:\Config\config.xml".
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x00164] in <567df3e0919241ba98db88bec4c6696f>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize) [0x00000] in <567df3e0919241ba98db88bec4c6696f>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int)
+  at System.Xml.XmlDownloadManager.GetStream (System.Uri uri, System.Net.ICredentials credentials, System.Net.IWebProxy proxy, System.Net.Cache.RequestCachePolicy cachePolicy) [0x00018] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlUrlResolver.GetEntity (System.Uri absoluteUri, System.String role, System.Type ofObjectToReturn) [0x00032] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlTextReaderImpl.OpenUrlDelegate (System.Object xmlResolver) [0x0000c] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlTextReaderImpl.OpenUrl () [0x0005e] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlTextReaderImpl.Read () [0x00093] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlLoader.Load (System.Xml.XmlDocument doc, System.Xml.XmlReader reader, System.Boolean preserveWhitespace) [0x000a6] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlDocument.Load (System.Xml.XmlReader reader) [0x0002e] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at System.Xml.XmlDocument.Load (System.String filename) [0x00013] in <1d98d70bb7d8453b80c25aa561fdecd1>:0 
+  at ConfigReader.GetApiURL () [0x00014] in C:\Users\p_kem\Desktop\OpenToursVR\OpenToursVR\Historical Map Config Tool\Assets\Scripts\ConfigReader.cs:23 
+  at MapLoader.Start () [0x00002] in C:\Users\p_kem\Desktop\OpenToursVR\OpenToursVR\Historical Map Config Tool\Assets\Scripts\MapLoader.cs:54 
